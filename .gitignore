@@ -51,3 +51,5 @@ scripts/.optimize-cache.json
 
 # Generated optimized images
 /public/optimized/
+
+.vercel

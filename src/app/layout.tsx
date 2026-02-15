@@ -57,7 +57,7 @@ const cormorantGaramond = localFont({
 });
 
 const fraunces = localFont({
-  src: "./_fonts/Fraunces-VariableFont_SOFT,WONK,opsz,wght.ttf",
+  src: "./_fonts/Fraunces.ttf",
   variable: "--font-fraunces",
   display: "swap",
 });
