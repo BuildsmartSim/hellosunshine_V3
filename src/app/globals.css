@@ -1,20 +1,12 @@
 @import "tailwindcss";
 
-/* Forced @font-face fallback to ensure Chicle loads no matter what */
-@font-face {
-  font-family: 'ChicleForce';
-  src: url('/fonts/Chicle-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
 
 @theme {
   /* Fonts - mapping layout.tsx variables to Tailwind utilities */
   --font-display: var(--font-playfair), serif;
   --font-body: var(--font-dm-sans), sans-serif;
   --font-handwriting: var(--font-caveat), cursive;
-  --font-accent: var(--font-chicle), 'ChicleForce', cursive;
+  --font-accent: var(--font-chicle), cursive;
   --font-cormorant: var(--font-cormorant), serif;
   --font-fraunces: var(--font-fraunces), serif;
 
