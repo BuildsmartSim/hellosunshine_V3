@@ -23,14 +23,14 @@ export default function Header() {
                     backgroundSize: '400px',
                 }}></div>
 
-            <div className="max-w-7xl mx-auto py-6 md:py-8 flex items-center justify-between relative z-10 transition-all duration-500">
+            <div className="max-w-7xl mx-auto py-3 md:py-4 flex items-center justify-between relative z-10 transition-all duration-500">
 
                 {/* Identity Column */}
                 <div className="flex items-center gap-6 md:gap-10">
-                    <div className="relative w-12 h-12 md:w-16 md:h-16 transform -rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0">
+                    <div className="relative w-16 h-16 md:w-20 md:h-20 transform -rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0">
                         <Image src={LOGO_SRC} alt="Hello Sunshine" fill className="object-contain" />
                     </div>
-                    <div className="flex flex-col border-l border-charcoal/10 pl-6 md:pl-10 h-12 md:h-16 justify-center">
+                    <div className="flex flex-col border-l border-charcoal/10 pl-6 md:pl-10 h-16 md:h-20 justify-center">
                         <span className="text-[10px] md:text-[12px] font-mono tracking-[0.5em] text-charcoal opacity-40 uppercase font-bold">
                             Est. 2019
                         </span>
@@ -38,7 +38,7 @@ export default function Header() {
                 </div>
 
                 {/* Refined Navigation Column (Studio Style) */}
-                <nav className="hidden lg:flex items-center gap-12 font-body text-[11px] font-bold uppercase tracking-[0.4em]">
+                <nav className="hidden lg:flex items-center gap-12 font-body text-[13px] font-bold uppercase tracking-[0.4em]">
                     {NAV_ITEMS.map(it => (
                         <a key={it.label} href={it.href} className="text-charcoal/40 hover:text-charcoal transition-all relative group">
                             {it.label}
@@ -51,10 +51,10 @@ export default function Header() {
                 <div className="flex items-center gap-4 md:gap-10">
                     <div className="hidden sm:flex items-center gap-3 md:gap-5">
                         <button className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-charcoal/10 flex items-center justify-center hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group bg-white/40">
-                            <Image src={icons.phone} alt="Phone" width={20} height={20} className="md:w-[22px] md:h-[22px] opacity-30 group-hover:opacity-100 transition-opacity" />
+                            <Image src={icons.phone} alt="Phone" width={24} height={24} className="md:w-[26px] md:h-[26px] opacity-80 group-hover:opacity-100 transition-opacity" />
                         </button>
                         <button className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-charcoal/10 flex items-center justify-center hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group bg-white/40">
-                            <Image src={icons.mail} alt="Email" width={20} height={20} className="md:w-[22px] md:h-[22px] opacity-30 group-hover:opacity-100 transition-opacity" />
+                            <Image src={icons.mail} alt="Email" width={24} height={24} className="md:w-[26px] md:h-[26px] opacity-80 group-hover:opacity-100 transition-opacity" />
                         </button>
                     </div>
                     <button className="bg-charcoal text-white px-6 md:px-10 py-3 md:py-4 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-[0.25em] hover:bg-primary hover:text-charcoal transition-all shadow-xl border border-white/10 active:scale-95 whitespace-nowrap">

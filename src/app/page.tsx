@@ -9,8 +9,10 @@ import TicketingSection from "@/components/TicketingSection";
 import Guestbook from "@/components/Guestbook";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { fonts } from "@/design-system/tokens";
+import { fonts, colors, pencil } from "@/design-system/tokens";
 import { Polaroid } from "@/components/Polaroid";
+import { LayeredPencil } from "@/components/LayeredPencil";
+import { SectionHeader } from "@/components/SectionHeader";
 
 export default function Home() {
 
@@ -27,7 +29,7 @@ export default function Home() {
         <SanctuarySection />
 
         {/* GUESTBOOK SECTION */}
-        <section className="py-24 md:py-40 bg-[#F3EFE6] relative overflow-hidden border-y border-charcoal/5">
+        <section className="py-24 lg:py-32 bg-[#F3EFE6] relative overflow-hidden border-y border-charcoal/5">
           {/* Paper Texture Overlay */}
           <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-multiply"
             style={{
@@ -65,16 +67,16 @@ export default function Home() {
 
               {/* Right Column: Title + Guestbook */}
               <div className="lg:col-span-8 flex flex-col items-center lg:items-start text-center lg:text-left">
-                <div className="mb-16">
-                  <span className="font-handwriting text-3xl text-primary mb-4 block">Our Shared Story</span>
-                  <h2 className="text-6xl md:text-8xl text-wood-dark mb-6" style={{ fontFamily: fonts.accent }}>The Guestbook</h2>
-                  <p className="text-xl font-display italic text-charcoal/40 max-w-xl">
-                    Voices from the steam. Moments captured in the wild. Flip through the memories of those who came before.
-                  </p>
-                </div>
+                <SectionHeader
+                  line1="The"
+                  line2="Guestbook"
+                  subtitle="Our shared story."
+                  description="Voices from the steam. Moments captured in the wild. Flip through the memories of those who came before."
+                  className="mb-16"
+                />
 
                 <div className="relative w-full py-8 md:py-12 flex justify-center lg:justify-start">
-                  <div className="lg:pl-12">
+                  <div className="w-full">
                     <Guestbook />
                   </div>
                 </div>

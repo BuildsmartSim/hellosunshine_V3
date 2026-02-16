@@ -51,10 +51,13 @@ export function LayeredPencil({
                 style={{
                     fontFamily: fonts.accent,
                     fontSize: size,
-                    lineHeight: '1',
+                    lineHeight: '1.1', // Slightly increased to prevent descenders from being clipped
                     gridArea: '1/1',
                     opacity: parseFloat(fillOpacity),
                     display: 'block',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
                 }}
             >
                 {text}
@@ -66,12 +69,13 @@ export function LayeredPencil({
                 style={{
                     fontFamily: fonts.accent,
                     fontSize: size,
-                    lineHeight: '1',
+                    lineHeight: '1.1',
                     gridArea: '1/1',
                     WebkitTextStroke: `${strokeWidth} ${strokeColor}`,
                     opacity: parseFloat(strokeOpacity),
                     filter: 'url(#hand-drawn)',
                     display: 'block',
+                    WebkitTextFillColor: 'transparent',
                 }}
             >
                 {text}

@@ -202,7 +202,7 @@ export default function Guestbook() {
     };
 
     return (
-        <div className={`relative w-[500px] h-[350px] md:w-[600px] md:h-[420px] [perspective:1500px] mx-auto select-none group`}>
+        <div className={`relative w-[90vw] h-[60vw] max-w-[900px] max-h-[630px] md:w-[80vw] md:h-[55vw] lg:w-[850px] lg:h-[595px] [perspective:2500px] mx-auto select-none group`}>
 
             {/* Spine Gutter (Hides sub-pixel gaps and adds realism) */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[6px] h-full bg-black/60 z-0 shadow-[0_0_10px_rgba(0,0,0,0.5)]" />

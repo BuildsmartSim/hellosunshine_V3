@@ -74,11 +74,18 @@ function IconColumn({ services }: { services: typeof SERVICES }) {
 }
 
 /* ── Local Helper: Left Column Content ────────────── */
+import { SectionHeader } from '@/components/SectionHeader';
+
+/* ... */
+
 function LeftColumnContent() {
     return (
         <div className="space-y-8 pt-4">
-            <LayeredPencil text="The" size="50px" />
-            <LayeredPencil text="Sanctuary" size="85px" strokeWidth={pencil.strokes.hero.width} className="-mt-6" />
+            <SectionHeader
+                line1="The"
+                line2="Sanctuary"
+                className="space-y-0" // SectionHeader has its own spacing, but we want to control the subtitle/description here
+            />
 
             <div className="flex gap-6 border-t border-charcoal/10 pt-8">
                 {/* Body Text */}
@@ -153,7 +160,7 @@ export default function SanctuarySection() {
     };
 
     return (
-        <section className="py-24 px-6 relative overflow-hidden" style={{ backgroundColor: colors.bgLight }}>
+        <section className="py-24 lg:py-32 px-6 relative overflow-hidden" style={{ backgroundColor: colors.bgLight }}>
             {/* Paper Texture Overlay */}
             <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-multiply"
                 style={{

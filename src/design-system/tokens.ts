@@ -77,7 +77,7 @@ export const pencil = {
         yellow: "hatch-aesthetic-yellow",
         cream: "hatch-aesthetic-cream",
         creamBold: "hatch-aesthetic-cream-bold",
-        charcoal: "hatch-aesthetic-charcoal",
+        charcoalShaded: "fill-shaded-charcoal",
         pencilGrey: "hatch-pencil-grey",
     },
 
