@@ -123,10 +123,14 @@ async function optimizeImage(inputPath, outputDir, originalName) {
     const nameWithoutExt = basename(originalName, extname(originalName));
     const cleanName = toKebabCase(nameWithoutExt);
 
-    const webpPath = join(outputDir, `${cleanName}.webp`);
-    const jpegPath = join(outputDir, `${cleanName}.jpg`);
+    const webpDir = join(outputDir, 'webp');
+    const jpegDir = join(outputDir, 'jpg');
 
-    await mkdir(outputDir, { recursive: true });
+    await mkdir(webpDir, { recursive: true });
+    await mkdir(jpegDir, { recursive: true });
+
+    const webpPath = join(webpDir, `${cleanName}.webp`);
+    const jpegPath = join(jpegDir, `${cleanName}.jpg`);
 
     // Load and resize
     let pipeline = sharp(inputPath, { failOn: 'none' })

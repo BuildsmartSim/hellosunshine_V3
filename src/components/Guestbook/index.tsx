@@ -80,6 +80,7 @@ const SHEETS: Sheet[] = [
         back: {
             paper: '/Guestbook_png/BOOK_COVER_BACK.png',
             overlay: null,
+            imageStyle: '!scale-x-100',
             alt: 'Back Cover'
         }
     }
@@ -205,9 +206,19 @@ export default function Guestbook() {
         <div className={`relative w-[90vw] h-[60vw] max-w-[900px] max-h-[630px] md:w-[80vw] md:h-[55vw] lg:w-[850px] lg:h-[595px] [perspective:2500px] mx-auto select-none group`}>
 
             {/* Spine Gutter (Hides sub-pixel gaps and adds realism) */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[6px] h-full bg-black/60 z-0 shadow-[0_0_10px_rgba(0,0,0,0.5)]" />
+            {/* Moved inside the motion.div to move with the book */}
 
-            <div className="relative w-full h-full [transform-style:preserve-3d]">
+            <motion.div
+                className="relative w-full h-full [transform-style:preserve-3d]"
+                initial={{ x: '-25%' }}
+                animate={{ x: spreadIndex === 0 ? '-25%' : '0%' }}
+                transition={{
+                    duration: 0.8,
+                    ease: [0.645, 0.045, 0.355, 1]
+                }}
+            >
+                {/* Spine Gutter (Now moves with the book) */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[6px] h-full bg-black/60 z-0 shadow-[0_0_10px_rgba(0,0,0,0.5)]" />
 
                 {/* === DYNAMIC SHEETS === */}
                 {/* 
@@ -226,7 +237,7 @@ export default function Guestbook() {
                     />
                 ))}
 
-            </div>
+            </motion.div>
 
             {/* Simple Instructions */}
             <div className="absolute -bottom-12 left-0 right-0 text-center">

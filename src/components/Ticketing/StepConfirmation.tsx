@@ -53,7 +53,7 @@ export function StepConfirmation({ formData, selectedTier }: StepConfirmationPro
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 font-bold">Price</span>
-                            <span className="text-sm font-bold text-charcoal">{selectedTier?.price}</span>
+                            <span className="text-sm font-bold text-charcoal">{selectedTier?.featuredPrice}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 font-bold">Booking ID</span>

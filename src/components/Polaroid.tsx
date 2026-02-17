@@ -115,10 +115,10 @@ export const Polaroid = React.memo(function Polaroid({
     const composedShadow = `${woodShadow}, ${r.embossHighlight}, ${r.embossLowlight}`;
 
     return (
-        <div className={`relative ${size} ${rotation} ${className} group`}>
+        <div className={`relative ${size} ${rotation} ${className} group [container-type:inline-size]`}>
             {/* ── THE FRAME ──────────────────────────── */}
             <div
-                className="aspect-[4/5] p-5 pb-16 relative overflow-hidden transition-all duration-700 hover:scale-[1.03] hover:rotate-0"
+                className="aspect-[4/5] p-[6%] pb-[22%] relative overflow-hidden transition-all duration-700 hover:scale-[1.03] hover:rotate-0"
                 style={{
                     backgroundColor: r.frameBg,
                     boxShadow: composedShadow,
@@ -190,10 +190,10 @@ export const Polaroid = React.memo(function Polaroid({
                 </div>
 
                 {/* Hand-written label */}
-                <div className="absolute bottom-4 left-0 right-0 text-center">
+                <div className="absolute bottom-[4%] left-0 right-0 text-center">
                     <span
                         style={{ fontFamily: 'var(--font-caveat)' }}
-                        className="text-2xl italic text-charcoal/50 block -rotate-1"
+                        className="text-[min(24px,8cqw)] italic text-charcoal/50 block -rotate-1 leading-none"
                     >
                         {label}
                     </span>

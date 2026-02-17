@@ -7,7 +7,7 @@ import { LayeredPencil } from '@/components/LayeredPencil';
 
 export default function Footer() {
     return (
-        <footer className="relative bg-[#2C3333] text-[#EBE5CE] py-16 px-8 overflow-hidden">
+        <footer className="relative bg-[#2C3333] text-[#EBE5CE] py-10 px-8 overflow-hidden">
             {/* Cedar Wood Background Overlay - Tactile Feel */}
             <div className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay"
                 style={{
@@ -21,8 +21,8 @@ export default function Footer() {
                 style={{ maxWidth: 'var(--hss-site-width)' }}
             >
                 {/* Top Row: Brand & Nav Header */}
-                <div className="flex flex-col md:flex-row justify-between items-center border-b border-[#EBE5CE]/10 pb-12 mb-12">
-                    <div className="text-center md:text-left mb-8 md:mb-0">
+                <div className="flex flex-col md:flex-row justify-between items-center border-b border-[#EBE5CE]/10 pb-8 mb-8">
+                    <div className="text-center md:text-left mb-6 md:mb-0">
                         <LayeredPencil
                             text="Hello Sunshine"
                             as="h3"
@@ -53,7 +53,7 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom Row: Details, Newsletter & Socials */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-end">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-end">
 
                     {/* Left: Mission Statement */}
                     <div className="md:col-span-4 lg:col-span-5">
@@ -111,7 +111,7 @@ export default function Footer() {
                 </div>
 
                 {/* Legal & Copyright */}
-                <div className="mt-20 pt-8 border-t border-[#EBE5CE]/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-mono tracking-widest opacity-30 uppercase">
+                <div className="mt-12 pt-6 border-t border-[#EBE5CE]/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-mono tracking-widest opacity-30 uppercase">
                     <p>© 2026 HELLO SUNSHINE SAUNA. ALL WARMTH RESERVED.</p>
                     <div className="flex gap-8">
                         <span>MADE WITH FIRE & ICE</span>

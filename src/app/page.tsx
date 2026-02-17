@@ -38,21 +38,21 @@ export default function Home() {
             {/* Left Column: Polaroid Stack (Desktop Only) */}
             <div className="hidden lg:flex lg:col-span-4 flex-col gap-12 items-center justify-center -mt-10">
               <Polaroid
-                src="/optimized/polaroids/sauna-garden.webp"
+                src="/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp"
                 label="Morning Mist"
                 rotation="rotate-[-6deg]"
                 size="w-64"
                 className="hover:z-50 transition-all"
               />
               <Polaroid
-                src="/optimized/polaroids/caravan-fire-chairs-heart.webp"
+                src="/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp"
                 label="Nightfall"
                 rotation="rotate-[4deg]"
                 size="w-64"
                 className="hover:z-50 transition-all -mt-4 translate-x-4"
               />
               <Polaroid
-                src="/optimized/polaroids/interior-fire.webp"
+                src="/optimized/polaroids/webp/sauna-interior-wood-stove-glow.webp"
                 label="The Hearth"
                 rotation="rotate-[-2deg]"
                 size="w-64"

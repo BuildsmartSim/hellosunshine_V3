@@ -4,13 +4,15 @@ import React, { useState } from 'react';
 import { colors, shadows, fonts, icons, textures, pencil } from '@/design-system/tokens';
 import { Polaroid } from '@/components/Polaroid';
 import { LayeredPencil } from '@/components/LayeredPencil';
+import { SectionHeader } from '@/components/SectionHeader';
+import { StandardSection } from '@/components/StandardSection';
 
 /* ─────────────────────────────────────────────────────
    SANCTUARY SECTION (Layout G1 - Interactive)
    
    - Left: Header + Text/Icon Split
    - Right: Cascade of 3 Photos + 1 Polaroid
-   - Interaction: "Parting Clouds" (Spread on Hover)
+   - Interaction: "Parting Clouds" (Spread on Hover) + Gallery Switch
    ───────────────────────────────────────────────────── */
 
 const SERVICES = [
@@ -20,7 +22,67 @@ const SERVICES = [
     { icon: icons.firePit, label: "Fire Pit" },
     { icon: icons.shower, label: "Shower" },
     { icon: icons.towels, label: "Towels" },
-];
+] as const;
+
+type ServiceType = typeof SERVICES[number]['label'];
+
+const SERVICE_GALLERY: Record<ServiceType | 'Default', {
+    img1: string; // Top Left
+    img2: string; // Mid Right
+    img3: string; // Bottom Left
+    polaroid: string; // Bottom Right
+    polaroidLabel: string;
+}> = {
+    'Default': {
+        img1: "/optimized/polaroids/webp/caravan-open-door-night-steps.webp",
+        img2: "/optimized/polaroids/webp/silver-chimney-rainbow-sky.webp",
+        img3: "/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp",
+        polaroid: "/optimized/polaroids/webp/hello-sign-warm-lighting-detail.webp",
+        polaroidLabel: "The Ritual"
+    },
+    'Sauna': {
+        img1: "/optimized/polaroids/webp/wood-fired-sauna-interior-benches.webp",
+        img2: "/optimized/polaroids/webp/sauna-interior-wood-stove-glow.webp",
+        img3: "/optimized/polaroids/webp/chopped-firewood-logs-texture.webp",
+        polaroid: "/optimized/photographs/webp/sauna-signage-vintage-caravan-outdoor.webp",
+        polaroidLabel: "Deep Heat"
+    },
+    'Hot Tub': {
+        img1: "/optimized/photographs/webp/happy-group-hot-tub-thumbs-up.webp",
+        img2: "/optimized/polaroids/webp/medicine-festival-hot-tub-smiles.webp",
+        img3: "/optimized/polaroids/webp/couple-smiling-in-hot-tub.webp",
+        polaroid: "/optimized/photographs/webp/sauna-campsite-sunset-rays-pool.webp",
+        polaroidLabel: "Soak"
+    },
+    'Plunge Pool': {
+        img1: "/optimized/polaroids/webp/beautifu-couple-in-cold-plunge-.webp",
+        img2: "/optimized/polaroids/webp/view-cold-plunge-sun-rise.webp",
+        img3: "/optimized/photographs/webp/sauna-exterior-silver-caravan-sunny.webp",
+        polaroid: "/optimized/photographs/webp/man-in-ice-barrel.webp",
+        polaroidLabel: "Refresh"
+    },
+    'Fire Pit': {
+        img1: "/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp",
+        img2: "/optimized/photographs/webp/caravan-camp-fire-pit-gathering.webp",
+        img3: "/optimized/photographs/webp/fire-pit-burning-logs-overhead.webp",
+        polaroid: "/optimized/polaroids/webp/camp-fire-singalong-night-gathering.webp",
+        polaroidLabel: "Gather"
+    },
+    'Shower': {
+        img1: "/optimized/polaroids/webp/outdoor-showers-reed-privacy-screen.webp",
+        img2: "/optimized/photographs/webp/golden-sun-face-sculpture.webp",
+        img3: "/optimized/polaroids/webp/caravan-metallic-detail-curve.webp",
+        polaroid: "/optimized/photographs/webp/hand-painted-sauna-sign-detail.webp",
+        polaroidLabel: "Cleanse"
+    },
+    'Towels': {
+        img1: "/optimized/polaroids/webp/tent-interior-towels-night-lamp.webp",
+        img2: "/optimized/polaroids/webp/night-spa-towels-boombox-lighting.webp",
+        img3: "/optimized/photographs/webp/sanctuary-garden-yellow-chairs-beanbags.webp",
+        polaroid: "/optimized/photographs/webp/caravan-tent-view-garlands.webp",
+        polaroidLabel: "Comfort"
+    }
+};
 
 /* ── Local Helper: Placeholder Photo ──────────────── */
 function Photo({
@@ -52,33 +114,53 @@ function Photo({
             onMouseLeave={onMouseLeave}
         >
             <div className="w-full h-full bg-charcoal/5 relative overflow-hidden border border-charcoal/5" style={{ borderRadius: "2px" }}>
-                <img src={src} alt={alt} className="w-full h-full object-cover" />
+                <img src={src} alt={alt} className="w-full h-full object-cover transition-opacity duration-500" />
             </div>
         </div>
     );
 }
 
 /* ── Local Helper: Vertical Icon Column ───────────── */
-function IconColumn({ services }: { services: typeof SERVICES }) {
+function IconColumn({ services, activeService, onServiceClick }: {
+    services: typeof SERVICES,
+    activeService: ServiceType | null,
+    onServiceClick: (service: ServiceType) => void
+}) {
     return (
         <div className="flex flex-col items-center gap-4">
-            {services.map((s) => (
-                <div key={s.label} className="flex flex-col items-center gap-1 group">
-                    <div className="w-12 h-12 flex items-center justify-center bg-charcoal/[0.04] rounded-full group-hover:bg-primary/20 transition-colors">
-                        <img src={s.icon} alt={s.label} className="w-7 h-7 object-contain opacity-60" />
-                    </div>
-                </div>
-            ))}
+            {services.map((s) => {
+                const isActive = activeService === s.label;
+                return (
+                    <button
+                        key={s.label}
+                        onClick={() => onServiceClick(s.label)}
+                        className="flex flex-col items-center gap-1 group cursor-pointer focus:outline-none transition-transform active:scale-95"
+                        title={s.label}
+                    >
+                        <div className={`w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 ${isActive
+                            ? 'bg-primary shadow-md scale-110'
+                            : 'bg-charcoal/[0.04] hover:bg-primary/20'
+                            }`}>
+                            <img
+                                src={s.icon}
+                                alt={s.label}
+                                className={`w-7 h-7 object-contain transition-all duration-300 ${isActive ? 'opacity-100 brightness-0 invert' : 'opacity-60'
+                                    }`}
+                            />
+                        </div>
+                    </button>
+                );
+            })}
         </div>
     );
 }
 
 /* ── Local Helper: Left Column Content ────────────── */
-import { SectionHeader } from '@/components/SectionHeader';
 
-/* ... */
-
-function LeftColumnContent() {
+function LeftColumnContent({ activeService, onServiceClick }: {
+    activeService: ServiceType | null,
+    onServiceClick: (service: ServiceType) => void
+}) {
     return (
         <div className="space-y-8 pt-4">
             <SectionHeader
@@ -104,17 +186,23 @@ function LeftColumnContent() {
 
                 {/* Icon Column */}
                 <div className="w-16 pt-2 pl-4 border-l border-charcoal/10">
-                    <IconColumn services={SERVICES} />
+                    <IconColumn
+                        services={SERVICES}
+                        activeService={activeService}
+                        onServiceClick={onServiceClick}
+                    />
                 </div>
             </div>
         </div>
     );
 }
 
-import { StandardSection } from '@/components/StandardSection';
-
 export default function SanctuarySection() {
     const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const [activeService, setActiveService] = useState<ServiceType | null>(null);
+
+    // Get current images based on active service
+    const currentImages = activeService ? SERVICE_GALLERY[activeService] : SERVICE_GALLERY['Default'];
 
     // Helper to get transformation based on hover state
     const getTransform = (id: string, baseTilt: string, direction: 'top-left' | 'mid-right' | 'bottom-left' | 'polaroid') => {
@@ -164,7 +252,12 @@ export default function SanctuarySection() {
     return (
         <StandardSection id="sanctuary" variant="naturalPaper">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
-                <div className="col-span-1 md:col-span-5"><LeftColumnContent /></div>
+                <div className="col-span-1 md:col-span-5">
+                    <LeftColumnContent
+                        activeService={activeService}
+                        onServiceClick={setActiveService}
+                    />
+                </div>
 
                 <div className="col-span-1 md:col-span-7 relative min-h-[500px]" onMouseLeave={() => setHoveredId(null)}>
 
@@ -174,7 +267,7 @@ export default function SanctuarySection() {
                         style={getTransform('1', '-2deg', 'top-left')}
                         onMouseEnter={() => setHoveredId('1')}
                     >
-                        <Photo src="/optimized/polaroids/door.webp" className="aspect-[4/3] w-full" alt="1. Detail Shot" />
+                        <Photo src={currentImages.img1} className="aspect-[4/3] w-full" alt="1. Detail Shot" />
                     </div>
 
                     {/* Layer 2: Middle Right */}
@@ -183,7 +276,7 @@ export default function SanctuarySection() {
                         style={getTransform('2', '1deg', 'mid-right')}
                         onMouseEnter={() => setHoveredId('2')}
                     >
-                        <Photo src="/optimized/polaroids/saunagarden.webp" className="aspect-video w-full" alt="2. Wide Landscape" />
+                        <Photo src={currentImages.img2} className="aspect-video w-full" alt="2. Wide Landscape" />
                     </div>
 
                     {/* Layer 3: Bottom Left */}
@@ -192,7 +285,7 @@ export default function SanctuarySection() {
                         style={getTransform('3', '-1deg', 'bottom-left')}
                         onMouseEnter={() => setHoveredId('3')}
                     >
-                        <Photo src="/optimized/polaroids/showers_outdoor_square.webp" className="aspect-square w-full" alt="3. Texture/Macro" />
+                        <Photo src={currentImages.img3} className="aspect-square w-full" alt="3. Texture/Macro" />
                     </div>
 
                     {/* Polaroid: Anchored Bottom Right */}
@@ -201,7 +294,13 @@ export default function SanctuarySection() {
                         style={getTransform('4', '3deg', 'polaroid')}
                         onMouseEnter={() => setHoveredId('4')}
                     >
-                        <Polaroid src="/optimized/polaroids/interior-fire.webp" label="The Ritual" rotation="rotate-0" size="w-48" forcePlaceholder={false} />
+                        <Polaroid
+                            src={currentImages.polaroid}
+                            label={currentImages.polaroidLabel}
+                            rotation="rotate-0"
+                            size="w-48"
+                            forcePlaceholder={false}
+                        />
                     </div>
 
                 </div>

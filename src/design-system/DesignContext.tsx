@@ -46,23 +46,36 @@ interface DesignContextType {
 }
 
 const DEFAULT_VALUES: DesignValues = {
-    sectionPaddingDesktop: 74,
+    sectionPaddingDesktop: 128,
     sectionPaddingMobile: 96,
     headerGapDesktop: 48,
     headerGapMobile: 32,
-    sectionOverlap: 96,
+    sectionOverlap: 48,
     headerInterlock: 0,
     headerSubtitleGap: 16,
     shadowIntensity: 1,
-    cardTilt: 1,
+    cardTilt: 2,
     primaryColor: "#F8C630",
     charcoalColor: "#2C2C2C",
-    siteWidth: 1280,
+    siteWidth: 1440,
 };
 
 const DEFAULT_STATE: DesignState = {
     global: DEFAULT_VALUES,
-    sectionOverrides: {},
+    sectionOverrides: {
+        sanctuary: {
+            sectionPaddingDesktop: 148
+        },
+        guestbook: {
+            sectionPaddingDesktop: 91,
+            sectionOverlap: 45,
+            siteWidth: 1296
+        },
+        hero: {
+            cardTilt: 0,
+            shadowIntensity: 1
+        }
+    },
     selectedSectionId: 'global',
 };
 
@@ -74,7 +87,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
 
     // Initialize from localStorage
     useEffect(() => {
-        const saved = localStorage.getItem('hss-design-state-v3');
+        const saved = localStorage.getItem('hss-design-state-v8');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
@@ -102,7 +115,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
         root.style.setProperty('--hss-site-width', `${v.siteWidth}px`);
 
         if (isLoaded) {
-            localStorage.setItem('hss-design-state-v3', JSON.stringify(state));
+            localStorage.setItem('hss-design-state-v8', JSON.stringify(state));
         }
     }, [state, isLoaded]);
 
@@ -136,7 +149,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
 
     const resetDesign = () => {
         setState(DEFAULT_STATE);
-        localStorage.removeItem('hss-design-state-v3');
+        localStorage.removeItem('hss-design-state-v8');
     };
 
     return (

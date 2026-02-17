@@ -54,23 +54,23 @@ import { useDesign } from '@/design-system/DesignContext';
 
 export default function HeroSection() {
     return (
-        <StandardSection id="hero" variant="naturalPaper">
+        <StandardSection id="hero" variant="naturalPaper" className="pt-32 md:pt-56">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-0 items-center">
 
                 {/* Photo Area (col-span-1 md:col-span-9) */}
                 <div className="col-span-1 md:col-span-9 relative mb-16 md:mb-0">
                     <LandscapePhoto
-                        src="/DSCF2335.JPG"
+                        src="/northern-retreat-sauna-exterior.jpg"
                         alt="Northern Retreat"
                         className="w-full z-10 relative"
-                        tilt="rotate(var(--card-tilt, 1.5deg))"
+                        tilt="rotate(var(--card-tilt, 2deg))"
                         shadowStyle={`0 calc(15px * var(--shadow-intensity, 1)) 30px -5px rgba(50, 43, 40, 0.45)`}
                     />
                     <div className="absolute bottom-[-10%] left-[-2%] z-20">
                         <Polaroid
-                            src="/optimized/polaroids/caravan1.webp"
+                            src="/optimized/polaroids/webp/vintage-silver-caravan-daytime-field.webp"
                             label="Timber"
-                            rotation="rotate(calc(-1 * var(--card-tilt, 1.5deg)))"
+                            rotation="rotate(calc(-1.2 * var(--card-tilt, 2deg)))"
                             size="w-56"
                             forcePlaceholder={false}
                             className="scale-110"
