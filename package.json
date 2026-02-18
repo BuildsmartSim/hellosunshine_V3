@@ -1,6 +1,6 @@
 {
   "name": "next-app",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,10 +13,16 @@
     "clean": "node -e \"const fs = require('fs'); fs.rmSync('.next', { recursive: true, force: true }); console.log('.next cache cleaned');\""
   },
   "dependencies": {
+    "@react-email/components": "^1.0.7",
+    "@supabase/supabase-js": "^2.96.0",
     "framer-motion": "^12.34.0",
+    "html2canvas": "^1.4.1",
     "next": "16.1.6",
+    "qrcode.react": "^4.2.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "resend": "^6.9.2",
+    "stripe": "^20.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
