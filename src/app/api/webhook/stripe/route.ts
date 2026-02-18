@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+
 import { headers } from 'next/headers';
 import { stripe } from '@/lib/stripe';
 import { upsertProfile } from '@/lib/ticketing';
