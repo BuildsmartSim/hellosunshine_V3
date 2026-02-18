@@ -74,9 +74,9 @@ const DEFAULT_STATE: DesignState = {
             shadowIntensity: 1
         },
         ticketing: {
-            sectionPaddingDesktop: 0,
-            sectionPaddingMobile: 0,
-            sectionOverlap: 400
+            sectionPaddingDesktop: 128,
+            sectionPaddingMobile: 96,
+            sectionOverlap: 120
         }
     },
     selectedSectionId: 'global',
