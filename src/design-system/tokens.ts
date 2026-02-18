@@ -61,8 +61,8 @@ export const fontRoles = {
     h3: { font: fonts.accent, weight: "normal" },
     subtitle: { font: fonts.handwriting, weight: "normal" },
     annotation: { font: fonts.handwriting, weight: "normal" },
-    body: { font: fonts.body, weight: "400" },
-    bodyBold: { font: fonts.body, weight: "700" },
+    body: { font: fonts.body, weight: "400", lineHeight: "1.7", letterSpacing: "0.01em" },
+    bodyBold: { font: fonts.body, weight: "700", lineHeight: "1.7", letterSpacing: "0.01em" },
     label: { font: fonts.body, weight: "700" },
 } as const;
 
@@ -121,8 +121,8 @@ export const shadows = {
     /** Photo inset bevel (recessed into paper) */
     photoInset: `inset 0 3px 8px rgba(0, 0, 0, 0.15)`,
 
-    /** Deep photo inset */
-    photoInsetDeep: `inset 0 6px 16px rgba(0, 0, 0, 0.25)`,
+    /** Deep photo inset - Softened for better paper integration */
+    photoInsetDeep: `inset 0 4px 12px rgba(0, 0, 0, 0.18)`,
 } as const;
 
 

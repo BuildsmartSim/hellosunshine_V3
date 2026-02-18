@@ -2,8 +2,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-
-
 /**
  * THE DESIGN VALUES
  * Pure visual properties that can be overridden per section.
@@ -68,13 +66,17 @@ const DEFAULT_STATE: DesignState = {
             sectionPaddingDesktop: 148
         },
         guestbook: {
-            sectionPaddingDesktop: 91,
+            sectionPaddingDesktop: 0,
             sectionOverlap: 45,
             siteWidth: 1296
         },
         hero: {
-            cardTilt: 0,
             shadowIntensity: 1
+        },
+        ticketing: {
+            sectionPaddingDesktop: 0,
+            sectionPaddingMobile: 0,
+            sectionOverlap: 400
         }
     },
     selectedSectionId: 'global',
@@ -88,7 +90,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
 
     // Initialize from localStorage
     useEffect(() => {
-        const saved = localStorage.getItem('hss-design-state-v8');
+        const saved = localStorage.getItem('hss-design-state-v9');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
@@ -116,7 +118,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
         root.style.setProperty('--hss-site-width', `${v.siteWidth}px`);
 
         if (isLoaded) {
-            localStorage.setItem('hss-design-state-v8', JSON.stringify(state));
+            localStorage.setItem('hss-design-state-v9', JSON.stringify(state));
         }
     }, [state, isLoaded]);
 
@@ -150,7 +152,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
 
     const resetDesign = () => {
         setState(DEFAULT_STATE);
-        localStorage.removeItem('hss-design-state-v8');
+        localStorage.removeItem('hss-design-state-v9');
     };
 
     return (

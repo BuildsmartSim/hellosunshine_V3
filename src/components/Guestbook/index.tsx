@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import NextImage from 'next/image';
+import { useHasMounted } from '@/design-system/MediaContext';
 
 /* ─────────────────────────────────────────────────────
    AUTHENTIC LEGACY GUESTBOOK
@@ -111,8 +112,8 @@ const FlippingSheet = ({
 
     return (
         <motion.div
-            className="absolute top-0 left-1/2 h-full origin-left [transform-style:preserve-3d] cursor-pointer"
-            style={{ width: '50.5%' }} // Pivot at exactly 50% center
+            className="absolute inset-y-0 left-1/2 origin-left [transform-style:preserve-3d] cursor-pointer"
+            style={{ width: '50.5%' }}
             initial={false}
             animate={{ rotateY: isFlipped ? -180 : 0, zIndex }}
             transition={{
@@ -121,7 +122,7 @@ const FlippingSheet = ({
                 zIndex: { delay: zIndexDelay }
             }}
         >
-            {/* FRONT FACE (Right Side) - Click to Flip NEXT (Left) */}
+            {/* FRONT FACE (Right Side) */}
             <div
                 className={`absolute inset-0 [backface-visibility:hidden] overflow-hidden shadow-md flex items-center justify-center ${sheet.type === 'cover' ? 'rounded-r-md' : 'bg-[#F3EFE6]'}`}
                 onClick={(e) => { e.stopPropagation(); onFlipNext(); }}
@@ -191,7 +192,12 @@ const FlippingSheet = ({
 };
 
 export default function Guestbook() {
+    const hasMounted = useHasMounted();
     const [spreadIndex, setSpreadIndex] = useState(0);
+
+    if (!hasMounted) return (
+        <div className="relative w-[90vw] h-[60vw] max-w-[900px] max-h-[630px] md:w-[80vw] md:h-[55vw] lg:w-[850px] lg:h-[595px] mx-auto bg-charcoal/5 animate-pulse rounded-lg" />
+    );
 
     const handleNext = () => {
         if (spreadIndex < SHEETS.length) setSpreadIndex(spreadIndex + 1);
@@ -209,8 +215,8 @@ export default function Guestbook() {
 
             <motion.div
                 className="relative w-full h-full [transform-style:preserve-3d]"
-                initial={{ x: '-25%' }}
-                animate={{ x: spreadIndex === 0 ? '-25%' : '0%' }}
+                initial={{ x: '-40%' }}
+                animate={{ x: spreadIndex === 0 ? '-40%' : '0%' }}
                 transition={{
                     duration: 0.8,
                     ease: [0.645, 0.045, 0.355, 1]

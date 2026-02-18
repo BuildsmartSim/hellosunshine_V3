@@ -58,7 +58,7 @@ export function SectionHeader({ line1, line2 = "", subtitle, description, classN
 
             {(subtitle || description) && (
                 <div
-                    className="flex flex-col border-t border-charcoal/10 pt-8"
+                    className="flex flex-col border-t border-charcoal/10 pt-4"
                     style={{ gap: 'calc(var(--hss-header-subtitle-gap, 16px) * 1.5)' }}
                 >
                     {subtitle && (

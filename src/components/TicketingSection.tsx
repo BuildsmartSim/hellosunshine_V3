@@ -4,14 +4,19 @@ import React from 'react';
 import Link from 'next/link';
 import { SectionHeader } from '@/components/SectionHeader';
 import { StandardSection } from '@/components/StandardSection';
-import { FestivalPass, FESTIVAL_DATA } from '@/components/Ticketing/FestivalPass';
+import { FestivalPass } from '@/components/Ticketing/FestivalPass';
+import { FESTIVAL_DATA } from '@/data/festivals';
+import { useHasMounted } from '@/design-system/MediaContext';
 
 export default function TicketingSection() {
+    const hasMounted = useHasMounted();
+
+    if (!hasMounted) return null;
+
     return (
         <StandardSection id="ticketing" variant="naturalPaper" showOverlap={true}>
-            <div className="grid grid-cols-1 md:grid-cols-12" style={{ marginBottom: 'var(--hss-header-gap-desktop, 48px)' }}>
-                <div className="hidden md:block md:col-span-1 border-r border-charcoal/10 h-32 opacity-40 mr-12" style={{ filter: 'url(#hand-drawn)' }}></div>
-                <div className="col-span-1 md:col-span-11">
+            <div className="grid grid-cols-1 md:grid-cols-12 mb-8 md:mb-12">
+                <div className="col-span-12">
                     <SectionHeader
                         line1="Festival"
                         line2="Season"

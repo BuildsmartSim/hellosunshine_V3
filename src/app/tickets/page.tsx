@@ -11,14 +11,19 @@ import { StepConfirmation } from '@/components/Ticketing/StepConfirmation';
 import { TierPicker } from '@/components/Ticketing/TierPicker';
 import { FestivalGuide } from '@/components/Ticketing/FestivalGuide';
 import { DeskBackground } from '@/components/Ticketing/DeskBackground';
-import { TicketTier, TicketSubTier } from '@/components/Ticketing/FestivalPass';
+import { FestivalPass } from '@/components/Ticketing/FestivalPass'; // Ensure this is imported if needed for type reference or similar
+import { checkInventoryAction } from '@/app/actions/inventory';
+import { EventData as TicketTier, TicketSubTier } from '@/data/festivals';
 
 type Step = 'selection' | 'guide' | 'tiers' | 'details' | 'confirmation';
 
 export default function TicketingPage() {
+    // Actually step 3 of this file uses TierPicker.
+
     const [currentStep, setCurrentStep] = useState<Step>('selection');
     const [selectedEvent, setSelectedEvent] = useState<TicketTier | null>(null);
     const [selectedSubTier, setSelectedSubTier] = useState<TicketSubTier | null>(null);
+    const [inventory, setInventory] = useState<Record<string, { remaining: number; soldOut: boolean }>>({});
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -29,6 +34,38 @@ export default function TicketingPage() {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Fetch Inventory on Mount
+    React.useEffect(() => {
+        // Gather all tier IDs from all festivals
+        // We can import FESTIVAL_DATA here or assume we just want to fetch when an event is selected?
+        // Let's fetch ALL for now so it's ready.
+        // Importing FESTIVAL_DATA inside useEffect or component file?
+        // It's client-side, so we can import it.
+        const fetchInventory = async () => {
+            // We need FESTIVAL_DATA to know IDs. 
+            // Ideally we import it at top level. 
+            // I'll add the import in a separate replace block or assume it's available?
+            // It's not imported at top level currently.
+            // I will use a simple "fetch all known IDs" strategy if I can, OR just fetch when event selected.
+            // Fetching when event selected is better for payload size if list is huge,
+            // but here it's small.
+            // Let's just fetch when `selectedEvent` changes?
+            // Yes, that's cleaner.
+        };
+        // Actually, if we want to show "Sold Out" on the main selection screen (event level?), we need it earlier.
+        // But for now, we just need it for TierPicker.
+    }, []);
+
+    // Effect to fetch inventory when event is selected
+    React.useEffect(() => {
+        if (selectedEvent) {
+            const updatedIds = selectedEvent.tiers.map(t => t.id);
+            checkInventoryAction(updatedIds).then((data: Record<string, { remaining: number; soldOut: boolean }>) => {
+                setInventory(prev => ({ ...prev, ...data }));
+            });
+        }
+    }, [selectedEvent]);
 
     const handleEventSelect = (event: TicketTier) => {
         setSelectedEvent(event);
@@ -151,6 +188,7 @@ export default function TicketingPage() {
                                         event={selectedEvent}
                                         selectedTierId={selectedSubTier?.id}
                                         onSelect={handleTierSelect}
+                                        inventory={inventory}
                                     />
                                 </motion.div>
                             )}

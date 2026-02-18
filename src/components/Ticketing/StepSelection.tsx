@@ -3,7 +3,8 @@
 import React from 'react';
 
 
-import { FESTIVAL_DATA, FestivalPass, TicketTier } from './FestivalPass';
+import { FestivalPass, TicketTier } from './FestivalPass';
+import { FESTIVAL_DATA } from '@/data/festivals';
 import { SectionHeader } from '@/components/SectionHeader';
 
 interface StepSelectionProps {

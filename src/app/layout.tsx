@@ -69,6 +69,9 @@ export const metadata: Metadata = {
 
 import { DesignProvider } from "@/design-system/DesignContext";
 
+import { MediaProvider } from "@/design-system/MediaContext";
+import { MediaViewer } from "@/components/MediaViewer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -80,12 +83,14 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
       </head>
       <body
-        className={`${playfair.variable} ${dmSans.variable} ${caveat.variable} ${chicle.variable} ${cormorantGaramond.variable} ${fraunces.variable} ${plexMono.variable} ${lora.variable} ${handlee.variable} ${patrickHand.variable} antialiased font-body bg-background-light dark:bg-background-dark text-black dark:text-wood-light transition-colors duration-500 overflow-x-hidden`}
+        className={`${dmSans.variable} ${chicle.variable} ${caveat.variable} antialiased`}
       >
         <DesignProvider>
-          {children}
+          <MediaProvider>
+            {children}
+            <MediaViewer />
+          </MediaProvider>
         </DesignProvider>
-        <GlobalFilters />
       </body>
     </html>
   );

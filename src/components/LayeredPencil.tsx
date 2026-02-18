@@ -73,7 +73,7 @@ export function LayeredPencil({
                     fontSize: size,
                     lineHeight: '1.1',
                     gridArea: '1/1',
-                    WebkitTextStroke: `${strokeWidth} ${strokeColor}`,
+                    WebkitTextStroke: `calc(${strokeWidth} * var(--hss-stroke-scale, 1)) ${strokeColor}`,
                     opacity: parseFloat(strokeOpacity),
                     filter: 'url(#hand-drawn)',
                     display: 'block',
@@ -82,6 +82,16 @@ export function LayeredPencil({
             >
                 {text}
             </Tag>
+            <style jsx>{`
+                div {
+                    --hss-stroke-scale: 0.75;
+                }
+                @media (min-width: 768px) {
+                    div {
+                        --hss-stroke-scale: 1;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

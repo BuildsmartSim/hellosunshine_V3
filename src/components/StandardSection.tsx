@@ -11,6 +11,8 @@ interface StandardSectionProps {
     id?: string;
     showOverlap?: boolean;
     containerSize?: 'max-w-7xl' | 'max-w-6xl' | 'max-w-5xl' | 'full';
+    containerPadding?: string;
+    overflowVisible?: boolean;
 }
 
 /**
@@ -28,7 +30,9 @@ export function StandardSection({
     className = "",
     id,
     showOverlap = false,
-    containerSize = 'max-w-7xl'
+    containerSize = 'max-w-7xl',
+    containerPadding = 'px-6',
+    overflowVisible = false
 }: StandardSectionProps) {
     const { getEffectiveDesign } = useDesign();
     const local = getEffectiveDesign(id);
@@ -53,7 +57,7 @@ export function StandardSection({
     return (
         <section
             id={id}
-            className={`relative overflow-hidden ${config.isDark ? 'text-white' : 'text-charcoal'} ${className}`}
+            className={`relative ${overflowVisible ? '' : 'overflow-hidden'} ${config.isDark ? 'text-white' : 'text-charcoal'} ${className}`}
             style={sectionStyle}
         >
             <style jsx>{`
@@ -78,7 +82,7 @@ export function StandardSection({
 
             {/* Content Container */}
             <div
-                className={`mx-auto px-6 relative z-10 ${containerSize === 'full' ? 'w-full' : ''}`}
+                className={`mx-auto ${containerPadding} relative z-10 ${containerSize === 'full' ? 'w-full' : ''}`}
                 style={{ maxWidth: containerSize === 'full' ? 'none' : 'var(--hss-site-width)' }}
             >
                 {children}

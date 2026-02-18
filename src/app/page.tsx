@@ -67,8 +67,8 @@ export default function Home() {
                 className="mb-16"
               />
 
-              <div className="relative w-full py-8 md:py-12 flex justify-center lg:justify-start">
-                <div className="w-full">
+              <div className="relative w-full flex justify-center">
+                <div className="w-full" style={{ transform: 'rotate(-2deg)' }}>
                   <Guestbook />
                 </div>
               </div>

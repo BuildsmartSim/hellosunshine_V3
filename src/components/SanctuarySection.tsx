@@ -38,21 +38,21 @@ const SERVICE_GALLERY: Record<ServiceType | 'Default', {
         img2: "/optimized/polaroids/webp/silver-chimney-rainbow-sky.webp",
         img3: "/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp",
         polaroid: "/optimized/polaroids/webp/hello-sign-warm-lighting-detail.webp",
-        polaroidLabel: "The Ritual"
+        polaroidLabel: "Come on in..."
     },
     'Sauna': {
         img1: "/optimized/polaroids/webp/wood-fired-sauna-interior-benches.webp",
         img2: "/optimized/polaroids/webp/sauna-interior-wood-stove-glow.webp",
         img3: "/optimized/polaroids/webp/chopped-firewood-logs-texture.webp",
         polaroid: "/optimized/photographs/webp/sauna-signage-vintage-caravan-outdoor.webp",
-        polaroidLabel: "Deep Heat"
+        polaroidLabel: "The sign says it all."
     },
     'Hot Tub': {
         img1: "/optimized/photographs/webp/happy-group-hot-tub-thumbs-up.webp",
         img2: "/optimized/polaroids/webp/medicine-festival-hot-tub-smiles.webp",
         img3: "/optimized/polaroids/webp/couple-smiling-in-hot-tub.webp",
         polaroid: "/optimized/photographs/webp/sauna-campsite-sunset-rays-pool.webp",
-        polaroidLabel: "Soak"
+        polaroidLabel: "Sunset soak"
     },
     'Plunge Pool': {
         img1: "/optimized/polaroids/webp/beautifu-couple-in-cold-plunge-.webp",
@@ -66,23 +66,26 @@ const SERVICE_GALLERY: Record<ServiceType | 'Default', {
         img2: "/optimized/photographs/webp/caravan-camp-fire-pit-gathering.webp",
         img3: "/optimized/photographs/webp/fire-pit-burning-logs-overhead.webp",
         polaroid: "/optimized/polaroids/webp/camp-fire-singalong-night-gathering.webp",
-        polaroidLabel: "Gather"
+        polaroidLabel: "Singalongs & Starlight"
     },
     'Shower': {
         img1: "/optimized/polaroids/webp/outdoor-showers-reed-privacy-screen.webp",
         img2: "/optimized/photographs/webp/golden-sun-face-sculpture.webp",
         img3: "/optimized/polaroids/webp/caravan-metallic-detail-curve.webp",
         polaroid: "/optimized/photographs/webp/hand-painted-sauna-sign-detail.webp",
-        polaroidLabel: "Cleanse"
+        polaroidLabel: "Art of the Sauna"
     },
     'Towels': {
         img1: "/optimized/polaroids/webp/tent-interior-towels-night-lamp.webp",
         img2: "/optimized/polaroids/webp/night-spa-towels-boombox-lighting.webp",
         img3: "/optimized/photographs/webp/sanctuary-garden-yellow-chairs-beanbags.webp",
         polaroid: "/optimized/photographs/webp/caravan-tent-view-garlands.webp",
-        polaroidLabel: "Comfort"
+        polaroidLabel: "Garlands & Good vibes"
     }
 };
+
+import { motion } from 'framer-motion';
+import { useMedia, useHasMounted } from '@/design-system/MediaContext';
 
 /* ── Local Helper: Placeholder Photo ──────────────── */
 function Photo({
@@ -91,7 +94,9 @@ function Photo({
     className = "",
     alt = "Photo Context",
     onMouseEnter,
-    onMouseLeave
+    onMouseLeave,
+    id,
+    aspect = 'aspect-square'
 }: {
     src: string;
     tilt?: string;
@@ -99,23 +104,55 @@ function Photo({
     alt?: string;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
+    id: string;
+    aspect?: string;
 }) {
+    const { openMedia, activeMedia, isTransitioning } = useMedia();
+
+    const isActive = activeMedia?.id === id;
+    const isShowingGhost = isActive || (isTransitioning && !activeMedia);
+
     return (
         <div
-            className={`relative overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] ${className}`}
-            style={{
-                padding: "12px",
-                background: "#fff",
-                borderRadius: "4px",
-                boxShadow: shadows.photo,
-                transform: `rotate(${tilt})`
-            }}
+            className={`relative overflow-hidden ${className}`}
+            style={{ transform: `rotate(${tilt})` }}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
         >
-            <div className="w-full h-full bg-charcoal/5 relative overflow-hidden border border-charcoal/5" style={{ borderRadius: "2px" }}>
-                <Image src={src} alt={alt} fill className="object-cover transition-opacity duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
-            </div>
+            {/* ── THE GHOST (BASE LAYER) ──────────────────── */}
+            {(isActive || isShowingGhost) && (
+                <div
+                    className="absolute inset-0 z-0 opacity-10 grayscale scale-[0.99] border border-charcoal/5 pointer-events-none"
+                    style={{ background: '#fff', padding: '12px', borderRadius: '4px' }}
+                >
+                    <div className="w-full h-full bg-charcoal/5" style={{ borderRadius: '2px' }} />
+                </div>
+            )}
+
+            {/* ── THE REAL PIECE (SHARED ELEMENT) ────────── */}
+            <motion.div
+                layoutId={id}
+                onClick={() => openMedia({
+                    src,
+                    label: alt,
+                    id,
+                    aspect,
+                    padding: '12px',
+                    borderRadius: '4px'
+                })}
+                className={`relative z-10 w-full h-full cursor-zoom-in ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                style={{
+                    padding: "12px",
+                    background: "#fff",
+                    borderRadius: "4px",
+                    boxShadow: shadows.photo,
+                    visibility: isActive ? 'hidden' : 'visible'
+                }}
+            >
+                <div className="w-full h-full bg-charcoal/5 relative overflow-hidden border border-charcoal/5" style={{ borderRadius: "2px" }}>
+                    <Image src={src} alt={alt} fill className="object-cover transition-opacity duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
+                </div>
+            </motion.div>
         </div>
     );
 }
@@ -178,10 +215,10 @@ function LeftColumnContent({ activeService, onServiceClick }: {
                         A garden of elemental rituals.
                     </p>
                     <div className="h-[2px] w-12 bg-primary"></div>
-                    <p className="text-sm leading-7 text-[#2C2C2C] font-body text-justify">
+                    <p className="text-sm leading-relaxed tracking-wide text-[#2C2C2C] font-body text-justify">
                         Safely ensconced within the privacy fencing, sauna guests are liberated to pursue their sauna rituals as comfortably as they feel, whether they be naked or wearing a bathing suit, all are welcome & there is no judgement.
                     </p>
-                    <p className="text-sm leading-7 text-[#2C2C2C] font-body text-justify">
+                    <p className="text-sm leading-relaxed tracking-wide text-[#2C2C2C] font-body text-justify">
                         We are focused that the plunge pool is full of icy cold water, the showers have strong water pressure, the changing tent is clean and dry, the firebowl is roaring, and there is plenty of filtered drinking water for all guests.
                     </p>
                 </div>
@@ -200,8 +237,11 @@ function LeftColumnContent({ activeService, onServiceClick }: {
 }
 
 export default function SanctuarySection() {
+    const hasMounted = useHasMounted();
     const [hoveredId, setHoveredId] = useState<string | null>(null);
     const [activeService, setActiveService] = useState<ServiceType | null>(null);
+
+    if (!hasMounted) return null;
 
     // Get current images based on active service
     const currentImages = activeService ? SERVICE_GALLERY[activeService] : SERVICE_GALLERY['Default'];
@@ -252,7 +292,7 @@ export default function SanctuarySection() {
     };
 
     return (
-        <StandardSection id="sanctuary" variant="naturalPaper">
+        <StandardSection id="sanctuary" variant="naturalPaper" className="relative z-10" overflowVisible={true}>
             <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
                 <div className="col-span-1 md:col-span-5">
                     <LeftColumnContent
@@ -269,7 +309,7 @@ export default function SanctuarySection() {
                         style={getTransform('1', '-2deg', 'top-left')}
                         onMouseEnter={() => setHoveredId('1')}
                     >
-                        <Photo src={currentImages.img1} className="aspect-[4/3] w-full" alt="1. Detail Shot" />
+                        <Photo id="sanctuary-1" src={currentImages.img1} className="aspect-[4/3] w-full" aspect="aspect-[4/3]" alt={activeService === 'Sauna' ? "Inner warmth" : activeService === 'Hot Tub' ? "Thumbs up for the steam!" : activeService === 'Plunge Pool' ? "Chilling Together" : activeService === 'Fire Pit' ? "Heart of the garden" : activeService === 'Shower' ? "Secret showers" : activeService === 'Towels' ? "Cosy tent nights" : "The Welcome Glow"} />
                     </div>
 
                     {/* Layer 2: Middle Right */}
@@ -278,7 +318,7 @@ export default function SanctuarySection() {
                         style={getTransform('2', '1deg', 'mid-right')}
                         onMouseEnter={() => setHoveredId('2')}
                     >
-                        <Photo src={currentImages.img2} className="aspect-video w-full" alt="2. Wide Landscape" />
+                        <Photo id="sanctuary-2" src={currentImages.img2} className="aspect-video w-full" aspect="aspect-video" alt={activeService === 'Sauna' ? "The heart of the heat" : activeService === 'Hot Tub' ? "Festival vibes" : activeService === 'Plunge Pool' ? "Cold plunge at dawn" : activeService === 'Fire Pit' ? "Gather round the fire" : activeService === 'Shower' ? "The smiling sun" : activeService === 'Towels' ? "Spa prep at dusk" : "Come on in..."} />
                     </div>
 
                     {/* Layer 3: Bottom Left */}
@@ -287,7 +327,7 @@ export default function SanctuarySection() {
                         style={getTransform('3', '-1deg', 'bottom-left')}
                         onMouseEnter={() => setHoveredId('3')}
                     >
-                        <Photo src={currentImages.img3} className="aspect-square w-full" alt="3. Texture/Macro" />
+                        <Photo id="sanctuary-3" src={currentImages.img3} className="aspect-square w-full" aspect="aspect-square" alt={activeService === 'Sauna' ? "Stack 'em high" : activeService === 'Hot Tub' ? "Just the two of us" : activeService === 'Plunge Pool' ? "Sunny sanctuary" : activeService === 'Fire Pit' ? "Dancing flames" : activeService === 'Shower' ? "Sleek curves" : activeService === 'Towels' ? "Bask in the yellow" : "Rainbow over the sauna"} />
                     </div>
 
                     {/* Polaroid: Anchored Bottom Right */}

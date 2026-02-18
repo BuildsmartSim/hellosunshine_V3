@@ -4,8 +4,12 @@ import React from 'react';
 import Image from 'next/image';
 import { textures, icons, pencil } from '@/design-system/tokens';
 import { LayeredPencil } from '@/components/LayeredPencil';
+import { useHasMounted } from '@/design-system/MediaContext';
 
 export default function Footer() {
+    const hasMounted = useHasMounted();
+
+    if (!hasMounted) return null;
     return (
         <footer className="relative bg-[#2C3333] text-[#EBE5CE] py-10 px-8 overflow-hidden">
             {/* Cedar Wood Background Overlay - Tactile Feel */}
@@ -38,7 +42,7 @@ export default function Footer() {
                         </p>
                     </div>
 
-                    <nav className="flex flex-wrap justify-center gap-8 md:gap-12 font-body text-[11px] font-bold uppercase tracking-[0.4em]">
+                    <nav className="flex flex-wrap justify-center gap-8 md:gap-12 font-body text-[13px] font-bold uppercase tracking-[0.4em]">
                         {['Sauna', 'Experience', 'Story', 'Journal'].map((item) => (
                             <a
                                 key={item}
@@ -57,7 +61,7 @@ export default function Footer() {
 
                     {/* Left: Mission Statement */}
                     <div className="md:col-span-4 lg:col-span-5">
-                        <p className="font-body text-lg opacity-60 leading-relaxed max-w-md">
+                        <p className="font-body text-lg opacity-80 leading-relaxed max-w-md">
                             Based in the hills, moving with the seasons. We craft spaces of deep restoration
                             and wood-fired heat. Finding the wild in the warmth since 2019.
                         </p>
@@ -98,9 +102,8 @@ export default function Footer() {
                         </span>
                         <div className="flex w-full max-w-xs items-center border-b-2 border-[#EBE5CE]/30 hover:border-[#F8C630] transition-colors pb-2">
                             <input
-                                type="email"
                                 placeholder="E-mail address"
-                                className="bg-transparent border-none outline-none flex-1 text-sm font-body italic placeholder:opacity-30"
+                                className="bg-transparent border-none outline-none flex-1 text-sm font-body italic placeholder:opacity-60"
                             />
                             <button className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#F8C630] hover:translate-x-1 transition-transform">
                                 JOIN
