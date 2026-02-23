@@ -50,36 +50,36 @@ const SERVICE_GALLERY: Record<ServiceType | 'Default', {
     'Hot Tub': {
         img1: "/optimized/photographs/webp/happy-group-hot-tub-thumbs-up.webp",
         img2: "/optimized/polaroids/webp/medicine-festival-hot-tub-smiles.webp",
-        img3: "/optimized/polaroids/webp/couple-smiling-in-hot-tub.webp",
-        polaroid: "/optimized/photographs/webp/sauna-campsite-sunset-rays-pool.webp",
+        img3: "/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp",
+        polaroid: "/optimized/polaroids/webp/vintage-silver-caravan-daytime-field.webp",
         polaroidLabel: "Sunset soak"
     },
     'Plunge Pool': {
-        img1: "/optimized/polaroids/webp/beautifu-couple-in-cold-plunge-.webp",
-        img2: "/optimized/polaroids/webp/view-cold-plunge-sun-rise.webp",
-        img3: "/optimized/photographs/webp/sauna-exterior-silver-caravan-sunny.webp",
-        polaroid: "/optimized/photographs/webp/man-in-ice-barrel.webp",
+        img1: "/optimized/photographs/webp/sun-grass-nude.webp",
+        img2: "/optimized/polaroids/webp/5-1.webp",
+        img3: "/optimized/polaroids/webp/sun-grass-caravan.webp",
+        polaroid: "/optimized/polaroids/webp/0b1a91d1-9593-4683-a883-cb6518e4ac33.webp",
         polaroidLabel: "Refresh"
     },
     'Fire Pit': {
         img1: "/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp",
         img2: "/optimized/photographs/webp/caravan-camp-fire-pit-gathering.webp",
-        img3: "/optimized/photographs/webp/fire-pit-burning-logs-overhead.webp",
-        polaroid: "/optimized/polaroids/webp/camp-fire-singalong-night-gathering.webp",
+        img3: "/optimized/polaroids/webp/caravan-fire-chairs-heart.webp",
+        polaroid: "/optimized/photographs/webp/caravan-camp-fire-pit-gathering.webp",
         polaroidLabel: "Singalongs & Starlight"
     },
     'Shower': {
-        img1: "/optimized/polaroids/webp/outdoor-showers-reed-privacy-screen.webp",
-        img2: "/optimized/photographs/webp/golden-sun-face-sculpture.webp",
+        img1: "/optimized/polaroids/webp/showers_outdoor_square.webp",
+        img2: "/optimized/polaroids/webp/collection-of-golden-abstract-sun-logo-free-vector.webp",
         img3: "/optimized/polaroids/webp/caravan-metallic-detail-curve.webp",
-        polaroid: "/optimized/photographs/webp/hand-painted-sauna-sign-detail.webp",
+        polaroid: "/optimized/polaroids/webp/hello-sign-warm-lighting-detail.webp",
         polaroidLabel: "Art of the Sauna"
     },
     'Towels': {
-        img1: "/optimized/polaroids/webp/tent-interior-towels-night-lamp.webp",
-        img2: "/optimized/polaroids/webp/night-spa-towels-boombox-lighting.webp",
-        img3: "/optimized/photographs/webp/sanctuary-garden-yellow-chairs-beanbags.webp",
-        polaroid: "/optimized/photographs/webp/caravan-tent-view-garlands.webp",
+        img1: "/optimized/polaroids/webp/caravan-interior-night-square.webp",
+        img2: "/optimized/polaroids/webp/showers_outdoor_square.webp",
+        img3: "/optimized/polaroids/webp/sun-grass-caravan.webp",
+        polaroid: "/optimized/polaroids/webp/caravan-garden-people.webp",
         polaroidLabel: "Garlands & Good vibes"
     }
 };

@@ -39,6 +39,20 @@ export async function POST(req: Request) {
                 waiver_accepted_at: metadata.waiver_accepted_at,
             });
 
+            // 1.5 Handle Ambassador/Referral Code
+            let ambassadorId = null;
+            if (metadata.referral_code) {
+                const { data: ambassador } = await supabaseAdmin
+                    .from('ambassadors')
+                    .select('id')
+                    .eq('referral_code', metadata.referral_code)
+                    .single();
+
+                if (ambassador) {
+                    ambassadorId = ambassador.id;
+                }
+            }
+
             // 2. Create Ticket
             const { data: ticket, error: ticketError } = await supabaseAdmin
                 .from('tickets')
@@ -46,7 +60,8 @@ export async function POST(req: Request) {
                     profile_id: profile.id,
                     slot_id: session.metadata.slot_id || null,
                     stripe_session_id: session.id,
-                    status: 'active'
+                    status: 'active',
+                    ambassador_id: ambassadorId
                 })
                 .select()
                 .single();

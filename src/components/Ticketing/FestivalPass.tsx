@@ -49,11 +49,13 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
                 <div className="absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none" style={{ backgroundImage: `url('${textures.pencilGrain}')`, backgroundSize: '300px' }}></div>
 
                 {/* 3. LAYER: Watermark (Subtle) */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                    <div className="relative w-[130%] h-[130%] opacity-[0.05] mix-blend-multiply transition-transform duration-1000 group-hover:scale-110">
-                        <Image src={data.logoSrc} alt="" fill className="object-contain filter grayscale" />
+                {data.logoSrc && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+                        <div className="relative w-[130%] h-[130%] opacity-[0.05] mix-blend-multiply transition-transform duration-1000 group-hover:scale-110">
+                            <Image src={data.logoSrc} alt="" fill className="object-contain filter grayscale" />
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* 4. LAYER: CONTENT */}
                 <div className="h-12 bg-charcoal/90 flex items-center justify-center relative shrink-0 z-30">
@@ -99,11 +101,15 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
 
                     {/* Service Icons Strip */}
                     <div className="flex gap-2 mb-4 mt-4 overflow-x-auto overflow-y-hidden no-scrollbar border-t border-charcoal/5 pt-4">
-                        {data.services.map((s, i) => (
-                            <div key={i} className="relative w-6 h-6 shrink-0 opacity-40 group-hover:opacity-100 transition-all filter grayscale hover:grayscale-0 group-hover:scale-110" title={s}>
-                                <Image src={SERVICE_ICONS[s]} alt={s} fill className="object-contain" />
-                            </div>
-                        ))}
+                        {data.services?.map((s, i) => {
+                            const iconSrc = SERVICE_ICONS[s];
+                            if (!iconSrc) return null;
+                            return (
+                                <div key={i} className="relative w-6 h-6 shrink-0 opacity-40 group-hover:opacity-100 transition-all filter grayscale hover:grayscale-0 group-hover:scale-110" title={s}>
+                                    <Image src={iconSrc} alt={s} fill className="object-contain" />
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <div className="mt-auto pt-4 flex justify-between items-end">

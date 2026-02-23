@@ -10,11 +10,11 @@ import Footer from "@/components/Footer";
 import { Polaroid } from "@/components/Polaroid";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StandardSection } from "@/components/StandardSection";
+import { useDesign } from "@/design-system/DesignContext";
 
 
 export default function Home() {
-
-
+  const { state } = useDesign();
 
   return (
     <div className="min-h-screen bg-[#FDFCF9]">

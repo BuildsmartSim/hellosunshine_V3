@@ -71,6 +71,8 @@ import { DesignProvider } from "@/design-system/DesignContext";
 
 import { MediaProvider } from "@/design-system/MediaContext";
 import { MediaViewer } from "@/components/MediaViewer";
+import { ReferralTracker } from "@/components/ReferralTracker";
+import { Suspense } from "react";
 
 export default function RootLayout({
   children,
@@ -87,6 +89,9 @@ export default function RootLayout({
       >
         <DesignProvider>
           <MediaProvider>
+            <Suspense fallback={null}>
+              <ReferralTracker />
+            </Suspense>
             {children}
             <MediaViewer />
           </MediaProvider>

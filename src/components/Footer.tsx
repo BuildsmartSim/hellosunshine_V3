@@ -37,7 +37,7 @@ export default function Footer() {
                             blendClass="pencil-blend-screen"
                             className="mb-2"
                         />
-                        <p className="font-handwriting text-2xl text-[#EBE5CE]/60 -rotate-1">
+                        <p className="text-2xl text-[#EBE5CE]/60 -rotate-1" style={{ fontFamily: 'var(--font-caveat)' }}>
                             Hand-built stories in steam.
                         </p>
                     </div>
@@ -95,8 +95,7 @@ export default function Footer() {
                     {/* Right: Newsletter Sign-up */}
                     <div className="md:col-span-5 lg:col-span-5 flex flex-col items-center md:items-end">
                         <span
-                            style={{ fontFamily: 'var(--font-fraunces)' }}
-                            className="text-3xl font-bold mb-4"
+                            className="text-4xl tracking-wide text-[#EBE5CE]/90 mb-4" style={{ fontFamily: 'var(--font-chicle)' }}
                         >
                             Get the warmth.
                         </span>
@@ -116,9 +115,10 @@ export default function Footer() {
                 {/* Legal & Copyright */}
                 <div className="mt-12 pt-6 border-t border-[#EBE5CE]/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-mono tracking-widest opacity-30 uppercase">
                     <p>© 2026 HELLO SUNSHINE SAUNA. ALL WARMTH RESERVED.</p>
-                    <div className="flex gap-8">
+                    <div className="flex gap-8 items-center cursor-default">
                         <span>MADE WITH FIRE & ICE</span>
                         <span>ANTIGRAVITY</span>
+                        <a href="/admin" className="hover:text-[#F8C630] transition-colors cursor-pointer">ADMIN</a>
                     </div>
                 </div>
             </div>

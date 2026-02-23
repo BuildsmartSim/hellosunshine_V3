@@ -57,6 +57,9 @@ export default function Header() {
                         <span className="text-[11px] font-mono tracking-[0.3em] text-charcoal opacity-60 uppercase font-bold">
                             Est. 2019
                         </span>
+                        <span className="text-sm md:text-base text-charcoal/80 mt-0.5 -rotate-2 origin-left" style={{ fontFamily: 'var(--font-caveat)' }}>
+                            UK's number 1 sauna sanctuary
+                        </span>
                     </div>
                 </div>
 
@@ -70,21 +73,29 @@ export default function Header() {
                     ))}
                 </nav>
 
-                {/* Right: Contact & Action (Large Icons) */}
-                <div className="flex items-center gap-3 md:gap-6">
-                    <div className="hidden sm:flex items-center gap-2 md:gap-3">
-                        <button className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-charcoal/10 flex items-center justify-center hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group bg-white/40">
-                            <Image src={icons.phone} alt="Phone" width={18} height={18} className="md:w-[20px] md:h-[20px] opacity-80 group-hover:opacity-100 transition-opacity" />
-                        </button>
-                        <button className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-charcoal/10 flex items-center justify-center hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group bg-white/40">
-                            <Image src={icons.mail} alt="Email" width={18} height={18} className="md:w-[20px] md:h-[20px] opacity-80 group-hover:opacity-100 transition-opacity" />
-                        </button>
-                    </div>
-                    <Link href="/tickets">
-                        <button className="bg-charcoal text-white px-6 md:px-8 py-3 md:py-4 rounded-full text-[12px] font-bold uppercase tracking-[0.2em] hover:bg-primary hover:text-charcoal transition-all shadow-xl border border-white/10 active:scale-95 whitespace-nowrap">
-                            Join the Warmth
-                        </button>
-                    </Link>
+                {/* Right: Social Icons matched to Footer */}
+                <div className="flex items-center gap-2 md:gap-3">
+                    {[
+                        { icon: icons.instagram, label: 'IG', href: '#' },
+                        { icon: icons.facebook, label: 'FB', href: '#' },
+                        { icon: icons.mail, label: 'Mail', href: '#' }
+                    ].map((social, i) => (
+                        <a
+                            key={i}
+                            href={social.href}
+                            className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 rounded-full border border-charcoal/10 flex items-center justify-center hover:bg-white hover:border-primary hover:scale-110 hover:-translate-y-1 transition-all duration-300 group shadow-sm bg-white/40 relative"
+                            aria-label={social.label}
+                        >
+                            <div className="relative w-[16px] h-[16px] md:w-[20px] md:h-[20px]">
+                                <Image
+                                    src={social.icon}
+                                    alt={social.label}
+                                    fill
+                                    className="object-contain opacity-70 group-hover:opacity-100 transition-opacity"
+                                />
+                            </div>
+                        </a>
+                    ))}
                 </div>
             </div>
         </header>

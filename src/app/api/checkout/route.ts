@@ -75,6 +75,7 @@ export async function POST(req: Request) {
                 customer_name: name,
                 product_id: stock.productId, // Link to our internal UUID
                 internal_tier_id: priceId,
+                referral_code: metadata?.referral_code || null,
                 ...metadata
             },
         });
