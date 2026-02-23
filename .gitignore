@@ -49,7 +49,7 @@ _legacy_backup
 # Image optimization cache
 scripts/.optimize-cache.json
 
-# Generated optimized images
-/public/optimized/
+# Generated optimized images — tracked so Vercel has them (no CI image build step)
+# /public/optimized/
 
 .vercel
