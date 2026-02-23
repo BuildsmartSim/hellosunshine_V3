@@ -18,6 +18,7 @@ import React from 'react';
 import { SunshineTemplate, type TemplateStyle } from '@/components/social/SunshineTemplate';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs'; // Required: @resvg/resvg-js uses native Node bindings
 
 const CANVAS_SIZE = 1080;
 

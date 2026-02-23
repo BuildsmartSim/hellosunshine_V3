@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Turbopack-compatible config (Next.js 16 uses Turbopack by default) */
-  // turbopack: {},
+  // Prevent Turbopack/Webpack from trying to bundle native Node addons.
+  // @resvg/resvg-js ships a .node binary that must stay server-external.
+  serverExternalPackages: ["@resvg/resvg-js", "satori"],
+
   onDemandEntries: {
-    // Period (in ms) where the server will keep pages in the buffer
     maxInactiveAge: 60 * 1000,
-    // Number of pages that should be kept simultaneously without being disposed
     pagesBufferLength: 5,
   },
 };
