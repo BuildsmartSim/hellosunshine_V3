@@ -37,7 +37,7 @@ export async function sendBroadcastEmailAction(audienceId: string | 'all', subje
                 .select('email');
 
             if (error) throw error;
-            profiles?.forEach(p => p.email && emails.add(p.email));
+            profiles?.forEach((p: any) => p.email && emails.add(p.email));
         } else {
             // Fetch all tickets for a specific event to extract their emails
             // Step 1: Find all products associated with this event location
@@ -64,7 +64,7 @@ export async function sendBroadcastEmailAction(audienceId: string | 'all', subje
                     .eq('location_id', locations.id);
 
                 if (products && products.length > 0) {
-                    const productIds = products.map(p => p.id);
+                    const productIds = products.map((p: any) => p.id);
                     const { data: tickets } = await supabaseAdmin
                         .from('tickets')
                         .select('profile:profiles (email)')
