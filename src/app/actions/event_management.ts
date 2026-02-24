@@ -47,6 +47,16 @@ export async function saveEventAction(eventData: any) {
                     ? parseInt(tier.stock_limit.toString(), 10)
                     : null;
 
+                // Parse price into pence (e.g. "£45" -> 4500, "45.50" -> 4550)
+                let pricePence = 0;
+                if (tier.price) {
+                    const numMatch = tier.price.toString().replace(/[^\d.]/g, ''); // strip £
+                    const floatPrice = parseFloat(numMatch);
+                    if (!isNaN(floatPrice)) {
+                        pricePence = Math.round(floatPrice * 100);
+                    }
+                }
+
                 const { data: existingProduct } = await supabaseAdmin
                     .from('products')
                     .select('id')
@@ -57,7 +67,8 @@ export async function saveEventAction(eventData: any) {
                     await supabaseAdmin.from('products').update({
                         name: tier.name,
                         stock_limit: stockLimit,
-                        location_id: locationId
+                        location_id: locationId,
+                        price_amount_pence: pricePence
                     }).eq('id', existingProduct.id);
                 } else {
                     await supabaseAdmin.from('products').insert({
@@ -65,6 +76,7 @@ export async function saveEventAction(eventData: any) {
                         name: tier.name,
                         stock_limit: stockLimit,
                         location_id: locationId,
+                        price_amount_pence: pricePence,
                         is_scheduled: false
                     });
                 }

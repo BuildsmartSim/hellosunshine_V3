@@ -53,3 +53,4 @@ scripts/.optimize-cache.json
 # /public/optimized/
 
 .vercel
+.env*.local

@@ -16,6 +16,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <a href="/admin/social" className="text-xs font-mono font-bold tracking-widest text-neutral-500 hover:text-neutral-900 transition-colors uppercase">
                         Social
                     </a>
+                    <a href="/admin/broadcasts" className="text-xs font-mono font-bold tracking-widest text-neutral-500 hover:text-neutral-900 transition-colors uppercase">
+                        Broadcasts
+                    </a>
                     <a href="/" className="text-xs font-mono font-bold tracking-widest text-neutral-500 hover:text-neutral-900 transition-colors uppercase">
                         Return to Site &rarr;
                     </a>

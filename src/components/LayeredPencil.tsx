@@ -30,6 +30,7 @@ export interface LayeredPencilProps {
     className?: string;
     style?: React.CSSProperties;
     as?: 'h1' | 'h2' | 'h3' | 'h4' | 'span';
+    fontFamily?: string;
 }
 
 export function LayeredPencil({
@@ -44,6 +45,7 @@ export function LayeredPencil({
     className = "",
     style = {},
     as: Tag = "h2",
+    fontFamily = fonts.accent,
 }: LayeredPencilProps) {
     return (
         <div className={`grid place-items-start relative ${blendClass} ${className}`} style={style}>
@@ -51,7 +53,7 @@ export function LayeredPencil({
             <Tag
                 className={`${hatchClass} ${fillOpacity === '0.65' ? 'pencil-soft' : fillOpacity === '0.45' ? 'pencil-extra-soft' : ''}`}
                 style={{
-                    fontFamily: fonts.accent,
+                    fontFamily: fontFamily,
                     fontSize: size,
                     lineHeight: '1.1', // Slightly increased to prevent descenders from being clipped
                     gridArea: '1/1',
@@ -69,7 +71,7 @@ export function LayeredPencil({
             <Tag
                 className="pencil-stroke-only"
                 style={{
-                    fontFamily: fonts.accent,
+                    fontFamily: fontFamily,
                     fontSize: size,
                     lineHeight: '1.1',
                     gridArea: '1/1',

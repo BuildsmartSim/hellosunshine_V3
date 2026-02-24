@@ -53,16 +53,17 @@ export async function POST(req: Request) {
                 }
             }
 
-            // 2. Create Ticket
+            // 2. Finalize Ticket (Upsert pending to active)
             const { data: ticket, error: ticketError } = await supabaseAdmin
                 .from('tickets')
-                .insert({
+                .upsert({
                     profile_id: profile.id,
                     slot_id: session.metadata.slot_id || null,
+                    product_id: session.metadata.product_id || null,
                     stripe_session_id: session.id,
                     status: 'active',
                     ambassador_id: ambassadorId
-                })
+                }, { onConflict: 'stripe_session_id' })
                 .select()
                 .single();
 

@@ -164,5 +164,16 @@ export async function sendTicketEmail(ticketId: string) {
         throw error;
     }
 
+    // Mark email as sent in DB
+    const { error: updateError } = await supabaseAdmin
+        .from('tickets')
+        .update({ email_sent: true })
+        .eq('id', ticketId);
+
+    if (updateError) {
+        console.error('Failed to update email_sent flag for ticket:', ticketId, updateError);
+        // We do not throw here, as the email actually sent successfully.
+    }
+
     return data;
 }

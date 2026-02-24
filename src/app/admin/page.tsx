@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { EventToggle } from './EventToggle';
 import { DeleteEventButton } from './events/DeleteEventButton';
 import Link from 'next/link';
+import { GuestManager } from './GuestManager';
 
 export const revalidate = 0; // Ensure fresh data on every load
 
@@ -118,43 +119,8 @@ export default async function AdminDashboard() {
                 )}
             </div>
 
-            {/* Latest Purchases Panel */}
-            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-neutral-100 bg-neutral-50/50 flex justify-between items-center">
-                    <div>
-                        <h3 className="text-lg font-bold text-neutral-800 tracking-tight">Latest Purchases</h3>
-                        <p className="text-xs text-neutral-500 font-mono mt-1">Recent tickets and guest details</p>
-                    </div>
-                </div>
-                <div className="divide-y divide-neutral-100">
-                    {latestTickets?.length === 0 ? (
-                        <div className="p-6 text-sm text-neutral-500 text-center">No purchases yet.</div>
-                    ) : (
-                        latestTickets?.map((ticket: any) => (
-                            <div key={ticket.id} className="p-6 hover:bg-neutral-50/50 transition-colors flex items-center justify-between">
-                                <div>
-                                    <p className="font-bold text-neutral-900">{ticket.profile?.full_name || 'Anonymous Guest'}</p>
-                                    <p className="text-sm text-neutral-500 font-mono">{ticket.profile?.email}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-bold text-neutral-800 text-sm">{ticket.slot?.product?.name || 'Unknown Ticket'}</p>
-                                    <p className="text-xs text-neutral-500 mt-1">
-                                        {new Date(ticket.created_at).toLocaleDateString()} at {new Date(ticket.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </p>
-                                </div>
-                                <div>
-                                    <span className={`px-2 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${ticket.status === 'active' ? 'bg-green-100 text-green-700' :
-                                            ticket.status === 'used' ? 'bg-neutral-100 text-neutral-600' :
-                                                'bg-red-100 text-red-700'
-                                        }`}>
-                                        {ticket.status}
-                                    </span>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-            </div>
+            {/* Interactive Guest Manager Panel */}
+            <GuestManager initialTickets={latestTickets || []} />
         </div>
     );
 }

@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Polaroid } from '@/components/Polaroid';
 import { LayeredPencil } from '@/components/LayeredPencil';
+import { DappledHeaderStroke } from '@/components/LightHeaderVariants';
 
 
 
@@ -146,44 +147,14 @@ export default function HeroSection() {
                         <OrganicLine type="graphite" className="opacity-50" />
                     </div>
 
-                    <div className="space-y-12 py-4">
-                        <div className="relative left-[-10px] md:left-0 flex flex-col">
-                            <LayeredPencil
-                                hatchClass="hatch-aesthetic-yellow-bold"
-                                strokeColor="#1F1A17"
-                                strokeWidth="1.2px"
-                                fillOpacity="0.95"
-                                strokeOpacity="1"
-                                blendClass="pencil-blend-multiply"
-                                size="85px"
-                                text="Hello"
-                                className="ml-4"
-                                as="h1"
-                            />
-                            <LayeredPencil
-                                hatchClass="hatch-aesthetic-yellow-bold"
-                                strokeColor="#1F1A17"
-                                strokeWidth="1.5px"
-                                fillOpacity="1"
-                                strokeOpacity="1"
-                                blendClass="pencil-blend-multiply"
-                                size="125px"
-                                text="Sunshine"
-                                as="h1"
-                                style={{ marginTop: 'var(--hss-header-interlock, 0px)' }}
-                            />
-                        </div>
-
-                        <div
-                            className="flex flex-col max-w-[250px]"
-                            style={{ gap: 'var(--hss-header-subtitle-gap, 32px)' }}
-                        >
-                            <p style={{ fontFamily: 'var(--font-caveat)' }} className="text-3xl text-charcoal/50 leading-snug">
-                                Hand-built cedar.<br />Authentic steam.
-                            </p>
-                            <div className="h-[2px] w-12" style={{ backgroundColor: 'var(--hss-primary, #F8C630)', opacity: 0.2 }}></div>
-                        </div>
-                    </div>
+                    <DappledHeaderStroke
+                        line1="Hello"
+                        line2="Sunshine"
+                        subtitle="Hand-built cedar."
+                        description="Authentic steam. A quiet escape into nature."
+                        centered={false}
+                        className="py-4"
+                    />
                 </div>
 
             </div>

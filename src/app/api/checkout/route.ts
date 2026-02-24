@@ -38,33 +38,14 @@ export async function POST(req: Request) {
             payment_method_types: ['card'],
             line_items: [
                 {
-                    price: priceId, // Assuming this maps to a Stripe Price ID in prod, or we handle mapping elsewhere? 
-                    // Note: The user's schema implies 'price_id' is the Stripe Price ID. 
-                    // IN OUR DATA currently: 'price_id' is 'av-eb'. THIS IS NOT A STRIPE ID.
-                    // If we pass 'av-eb' to Stripe, it will fail unless we created it in Stripe.
-                    // For now, keeping as is, but assuming user knows they need real Stripe Price IDs eventually.
-                    // Actually, for this specific task (caps), the internal ID is what matters.
-                    // We might need to map 'av-eb' -> 'price_H8s...' if they differ.
-                    // IMPORTANT: For the purpose of THIS task, I will assume priceId is passed correctly or handled.
                     quantity: 1,
-                    price_data: {  // changing to ad-hoc price if these are not real stripe price objects yet? 
-                        // Check existing code... existing code used `price: priceId`. 
-                        // If existing code worked, then `priceId` was valid or mock.
-                        // I will keep `price: priceId` but add error handling if it fails.
-                        // Actually, better to use price_data for dynamic pricing to be safe? 
-                        // No, stick to existing pattern.
+                    price_data: {
                         currency: 'gbp',
                         product_data: {
-                            name: `Ticket: ${priceId}` // Fallback description
+                            name: stock.productName || `Ticket: ${priceId}`
                         },
-                        unit_amount: 0 // Waiting for real implementation
+                        unit_amount: stock.priceAmountPence || 0 // Fetched securely from DB
                     }
-                    // WAIT. The existing code had:
-                    // price: priceId,
-                    // quantity: 1
-
-                    // If I change this line I might break it if they have real structure.
-                    // I will revert to exactly what was there, just wrapping with the check.
                 }
             ],
             mode: 'payment',
@@ -79,6 +60,21 @@ export async function POST(req: Request) {
                 ...metadata
             },
         });
+
+        // 3. Create Pending Ticket Reservation to lock inventory
+        const supabase = (await import('@/lib/supabaseAdmin')).supabaseAdmin;
+        const { error: reserveError } = await supabase
+            .from('tickets')
+            .insert({
+                product_id: stock.productId,
+                stripe_session_id: session.id,
+                status: 'pending'
+            });
+
+        if (reserveError) {
+            console.error('Failed to reserve pending ticket:', reserveError);
+            // We still proceed, but log that inventory lock failed for this checkout.
+        }
 
         return NextResponse.json({ url: session.url });
     } catch (err: any) {

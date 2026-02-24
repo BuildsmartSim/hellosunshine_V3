@@ -65,37 +65,30 @@ export default function Header() {
 
                 {/* Refined Navigation Column (Studio Style) */}
                 <nav className="hidden lg:flex items-center gap-12 font-body text-[14px] font-bold uppercase tracking-[0.4em]">
-                    {NAV_ITEMS.map(it => (
-                        <a key={it.label} href={it.href} className="text-charcoal/60 hover:text-charcoal transition-all relative group">
+                    {[
+                        { label: 'Sanctuary', href: '#sanctuary' },
+                        { label: 'Guestbook', href: '#guestbook' },
+                        { label: 'Contact', href: '#contact' }
+                    ].map(it => (
+                        <a key={it.label} href={it.href} onClick={(e) => {
+                            e.preventDefault();
+                            document.querySelector(it.href)?.scrollIntoView({ behavior: 'smooth' });
+                        }} className="text-charcoal/60 hover:text-charcoal transition-all relative group">
                             {it.label}
                             <span className="absolute -bottom-2 left-0 w-full h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                         </a>
                     ))}
                 </nav>
 
-                {/* Right: Social Icons matched to Footer */}
-                <div className="flex items-center gap-2 md:gap-3">
-                    {[
-                        { icon: icons.instagram, label: 'IG', href: '#' },
-                        { icon: icons.facebook, label: 'FB', href: '#' },
-                        { icon: icons.mail, label: 'Mail', href: '#' }
-                    ].map((social, i) => (
-                        <a
-                            key={i}
-                            href={social.href}
-                            className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 rounded-full border border-charcoal/10 flex items-center justify-center hover:bg-white hover:border-primary hover:scale-110 hover:-translate-y-1 transition-all duration-300 group shadow-sm bg-white/40 relative"
-                            aria-label={social.label}
-                        >
-                            <div className="relative w-[16px] h-[16px] md:w-[20px] md:h-[20px]">
-                                <Image
-                                    src={social.icon}
-                                    alt={social.label}
-                                    fill
-                                    className="object-contain opacity-70 group-hover:opacity-100 transition-opacity"
-                                />
-                            </div>
-                        </a>
-                    ))}
+                {/* Right: Strong Call to Action */}
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => document.querySelector('#ticketing')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="px-6 py-3 md:px-8 md:py-4 bg-[#f8c630] text-charcoal font-bold uppercase tracking-widest text-xs md:text-sm rounded-full hover:bg-opacity-90 hover:scale-[1.02] hover:-translate-y-0.5 transition-all shadow-sm flex items-center gap-2"
+                    >
+                        <span>Book Now</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
                 </div>
             </div>
         </header>

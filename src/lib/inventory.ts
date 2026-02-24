@@ -5,12 +5,12 @@ export const inventory = {
      * Checks availability for a specific tier (price_id).
      * Returns true if available, false if sold out.
      */
-    async checkAvailability(priceId: string): Promise<{ available: boolean; remaining: number; productId?: string }> {
+    async checkAvailability(priceId: string): Promise<{ available: boolean; remaining: number; productId?: string; productName?: string; priceAmountPence?: number }> {
         try {
             // 1. Get Product Details
             const { data: product, error: productError } = await supabaseAdmin
                 .from('products')
-                .select('id, stock_limit')
+                .select('id, stock_limit, name, price_amount_pence')
                 .eq('price_id', priceId)
                 .single();
 
@@ -22,11 +22,14 @@ export const inventory = {
             }
 
             // 2. Count Active Tickets for this Product
+            const fifteenMinsAgo = new Date(Date.now() - 15 * 60000).toISOString();
+
+            // We use standard Postgres syntax for OR condition via Supabase .or()
             const { count, error: countError } = await supabaseAdmin
                 .from('tickets')
                 .select('*', { count: 'exact', head: true })
                 .eq('product_id', product.id)
-                .in('status', ['active', 'used']); // Don't count refunded
+                .or(`status.in.(active,used),and(status.eq.pending,created_at.gte.${fifteenMinsAgo})`);
 
             if (countError) {
                 console.error(`Inventory check failed for ${priceId} (Ticket count):`, countError);
@@ -40,7 +43,9 @@ export const inventory = {
             return {
                 available: remaining > 0,
                 remaining,
-                productId: product.id
+                productId: product.id,
+                productName: product.name,
+                priceAmountPence: product.price_amount_pence || 0
             };
         } catch (err) {
             console.error('Inventory check exception:', err);

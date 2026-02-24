@@ -11,6 +11,7 @@ import { Polaroid } from "@/components/Polaroid";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StandardSection } from "@/components/StandardSection";
 import { useDesign } from "@/design-system/DesignContext";
+import { ContactSection } from "@/components/ContactSection";
 
 
 export default function Home() {
@@ -84,6 +85,9 @@ export default function Home() {
 
         {/* TICKETING SECTION */}
         <TicketingSection />
+
+        {/* CONTACT SECTION */}
+        <ContactSection />
       </main>
 
       <Footer />
