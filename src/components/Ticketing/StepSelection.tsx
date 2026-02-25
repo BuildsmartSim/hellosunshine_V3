@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 
 
 import { FestivalPass, TicketTier } from './FestivalPass';
@@ -13,6 +14,19 @@ interface StepSelectionProps {
 }
 
 export function StepSelection({ events, onSelect, selectedTier }: StepSelectionProps) {
+    useEffect(() => {
+        if (events && events.length > 0) {
+            sendGAEvent('event', 'view_item', {
+                currency: 'GBP',
+                value: 0,
+                items: events.map(pass => ({
+                    item_id: pass.id,
+                    item_name: pass.title,
+                }))
+            });
+        }
+    }, [events]);
+
     return (
         <div className="w-full max-w-6xl mx-auto px-4">
             <div className="flex flex-col items-center mb-16">

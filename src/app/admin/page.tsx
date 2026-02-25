@@ -23,10 +23,17 @@ export default async function AdminDashboard() {
         .select('*')
         .order('created_at', { ascending: false });
 
-    // Fetch quick stats (just a simple count for now to represent Ticket Sales)
+    // Fetch quick stats (ticket sales vs capacity)
     const { count: ticketCount } = await supabaseAdmin
         .from('tickets')
         .select('*', { count: 'exact', head: true });
+
+    const { data: productsData } = await supabaseAdmin
+        .from('products')
+        .select('stock_limit');
+
+    const totalCapacity = productsData?.reduce((sum: number, p: any) => sum + (p.stock_limit || 0), 0) || 0;
+    const ticketPercentage = totalCapacity > 0 ? Math.round(((ticketCount || 0) / totalCapacity) * 100) : 0;
 
     // Fetch latest purchases
     const { data: latestTickets } = await supabaseAdmin
@@ -49,12 +56,44 @@ export default async function AdminDashboard() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-xl border border-neutral-200 shadow-sm">
-                    <p className="text-sm font-bold text-neutral-400 uppercase tracking-widest font-mono mb-2">Total Tickets Sold</p>
-                    <p className="text-4xl font-bold text-neutral-800">{ticketCount || 0}</p>
+                    <div className="flex justify-between items-start mb-2">
+                        <p className="text-sm font-bold text-neutral-400 uppercase tracking-widest font-mono">Total Tickets Sold</p>
+                        <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">{ticketPercentage}% Sold</span>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                        <p className="text-4xl font-bold text-neutral-800">{ticketCount || 0}</p>
+                        <p className="text-sm text-neutral-400 font-mono">/ {totalCapacity} Capacity</p>
+                    </div>
                 </div>
                 <div className="bg-white p-6 rounded-xl border border-neutral-200 shadow-sm">
                     <p className="text-sm font-bold text-neutral-400 uppercase tracking-widest font-mono mb-2">Active Events</p>
                     <p className="text-4xl font-bold text-neutral-800">{events?.filter((e: EventRow) => e.is_active).length || 0}</p>
+                </div>
+            </div>
+
+            {/* Analytics Dashboard (Looker + GA4 Link) */}
+            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+                <div className="px-6 py-5 border-b border-neutral-100 bg-neutral-50/50 flex justify-between items-center">
+                    <div>
+                        <h3 className="text-lg font-bold text-neutral-800 tracking-tight">Analytics & Health</h3>
+                        <p className="text-xs text-neutral-500 font-mono mt-1">Website vitals and deep ticketing insights</p>
+                    </div>
+                    <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="px-4 py-2 flex items-center gap-2 bg-yellow-400 text-yellow-950 text-sm font-bold rounded-lg shadow hover:bg-yellow-500 transition-colors">
+                        <span>📊</span> View Deep Funnel (GA4)
+                    </a>
+                </div>
+                <div className="p-6 bg-neutral-50/30">
+                    <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-4 block">Basic Health (Looker Studio)</label>
+                    <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-neutral-100 border border-neutral-200 rounded-lg flex items-center justify-center overflow-hidden relative">
+                        {/* We will embed the real Looker Studio iframe here once created. For now, a placeholder guiding the user. */}
+                        <div className="text-center p-8 absolute z-10">
+                            <h4 className="font-bold text-neutral-800 mb-2">Looker Studio Embed Ready</h4>
+                            <p className="text-sm text-neutral-500 mb-4 max-w-sm mx-auto">
+                                Once you create your Basic Health report in Looker Studio, paste the embed iframe code here.
+                            </p>
+                            <code className="bg-neutral-200 text-xs p-2 rounded text-neutral-600 block">&lt;iframe src=&quot;https://lookerstudio.google.com/embed/...&quot;&gt;&lt;/iframe&gt;</code>
+                        </div>
+                    </div>
                 </div>
             </div>
 

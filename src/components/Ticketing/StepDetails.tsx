@@ -6,6 +6,7 @@ import { TicketInput } from './TicketInput';
 import { Button } from '@/components/Button';
 import { WaiverSection } from './WaiverSection';
 import { TicketTier } from './FestivalPass';
+import { sendGAEvent } from '@next/third-parties/google';
 
 interface StepDetailsProps {
     formData: {
@@ -23,6 +24,21 @@ interface StepDetailsProps {
 }
 
 export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }: StepDetailsProps) {
+    const handleNext = () => {
+        if (selectedTier) {
+            const numericPrice = Number(selectedTier.featuredPrice?.replace(/[^0-9.-]+/g, "") || 0);
+            sendGAEvent('event', 'begin_checkout', {
+                currency: 'GBP',
+                value: numericPrice,
+                items: [{
+                    item_id: selectedTier.id,
+                    item_name: selectedTier.title,
+                }]
+            });
+        }
+        onNext();
+    };
+
     return (
         <div className="w-full max-w-2xl mx-auto px-4">
             <div className="flex flex-col items-center mb-16">
@@ -108,7 +124,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                     >
                         ← Back to Tiers
                     </button>
-                    <Button onClick={onNext} disabled={!formData.name || !formData.email || !formData.waiverAccepted}>
+                    <Button onClick={handleNext} disabled={!formData.name || !formData.email || !formData.waiverAccepted}>
                         Confirm Booking
                     </Button>
                 </div>

@@ -13,6 +13,7 @@
     "clean": "node -e \"const fs = require('fs'); fs.rmSync('.next', { recursive: true, force: true }); console.log('.next cache cleaned');\""
   },
   "dependencies": {
+    "@next/third-parties": "^16.1.6",
     "@react-email/components": "^1.0.7",
     "@resvg/resvg-js": "^2.6.2",
     "@supabase/supabase-js": "^2.96.0",

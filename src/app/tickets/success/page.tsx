@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { StandardSection } from '@/components/StandardSection';
@@ -37,6 +38,22 @@ function SuccessContent() {
             return () => clearTimeout(timer);
         }
     }, [sessionId, directTicketId]);
+
+    // GA4 Purchase Tracking
+    useEffect(() => {
+        if (sessionId) {
+            // Prevent duplicate tracking on page refresh
+            const trackedKey = `ga_tracked_${sessionId}`;
+            if (!sessionStorage.getItem(trackedKey)) {
+                sendGAEvent('event', 'purchase', {
+                    currency: 'GBP',
+                    transaction_id: sessionId,
+                    value: 1 // We don't have the exact cart total here easily, but value is required.
+                });
+                sessionStorage.setItem(trackedKey, 'true');
+            }
+        }
+    }, [sessionId]);
 
     return (
         <div className="flex flex-col items-center text-center max-w-lg mx-auto py-20">

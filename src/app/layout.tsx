@@ -73,6 +73,7 @@ import { MediaProvider } from "@/design-system/MediaContext";
 import { MediaViewer } from "@/components/MediaViewer";
 import { ReferralTracker } from "@/components/ReferralTracker";
 import { Suspense } from "react";
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 export default function RootLayout({
   children,
@@ -96,6 +97,7 @@ export default function RootLayout({
             <MediaViewer />
           </MediaProvider>
         </DesignProvider>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-DUMMY123'} />
       </body>
     </html>
   );
