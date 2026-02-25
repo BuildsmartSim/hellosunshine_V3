@@ -8,6 +8,7 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
         const { priceId, email, name, metadata } = body;
+        const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
         console.log('Checkout requested for:', email, priceId);
 
@@ -24,7 +25,6 @@ export async function POST(req: Request) {
         if (!process.env.STRIPE_SECRET_KEY) {
             console.warn('Stripe not configured. Redirecting to mock success for development.');
             const mockSessionId = `test_session_${Date.now()}`;
-            const origin = req.headers.get('origin') || 'http://localhost:3000';
 
             return NextResponse.json({
                 url: `${origin}/tickets/success?session_id=${mockSessionId}&id=demo-ticket-id`
@@ -32,6 +32,24 @@ export async function POST(req: Request) {
         }
 
         const stripe = (await import('@/lib/stripe')).getStripe();
+        const supabase = (await import('@/lib/supabaseAdmin')).supabaseAdmin;
+
+        // Extract price dynamically from app_events since local DB may lack price_amount_pence
+        let unitAmount = 0;
+        const { data: events } = await supabase.from('app_events').select('tiers');
+        if (events) {
+            for (const ev of events) {
+                const tier = ev.tiers?.find((t: any) => t.id === priceId);
+                if (tier && tier.price) {
+                    const numericPrice = Number(tier.price.replace(/[^0-9.-]+/g, ""));
+                    unitAmount = Math.round(numericPrice * 100);
+                    break;
+                }
+            }
+        }
+
+        // Failsafe in case DB has no price (Stripe requires > 30p for GBP)
+        if (unitAmount < 30) unitAmount = 1000;
 
         // 2. Create Session with Metadata
         const session = await stripe.checkout.sessions.create({
@@ -44,14 +62,14 @@ export async function POST(req: Request) {
                         product_data: {
                             name: stock.productName || `Ticket: ${priceId}`
                         },
-                        unit_amount: stock.priceAmountPence || 0 // Fetched securely from DB
+                        unit_amount: unitAmount
                     }
                 }
             ],
             mode: 'payment',
             customer_email: email,
-            success_url: `${req.headers.get('origin')}/tickets/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${req.headers.get('origin')}/tickets`,
+            success_url: `${origin}/tickets/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/tickets`,
             metadata: {
                 customer_name: name,
                 product_id: stock.productId, // Link to our internal UUID
@@ -62,7 +80,6 @@ export async function POST(req: Request) {
         });
 
         // 3. Create Pending Ticket Reservation to lock inventory
-        const supabase = (await import('@/lib/supabaseAdmin')).supabaseAdmin;
         const { error: reserveError } = await supabase
             .from('tickets')
             .insert({

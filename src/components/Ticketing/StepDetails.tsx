@@ -53,6 +53,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
             <div className="flex flex-col gap-6">
                 <TicketInput
                     label="Full Name"
+                    name="name"
                     placeholder="Enter your name..."
                     value={formData.name}
                     onChange={(e) => onChange('name', e.target.value)}
@@ -63,6 +64,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                     <TicketInput
                         label="Age"
                         type="number"
+                        name="age"
                         placeholder="e.g. 25"
                         value={formData.age}
                         onChange={(e) => onChange('age', e.target.value)}
@@ -70,6 +72,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                     />
                     <TicketInput
                         label="Gender"
+                        name="sex"
                         placeholder="e.g. Female / Non-binary"
                         value={formData.gender}
                         onChange={(e) => onChange('gender', e.target.value)}
@@ -80,6 +83,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                 <TicketInput
                     label="Email Address"
                     type="email"
+                    name="email"
                     placeholder="you@example.com"
                     value={formData.email}
                     onChange={(e) => onChange('email', e.target.value)}
@@ -88,6 +92,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                 <TicketInput
                     label="Phone Number"
                     type="tel"
+                    name="tel"
                     placeholder="+44 000 000 000"
                     value={formData.phone}
                     onChange={(e) => onChange('phone', e.target.value)}

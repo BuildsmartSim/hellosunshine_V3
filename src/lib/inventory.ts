@@ -7,12 +7,15 @@ export const inventory = {
      */
     async checkAvailability(priceId: string): Promise<{ available: boolean; remaining: number; productId?: string; productName?: string; priceAmountPence?: number }> {
         try {
+            console.log(`[INVENTORY DEBUG] Checking availability for priceId: ${priceId}`);
             // 1. Get Product Details
             const { data: product, error: productError } = await supabaseAdmin
                 .from('products')
-                .select('id, stock_limit, name, price_amount_pence')
+                .select('id, stock_limit, name')
                 .eq('price_id', priceId)
                 .single();
+
+            console.log(`[INVENTORY DEBUG] Product query result for ${priceId}:`, product);
 
             if (productError || !product) {
                 console.error(`Inventory check failed for ${priceId} (Product lookup):`, productError);
@@ -24,19 +27,22 @@ export const inventory = {
             // 2. Count Active Tickets for this Product
             const fifteenMinsAgo = new Date(Date.now() - 15 * 60000).toISOString();
 
-            // We use standard Postgres syntax for OR condition via Supabase .or()
-            const { count, error: countError } = await supabaseAdmin
+            // Simplified query dropping 'pending' status to support unmigrated local databases
+            const { data: activeTickets, error: countError } = await supabaseAdmin
                 .from('tickets')
-                .select('*', { count: 'exact', head: true })
+                .select('id, status, created_at')
                 .eq('product_id', product.id)
-                .or(`status.in.(active,used),and(status.eq.pending,created_at.gte.${fifteenMinsAgo})`);
+                .in('status', ['active', 'used']);
 
             if (countError) {
                 console.error(`Inventory check failed for ${priceId} (Ticket count):`, countError);
                 return { available: false, remaining: 0 };
             }
 
-            const sold = count || 0;
+            // Manually filter
+            const validTickets = activeTickets?.filter(t => t.status === 'active' || t.status === 'used') || [];
+
+            const sold = validTickets.length;
             const limit = product.stock_limit || 0; // If null, maybe unlimited? Assuming 0 for safety based on SQL
             const remaining = Math.max(0, limit - sold);
 
@@ -44,8 +50,7 @@ export const inventory = {
                 available: remaining > 0,
                 remaining,
                 productId: product.id,
-                productName: product.name,
-                priceAmountPence: product.price_amount_pence || 0
+                productName: product.name
             };
         } catch (err) {
             console.error('Inventory check exception:', err);

@@ -10,7 +10,7 @@ export const getStripe = () => {
 
     if (!stripeInstance) {
         stripeInstance = new Stripe(key, {
-            apiVersion: '2025-01-27' as any,
+            apiVersion: '2024-06-20' as any,
         });
     }
     return stripeInstance;

@@ -8,23 +8,31 @@ import { StandardSection } from '@/components/StandardSection';
 import { Button } from '@/components/Button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { TicketClient } from '@/components/Ticketing/TicketClient';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
     const sessionId = searchParams.get('session_id');
     const directTicketId = searchParams.get('id');
     const [ticketId, setTicketId] = useState<string | null>(directTicketId);
+    const [ticketData, setTicketData] = useState<any | null>(null);
     const [isLoading, setIsLoading] = useState(!!sessionId && !directTicketId);
 
     useEffect(() => {
-        if (sessionId && !directTicketId) {
+        if (sessionId || directTicketId) {
             // Wait for webhook to process (poll a few times if needed, or just try once)
             const resolveTicket = async () => {
                 try {
-                    const response = await fetch(`/api/tickets/from-session?session_id=${sessionId}`);
+                    const url = directTicketId
+                        ? `/api/tickets/from-session?id=${directTicketId}`
+                        : `/api/tickets/from-session?session_id=${sessionId}`;
+                    const response = await fetch(url);
                     const data = await response.json();
                     if (data.ticketId) {
                         setTicketId(data.ticketId);
+                    }
+                    if (data.ticket) {
+                        setTicketData(data.ticket);
                     }
                 } catch (err) {
                     console.error('Failed to resolve ticket from session:', err);
@@ -77,7 +85,11 @@ function SuccessContent() {
             </div>
 
             <div className="flex flex-col gap-4 w-full">
-                {ticketId ? (
+                {ticketData ? (
+                    <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                        <TicketClient ticket={ticketData} checkInUrl={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://hellosunshinesauna.com'}/tickets/check-in/${ticketId}`} />
+                    </div>
+                ) : ticketId ? (
                     <Link href={`/tickets/view/${ticketId}`}>
                         <Button variant="primary" className="w-full">
                             View Digital Ticket
