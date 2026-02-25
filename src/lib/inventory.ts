@@ -40,7 +40,7 @@ export const inventory = {
             }
 
             // Manually filter
-            const validTickets = activeTickets?.filter(t => t.status === 'active' || t.status === 'used') || [];
+            const validTickets = activeTickets?.filter((t: any) => t.status === 'active' || t.status === 'used') || [];
 
             const sold = validTickets.length;
             const limit = product.stock_limit || 0; // If null, maybe unlimited? Assuming 0 for safety based on SQL
