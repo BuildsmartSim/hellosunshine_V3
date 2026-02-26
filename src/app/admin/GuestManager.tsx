@@ -53,7 +53,7 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
         setErrorMsg('');
 
         try {
-            const res = await refundTicketAction(ticketId, stripeSessionId || null);
+            const res = await refundTicketAction(ticketId, stripeSessionId || null, 'Refunded via Dashboard Preview');
             if (res.success) {
                 setTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status: 'refunded' } : t));
                 alert('Refund processed successfully.');
