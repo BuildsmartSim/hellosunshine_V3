@@ -51,116 +51,57 @@ export default async function AdminDashboard() {
         .limit(10);
 
     return (
-        <div className="space-y-8">
-            <h2 className="text-2xl font-bold text-neutral-800">Dashboard Overview</h2>
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div>
+                <h2 className="text-2xl font-black text-neutral-800 tracking-tight uppercase font-mono">Dashboard Overview</h2>
+                <p className="text-xs text-neutral-500 font-mono mt-1 uppercase tracking-widest">Real-time health and ticketing metrics</p>
+            </div>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-xl border border-neutral-200 shadow-sm">
-                    <div className="flex justify-between items-start mb-2">
-                        <p className="text-sm font-bold text-neutral-400 uppercase tracking-widest font-mono">Total Tickets Sold</p>
-                        <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">{ticketPercentage}% Sold</span>
+                <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm transition-all hover:shadow-md">
+                    <div className="flex justify-between items-start mb-4">
+                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] font-mono leading-none">Total Tickets Sold</p>
+                        <span className="text-[10px] font-black text-green-600 bg-green-50 px-2 py-1 rounded font-mono">{ticketPercentage}% SOLD</span>
                     </div>
                     <div className="flex items-baseline gap-2">
-                        <p className="text-4xl font-bold text-neutral-800">{ticketCount || 0}</p>
-                        <p className="text-sm text-neutral-400 font-mono">/ {totalCapacity} Capacity</p>
+                        <p className="text-4xl font-black text-neutral-800 font-mono">{ticketCount || 0}</p>
+                        <p className="text-[10px] text-neutral-400 font-black font-mono uppercase tracking-widest">/ {totalCapacity} Capacity</p>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-neutral-200 shadow-sm">
-                    <p className="text-sm font-bold text-neutral-400 uppercase tracking-widest font-mono mb-2">Active Events</p>
-                    <p className="text-4xl font-bold text-neutral-800">{events?.filter((e: EventRow) => e.is_active).length || 0}</p>
+                <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm transition-all hover:shadow-md">
+                    <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] font-mono mb-4 leading-none">Active Events</p>
+                    <p className="text-4xl font-black text-neutral-800 font-mono">{events?.filter((e: EventRow) => e.is_active).length || 0}</p>
                 </div>
             </div>
 
             {/* Analytics Dashboard (Looker + GA4 Link) */}
-            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-neutral-100 bg-neutral-50/50 flex justify-between items-center">
+            <div className="bg-white rounded-2xl border border-neutral-200 shadow-xl overflow-hidden">
+                <div className="px-6 py-5 border-b border-neutral-100 bg-neutral-900 flex justify-between items-center">
                     <div>
-                        <h3 className="text-lg font-bold text-neutral-800 tracking-tight">Analytics & Health</h3>
-                        <p className="text-xs text-neutral-500 font-mono mt-1">Website vitals and deep ticketing insights</p>
+                        <h3 className="text-sm font-black text-white tracking-[0.2em] uppercase font-mono">Analytics & Health</h3>
                     </div>
-                    <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="px-4 py-2 flex items-center gap-2 bg-yellow-400 text-yellow-950 text-sm font-bold rounded-lg shadow hover:bg-yellow-500 transition-colors">
-                        <span>📊</span> View Deep Funnel (GA4)
+                    <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="px-4 py-2 flex items-center gap-2 bg-yellow-400 text-yellow-950 text-[10px] font-black rounded font-mono uppercase tracking-widest shadow hover:bg-yellow-500 transition-all active:scale-95">
+                        <span className="text-sm">📊</span> View GA4 Dashboard
                     </a>
                 </div>
-                <div className="p-6 bg-neutral-50/30">
-                    <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-4 block">Basic Health (Looker Studio)</label>
-                    <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-neutral-100 border border-neutral-200 rounded-lg flex items-center justify-center overflow-hidden relative">
-                        {/* We will embed the real Looker Studio iframe here once created. For now, a placeholder guiding the user. */}
-                        <div className="text-center p-8 absolute z-10">
-                            <h4 className="font-bold text-neutral-800 mb-2">Looker Studio Embed Ready</h4>
-                            <p className="text-sm text-neutral-500 mb-4 max-w-sm mx-auto">
+                <div className="p-6 bg-neutral-50/10">
+                    <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-black mb-4 block font-mono italic">Basic Health (Looker Studio)</label>
+                    <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-neutral-100 border border-neutral-200 rounded-xl flex items-center justify-center overflow-hidden relative group">
+                        <div className="text-center p-8 absolute z-10 transition-transform group-hover:scale-105 duration-500">
+                            <h4 className="font-black text-neutral-800 mb-2 uppercase font-mono">Looker Studio Embed Ready</h4>
+                            <p className="text-xs text-neutral-500 mb-4 max-w-sm mx-auto font-mono lowercase tracking-wide italic">
                                 Once you create your Basic Health report in Looker Studio, paste the embed iframe code here.
                             </p>
-                            <code className="bg-neutral-200 text-xs p-2 rounded text-neutral-600 block">&lt;iframe src=&quot;https://lookerstudio.google.com/embed/...&quot;&gt;&lt;/iframe&gt;</code>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Event Manager Table */}
-            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-neutral-100 bg-neutral-50/50 flex justify-between items-center">
-                    <div>
-                        <h3 className="text-lg font-bold text-neutral-800 tracking-tight">Event Manager</h3>
-                        <p className="text-xs text-neutral-500 font-mono mt-1">Manage events, locations, and ticket tiers</p>
-                    </div>
-                    <Link href="/admin/events/new" className="px-4 py-2 bg-neutral-900 text-white text-sm font-bold rounded-lg shadow hover:bg-neutral-800 transition-colors">
-                        + Create New Event
-                    </Link>
-                </div>
-
-                {error ? (
-                    <div className="p-6 text-red-500 font-mono text-sm">Failed to load events: {error.message}</div>
-                ) : (
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase tracking-wider font-bold text-neutral-500 font-mono">
-                                <th className="px-6 py-4">Status</th>
-                                <th className="px-6 py-4">Title</th>
-                                <th className="px-6 py-4">Location & Dates</th>
-                                <th className="px-6 py-4">Show on Homepage</th>
-                                <th className="px-6 py-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-neutral-100">
-                            {events?.map((event: EventRow) => (
-                                <tr key={event.id} className="hover:bg-neutral-50/50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <EventToggle
-                                            eventId={event.id}
-                                            initialState={event.is_active}
-                                            type="active"
-                                        />
-                                    </td>
-                                    <td className="px-6 py-4 font-bold text-neutral-900">{event.title}</td>
-                                    <td className="px-6 py-4 text-neutral-600 text-sm">{event.location} &middot; {event.dates}</td>
-                                    <td className="px-6 py-4 text-center">
-                                        <div className="flex justify-start">
-                                            <EventToggle
-                                                eventId={event.id}
-                                                initialState={event.is_featured}
-                                                type="featured"
-                                            />
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end space-x-2">
-                                            <Link href={`/admin/events/${event.id}`} className="text-sm font-bold text-neutral-600 hover:text-neutral-900 underline">
-                                                Manage
-                                            </Link>
-                                            <DeleteEventButton eventId={event.id} eventTitle={event.title} />
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-            </div>
-
             {/* Interactive Guest Manager Panel */}
-            <GuestManager initialTickets={latestTickets || []} />
+            <div className="pt-4">
+                <GuestManager initialTickets={latestTickets || []} />
+            </div>
         </div>
     );
 }
