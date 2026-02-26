@@ -16,6 +16,7 @@ export async function searchTicketsAction(query: string) {
             .select(`
                 id, created_at, status, stripe_session_id,
                 profile:profiles ( full_name, email ),
+                product:products ( name ),
                 slot:slots (
                     start_time,
                     product:products ( name )
@@ -49,6 +50,7 @@ export async function searchTicketsAction(query: string) {
         .select(`
             id, created_at, status, stripe_session_id,
             profile:profiles!inner ( full_name, email ),
+            product:products ( name ),
             slot:slots (
                 start_time,
                 product:products ( name )

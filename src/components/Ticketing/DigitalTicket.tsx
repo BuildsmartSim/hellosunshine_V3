@@ -39,15 +39,22 @@ export function DigitalTicket({ ticketId, customerName, eventTitle, passName, da
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-primary/10 rounded-full blur-xl"></div>
 
                 <div className="relative z-10 flex flex-col items-center">
-                    <div className="w-full border-b border-dashed border-charcoal/20 pb-4 mb-6 flex justify-between items-end">
+                    <div className="w-full border-b border-dashed border-charcoal/20 pb-4 mb-6 flex justify-between items-start">
                         <div className="text-left">
-                            <span className="text-[11px] uppercase tracking-[0.4em] text-charcoal/70 font-bold block mb-1">Hellosunshinesauna</span>
-                            <h3 className="text-lg font-black text-charcoal uppercase leading-tight" style={{ fontFamily: fonts.mono }}>
-                                {eventTitle}
+                            <h3 className="text-xl font-black text-charcoal uppercase leading-tight" style={{ fontFamily: fonts.mono }}>
+                                HELLO SUNSHINE SAUNA
                             </h3>
                         </div>
                         <div className="text-right">
-                            <span className="text-xs font-mono text-primary font-bold">{date}</span>
+                            <span className="text-xs font-mono text-primary font-bold uppercase leading-none">
+                                {date === 'Season Pass' ? (
+                                    <>
+                                        Season<br />Pass
+                                    </>
+                                ) : (
+                                    date
+                                )}
+                            </span>
                         </div>
                     </div>
 

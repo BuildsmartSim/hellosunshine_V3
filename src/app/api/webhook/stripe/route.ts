@@ -33,7 +33,7 @@ export async function POST(req: Request) {
                 email: customer_details.email,
                 full_name: metadata.customer_name || customer_details.name,
                 phone: metadata.phone || customer_details.phone,
-                age: metadata.age,
+                age: metadata.age ? parseInt(metadata.age) : undefined,
                 gender: metadata.gender,
                 waiver_accepted: metadata.waiver_accepted === 'true',
                 waiver_accepted_at: metadata.waiver_accepted_at,
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
             if (ticket) {
                 await supabaseAdmin
                     .from('tickets')
-                    .update({ status: 'cancelled' })
+                    .update({ status: 'refunded' })
                     .eq('id', ticket.id);
 
                 // Decrement sweats

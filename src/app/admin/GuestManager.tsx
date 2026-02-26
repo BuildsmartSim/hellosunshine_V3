@@ -16,6 +16,7 @@ interface TicketRow {
         start_time: string;
         product: { name: string } | null;
     } | null;
+    product: { name: string } | null;
 }
 
 export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
@@ -114,7 +115,7 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
                             </div>
 
                             <div className="flex-1 min-w-0 md:text-center md:pl-4 border-l-0 md:border-l border-neutral-100">
-                                <p className="font-bold text-neutral-800 text-sm truncate">{ticket.slot?.product?.name || 'Unknown Ticket'}</p>
+                                <p className="font-bold text-neutral-800 text-sm truncate">{ticket.slot?.product?.name || ticket.product?.name || 'Unknown Ticket'}</p>
                                 <p className="text-xs text-neutral-500 mt-1">
                                     {new Date(ticket.created_at).toLocaleDateString()} at {new Date(ticket.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </p>

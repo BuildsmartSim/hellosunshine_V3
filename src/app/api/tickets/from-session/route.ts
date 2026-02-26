@@ -11,18 +11,48 @@ export async function GET(req: Request) {
     let ticketId = ticketIdParam;
 
     if (!ticketId && sessionId) {
-        const { data } = await supabaseAdmin
+        const { data: ticketRecord } = await supabaseAdmin
             .from('tickets')
-            .select('id, status')
+            .select('id, status, profile_id')
             .eq('stripe_session_id', sessionId)
             .single();
 
-        if (data) {
-            ticketId = data.id;
+        if (ticketRecord) {
+            ticketId = ticketRecord.id;
 
-            // LOCAL DEV FALLBACK: If we're not running webhook forwarders, Stripe will never mark this active.
-            // When the user hits the success page and we find a 'pending' ticket, just mark it active so they can see it.
-            if (data.status === 'pending' || data.status === null) {
+            // SYNC FALLBACK: If the profile is missing, it means the webhook hasn't run or failed.
+            // We proactively sync from Stripe here to ensure the user sees their name and the ticket is linked.
+            if (!ticketRecord.profile_id) {
+                try {
+                    const { stripe } = await import('@/lib/stripe');
+                    const { upsertProfile } = await import('@/lib/ticketing');
+
+                    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+                    if (session && session.customer_details?.email) {
+                        const profile = await upsertProfile({
+                            email: session.customer_details.email,
+                            full_name: session.metadata?.customer_name || session.customer_details.name,
+                            phone: session.metadata?.phone || session.customer_details.phone,
+                            age: session.metadata?.age ? parseInt(session.metadata.age) : undefined,
+                            gender: session.metadata?.gender,
+                            waiver_accepted: session.metadata?.waiver_accepted === 'true',
+                            waiver_accepted_at: session.metadata?.waiver_accepted_at,
+                        });
+
+                        await supabaseAdmin
+                            .from('tickets')
+                            .update({
+                                profile_id: profile.id,
+                                status: 'active' // Ensure it's active as well
+                            })
+                            .eq('id', ticketId);
+                    }
+                } catch (syncErr) {
+                    console.error('Failed to sync ticket from Stripe session:', syncErr);
+                }
+            } else if (ticketRecord.status === 'pending' || ticketRecord.status === null) {
+                // Just update status if profile already linked
                 await supabaseAdmin
                     .from('tickets')
                     .update({ status: 'active' })

@@ -53,8 +53,8 @@ export function TicketClient({ ticket, checkInUrl }: TicketClientProps) {
                 <DigitalTicket
                     ticketId={ticket.id}
                     customerName={ticket.profile?.full_name || 'Guest'}
-                    eventTitle={ticket.slot?.product?.location?.name || 'Hello Sunshine Sauna'}
-                    passName={ticket.slot?.product?.name || 'General Entry'}
+                    eventTitle={ticket.product?.name || ticket.slot?.product?.location?.name || 'Hello Sunshine Sauna'}
+                    passName={ticket.product?.name || ticket.slot?.product?.name || 'General Entry'}
                     date={ticket.slot ? new Date(ticket.slot.start_time).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'Season Pass'}
                     checkInUrl={checkInUrl}
                 />
