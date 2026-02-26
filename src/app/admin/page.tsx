@@ -23,10 +23,17 @@ export default async function AdminDashboard() {
         .select('*')
         .order('created_at', { ascending: false });
 
-    // Fetch quick stats (ticket sales vs capacity)
+    // Fetch sales stats
     const { count: ticketCount } = await supabaseAdmin
         .from('tickets')
-        .select('*', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true })
+        .neq('status', 'refunded'); // Clean sales data
+
+    // Fetch live attendance (checked in tickets)
+    const { count: attendanceCount } = await supabaseAdmin
+        .from('tickets')
+        .select('*', { count: 'exact', head: true })
+        .not('check_in_at', 'is', null);
 
     const { data: productsData } = await supabaseAdmin
         .from('products')
@@ -69,6 +76,15 @@ export default async function AdminDashboard() {
                         <p className="text-[10px] text-neutral-400 font-black font-mono uppercase tracking-widest">/ {totalCapacity} Capacity</p>
                     </div>
                 </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-primary/20 bg-primary/5 shadow-sm transition-all hover:shadow-md">
+                    <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] font-mono mb-4 leading-none">Live Attendance</p>
+                    <div className="flex items-baseline gap-2">
+                        <p className="text-4xl font-black text-neutral-800 font-mono">{attendanceCount || 0}</p>
+                        <p className="text-[10px] text-neutral-400 font-black font-mono uppercase tracking-widest">In the Sanctuary</p>
+                    </div>
+                </div>
+
                 <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm transition-all hover:shadow-md">
                     <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] font-mono mb-4 leading-none">Active Events</p>
                     <p className="text-4xl font-black text-neutral-800 font-mono">{events?.filter((e: EventRow) => e.is_active).length || 0}</p>
@@ -100,6 +116,12 @@ export default async function AdminDashboard() {
 
             {/* Interactive Guest Manager Panel */}
             <div className="pt-4">
+                <div className="mb-4 flex justify-between items-center">
+                    <h3 className="text-sm font-black text-neutral-400 uppercase tracking-[0.2em] font-mono">Recent Activity</h3>
+                    <Link href="/admin/refunds" className="text-[10px] font-black text-primary underline uppercase font-mono tracking-widest hover:text-primary/70">
+                        View Unified Refunds & Purchases
+                    </Link>
+                </div>
                 <GuestManager initialTickets={latestTickets || []} />
             </div>
         </div>

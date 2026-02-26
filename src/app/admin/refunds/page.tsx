@@ -10,9 +10,9 @@ export default async function RefundsPage() {
         .select(`
             *,
             profile:profiles(full_name, email),
-            product:app_products(name),
-            slot:event_slots(
-                product:app_products(name)
+            product:products(name),
+            slot:slots(
+                product:products(name)
             )
         `)
         .in('status', ['active', 'used'])

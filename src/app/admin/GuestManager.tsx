@@ -110,8 +110,12 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
                     tickets.map((ticket) => (
                         <div key={ticket.id} className="p-6 hover:bg-neutral-50/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div className="flex-1 min-w-0">
-                                <p className="font-bold text-neutral-900 truncate">{ticket.profile?.full_name || 'Anonymous Guest'}</p>
-                                <p className="text-sm text-neutral-500 font-mono truncate">{ticket.profile?.email}</p>
+                                <p className="font-bold text-neutral-900 truncate">
+                                    {ticket.profile?.full_name || ticket.profile?.email || 'Anonymous Guest'}
+                                </p>
+                                <p className="text-sm text-neutral-500 font-mono truncate">
+                                    {ticket.profile?.full_name ? ticket.profile?.email : 'No email contact'}
+                                </p>
                             </div>
 
                             <div className="flex-1 min-w-0 md:text-center md:pl-4 border-l-0 md:border-l border-neutral-100">
