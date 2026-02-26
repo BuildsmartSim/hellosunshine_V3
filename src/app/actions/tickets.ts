@@ -15,9 +15,9 @@ export async function searchTicketsAction(query: string) {
             .select(`
                 id, created_at, status, stripe_session_id,
                 profile:profiles ( full_name, email ),
-                product:app_products ( name ),
-                slot:event_slots (
-                    product:app_products ( name )
+                product:products ( name ),
+                slot:slots (
+                    product:products ( name )
                 )
             `)
             .order('created_at', { ascending: false })
@@ -46,9 +46,9 @@ export async function searchTicketsAction(query: string) {
         .select(`
             id, created_at, status, stripe_session_id,
             profile:profiles!inner ( full_name, email ),
-            product:app_products ( name ),
-            slot:event_slots (
-                product:app_products ( name )
+            product:products ( name ),
+            slot:slots (
+                product:products ( name )
             )
         `)
         .in('profile_id', profileIds)
@@ -86,7 +86,7 @@ export async function refundTicketAction(ticketId: string, stripeSessionId: stri
                 refund_reason: reason
             })
             .eq('id', ticketId)
-            .select('*, profile:profiles(full_name, email), product:app_products(name)')
+            .select('*, profile:profiles(full_name, email), product:products(name)')
             .single();
 
         if (updateError) throw updateError;
@@ -161,9 +161,9 @@ export async function checkInTicketAction(ticketId: string, notes?: string) {
             .select(`
                 *,
                 profile:profiles(full_name, email),
-                product:app_products(name),
-                slot:event_slots(
-                    product:app_products(name)
+                product:products(name),
+                slot:slots(
+                    product:products(name)
                 )
             `)
             .eq('id', ticketId)
