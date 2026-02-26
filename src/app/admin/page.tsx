@@ -41,6 +41,7 @@ export default async function AdminDashboard() {
         .select(`
             id, created_at, status,
             profile:profiles ( full_name, email ),
+            product:products ( name ),
             slot:slots (
                 start_time,
                 product:products ( name )
