@@ -236,3 +236,46 @@ export async function getRoleAction() {
         return { success: false, error: error.message };
     }
 }
+
+export async function updateSettingsAction(settings: {
+    chief_email: string;
+    telegram_bot_token: string;
+    telegram_chat_id: string;
+}) {
+    try {
+        const { createClient } = await import('@/utils/supabase/server');
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) return { success: false, error: 'Not authenticated' };
+
+        // Check if user is admin
+        const { data: roleData } = await supabaseAdmin
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .single();
+
+        if (roleData?.role !== 'admin') {
+            return { success: false, error: 'Unauthorized: Admin access required' };
+        }
+
+        const { error } = await supabaseAdmin
+            .from('admin_settings')
+            .update({
+                chief_email: settings.chief_email,
+                telegram_bot_token: settings.telegram_bot_token,
+                telegram_chat_id: settings.telegram_chat_id,
+                updated_at: new Date().toISOString(),
+                updated_by: user.id
+            })
+            .eq('id', 'default');
+
+        if (error) throw error;
+
+        return { success: true };
+    } catch (error: any) {
+        console.error('Failed to update settings:', error);
+        return { success: false, error: error.message || 'Server error' };
+    }
+}

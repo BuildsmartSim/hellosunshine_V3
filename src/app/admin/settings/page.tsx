@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { AdminSettingsManager } from './AdminSettingsManager';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export const revalidate = 0;
 
@@ -22,7 +23,7 @@ export default async function SettingsPage() {
         redirect('/admin');
     }
 
-    const { data: settings } = await supabase
+    const { data: settings } = await supabaseAdmin
         .from('admin_settings')
         .select('*')
         .eq('id', 'default')

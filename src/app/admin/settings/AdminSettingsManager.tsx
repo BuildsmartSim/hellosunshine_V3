@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
 
 interface AdminSettings {
     chief_email: string;
@@ -9,11 +8,12 @@ interface AdminSettings {
     telegram_chat_id: string;
 }
 
+import { updateSettingsAction } from '@/app/actions/tickets';
+
 export function AdminSettingsManager({ initialSettings }: { initialSettings: AdminSettings }) {
     const [settings, setSettings] = useState(initialSettings);
     const [isSaving, setIsSaving] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
-    const supabase = createClient();
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,17 +21,10 @@ export function AdminSettingsManager({ initialSettings }: { initialSettings: Adm
         setMessage({ text: '', type: '' });
 
         try {
-            const { error } = await supabase
-                .from('admin_settings')
-                .update({
-                    chief_email: settings.chief_email,
-                    telegram_bot_token: settings.telegram_bot_token,
-                    telegram_chat_id: settings.telegram_chat_id,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', 'default');
+            const res = await updateSettingsAction(settings);
 
-            if (error) throw error;
+            if (!res.success) throw new Error(res.error);
+
             setMessage({ text: 'Settings saved successfully!', type: 'success' });
         } catch (err: any) {
             setMessage({ text: err.message || 'Failed to save settings', type: 'error' });
