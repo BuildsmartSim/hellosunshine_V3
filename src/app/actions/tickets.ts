@@ -182,10 +182,10 @@ export async function checkInTicketAction(ticketId: string, notes?: string) {
             return { success: false, error: 'CANCELLED: This ticket has been refunded.' };
         }
 
-        if (ticket.checked_in_at) {
+        if (ticket.check_in_at) {
             return {
                 success: false,
-                error: `ALREADY SCANNED: This ticket was used at ${new Date(ticket.checked_in_at).toLocaleTimeString()}.`,
+                error: `ALREADY SCANNED: This ticket was used at ${new Date(ticket.check_in_at).toLocaleTimeString()}.`,
                 guestName: ticket.profile?.full_name
             };
         }
@@ -194,8 +194,8 @@ export async function checkInTicketAction(ticketId: string, notes?: string) {
         const { error: updateError } = await supabaseAdmin
             .from('tickets')
             .update({
-                checked_in_at: new Date().toISOString(),
-                check_in_notes: notes || null,
+                check_in_at: new Date().toISOString(),
+                // check_in_notes: notes || null,
                 status: 'used' // Mark as used
             })
             .eq('id', ticketId);
