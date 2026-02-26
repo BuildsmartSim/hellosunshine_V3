@@ -1,11 +1,28 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { StandardSection } from './StandardSection';
-import { LayeredPencil } from './LayeredPencil';
 import { submitContactForm } from '@/app/actions/contact';
 import { Button } from './Button';
 import { Polaroid } from './Polaroid';
+
+/* ─────────────────────────────────────────────
+   CONTACT SECTION — "Say Hello"
+   Editorial form, warm paper aesthetic, brand voice
+   ───────────────────────────────────────────── */
+
+const CHICLE: React.CSSProperties = {
+    fontFamily: `'ChicleForce', var(--font-chicle), cursive`,
+    fontSize: 'clamp(48px, 5vw, 78px)',
+    lineHeight: '0.95',
+    letterSpacing: '-0.01em',
+    color: 'var(--hss-charcoal, #2C2C2C)',
+};
+
+const HANDWRITING: React.CSSProperties = {
+    fontFamily: 'var(--font-handwriting, var(--font-caveat))',
+};
 
 export function ContactSection() {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,96 +56,176 @@ export function ContactSection() {
 
     return (
         <StandardSection id="contact" variant="naturalPaper" className="overflow-visible">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-                {/* Left Column: Visuals & Text */}
-                <div className="flex flex-col gap-8 md:pt-12">
-                    <div className="flex flex-col space-y-4">
-                        <LayeredPencil
-                            text="Say Hello"
-                            size="80px"
-                            hatchClass="hatch-aesthetic-yellow-bold"
-                            as="h2"
-                        />
-                        <p className="font-body text-charcoal/70 leading-relaxed max-w-md text-lg">
-                            Whether you're looking to book a private sanctuary, inquire about a festival, or just want to chat about the steam, we're here. Drop us a line below.
-                        </p>
+            {/* Watermark sun icon */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+                <Image
+                    src="/icons/sun.png"
+                    alt=""
+                    width={600}
+                    height={600}
+                    className="opacity-[0.03] rotate-12"
+                />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start relative z-10">
+
+                {/* ── Left column ── */}
+                <div className="flex flex-col gap-6 md:pt-4">
+
+                    {/* Header */}
+                    <div>
+                        <h2 style={CHICLE}>Say Hello</h2>
+                        <div className="mt-4 flex items-center gap-4">
+                            <div className="h-px flex-1 bg-charcoal/10" />
+                            <p className="text-charcoal/40 text-xs font-mono uppercase tracking-widest shrink-0">
+                                Let's talk
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="hidden md:block mt-8 -ml-8 -rotate-3 scale-90 opacity-90 transition-transform hover:scale-100 hover:rotate-0 hover:z-50 duration-500">
+                    {/* Body copy */}
+                    <p className="font-body text-charcoal/80 leading-relaxed text-lg max-w-md">
+                        Whether you're looking to book a private sanctuary, inquire about a festival, or just want to chat about the steam — we're here.
+                    </p>
+
+                    {/* Tim's voice */}
+                    <p className="text-2xl text-charcoal/60 -rotate-1 mt-2" style={HANDWRITING}>
+                        "The fire's always on — drop us a note."
+                    </p>
+
+                    {/* Polaroid */}
+                    <div className="mt-4 self-start">
                         <Polaroid
                             src="/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp"
                             label="Warm greetings."
-                            rotation="rotate-[4deg]"
+                            rotation="rotate-[3deg]"
                             size="w-64"
+                            className="hover:-rotate-1 hover:scale-105 transition-all duration-500"
                         />
                     </div>
                 </div>
 
-                {/* Right Column: The Form */}
-                <div className="bg-white/60 backdrop-blur-sm p-8 md:p-12 border border-charcoal/10 shadow-sm relative z-10" style={{ borderRadius: 'var(--hss-radius-card)' }}>
-                    {status === 'success' ? (
-                        <div className="flex flex-col items-center justify-center text-center h-full space-y-4 py-12">
-                            <div className="w-16 h-16 rounded-full bg-[#f8c630]/20 flex items-center justify-center mb-4 text-[#f8c630]">
-                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <h3 className="font-modern text-2xl text-charcoal font-bold">Message Sent</h3>
-                            <p className="font-body text-charcoal/60">We've received your note and will be in touch shortly.</p>
-                            <Button onClick={() => setStatus('idle')} className="mt-8 px-8 border border-charcoal/10 rounded-full bg-white hover:bg-neutral-50 text-charcoal text-sm font-bold tracking-widest uppercase">Send Another</Button>
-                        </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                            {status === 'error' && (
-                                <div className="p-4 bg-red-50 text-red-600 rounded text-sm border border-red-100">
-                                    {errorMessage}
+                {/* ── Right column — Form card ── */}
+                <div
+                    className="relative"
+                    style={{ transform: 'rotate(-0.8deg)' }}
+                >
+                    {/* Paper-texture card */}
+                    <div
+                        className="relative overflow-hidden"
+                        style={{
+                            backgroundColor: '#FDFAF3',
+                            borderRadius: '4px',
+                            boxShadow: '0 4px 24px rgba(44,44,44,0.08), 0 1px 4px rgba(44,44,44,0.06)',
+                            border: '1px solid rgba(44,44,44,0.07)',
+                        }}
+                    >
+                        {/* Subtle paper grain overlay */}
+                        <div
+                            className="absolute inset-0 pointer-events-none opacity-30 mix-blend-multiply"
+                            style={{
+                                backgroundImage: `url('/textures/paper.png')`,
+                                backgroundSize: '400px',
+                            }}
+                        />
+
+                        <div className="relative z-10 p-8 md:p-10">
+                            {status === 'success' ? (
+                                <div className="flex flex-col items-center justify-center text-center py-12 gap-5">
+                                    <div
+                                        className="w-16 h-16 rounded-full flex items-center justify-center"
+                                        style={{ backgroundColor: 'rgba(248,198,48,0.15)' }}
+                                    >
+                                        <svg className="w-8 h-8" fill="none" stroke="#F8C630" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-2xl font-display font-bold text-charcoal">Message Sent</h3>
+                                    <p className="text-charcoal/50 font-body">We've received your note and will be in touch shortly.</p>
+                                    <button
+                                        onClick={() => setStatus('idle')}
+                                        className="mt-4 text-sm font-body font-bold uppercase tracking-widest text-charcoal/40 hover:text-charcoal/80 transition-colors"
+                                    >
+                                        Send another →
+                                    </button>
                                 </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-7">
+                                    {status === 'error' && (
+                                        <div className="p-4 bg-red-50 text-red-600 rounded text-sm border border-red-100">
+                                            {errorMessage}
+                                        </div>
+                                    )}
+
+                                    {/* Name */}
+                                    <div className="flex flex-col gap-2 group">
+                                        <label htmlFor="name" className="text-xs uppercase tracking-[0.4em] text-charcoal/70 font-bold px-4">
+                                            Your name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            required
+                                            className="w-full bg-white/50 border border-charcoal/10 rounded-2xl px-6 py-4 text-xl text-charcoal outline-none transition-all focus:bg-white focus:shadow-xl focus:border-primary/50 group-hover:border-charcoal/30"
+                                            style={HANDWRITING}
+                                            placeholder="First & last"
+                                        />
+                                    </div>
+
+                                    {/* Email */}
+                                    <div className="flex flex-col gap-2 group">
+                                        <label htmlFor="email" className="text-xs uppercase tracking-[0.4em] text-charcoal/70 font-bold px-4">
+                                            Email address
+                                        </label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            required
+                                            className="w-full bg-white/50 border border-charcoal/10 rounded-2xl px-6 py-4 text-xl text-charcoal outline-none transition-all focus:bg-white focus:shadow-xl focus:border-primary/50 group-hover:border-charcoal/30"
+                                            style={HANDWRITING}
+                                            placeholder="hello@example.com"
+                                        />
+                                    </div>
+
+                                    {/* Message */}
+                                    <div className="flex flex-col gap-2 group">
+                                        <label htmlFor="message" className="text-xs uppercase tracking-[0.4em] text-charcoal/70 font-bold px-4">
+                                            Your message
+                                        </label>
+                                        <textarea
+                                            id="message"
+                                            name="message"
+                                            rows={4}
+                                            required
+                                            className="w-full bg-white/50 border border-charcoal/10 rounded-2xl px-6 py-4 text-xl text-charcoal outline-none transition-all focus:bg-white focus:shadow-xl focus:border-primary/50 group-hover:border-charcoal/30 resize-none"
+                                            style={HANDWRITING}
+                                            placeholder="How can we help?"
+                                        />
+                                    </div>
+
+                                    {/* Submit */}
+                                    <Button
+                                        type="submit"
+                                        variant="deepDry"
+                                        disabled={isSubmitting}
+                                        className="w-full justify-center mt-2"
+                                    >
+                                        {isSubmitting ? 'Sending…' : 'Send Message'}
+                                    </Button>
+                                </form>
                             )}
+                        </div>
+                    </div>
 
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="name" className="font-body text-sm font-bold uppercase tracking-widest text-charcoal/60">Name</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    required
-                                    className="px-4 py-3 bg-white border border-charcoal/20 rounded focus:border-[#f8c630] focus:ring-1 focus:ring-[#f8c630] outline-none transition-all font-body"
-                                    placeholder="Your full name"
-                                />
-                            </div>
-
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="email" className="font-body text-sm font-bold uppercase tracking-widest text-charcoal/60">Email Address</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    required
-                                    className="px-4 py-3 bg-white border border-charcoal/20 rounded focus:border-[#f8c630] focus:ring-1 focus:ring-[#f8c630] outline-none transition-all font-body"
-                                    placeholder="hello@example.com"
-                                />
-                            </div>
-
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="message" className="font-body text-sm font-bold uppercase tracking-widest text-charcoal/60">Message</label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    rows={5}
-                                    required
-                                    className="px-4 py-3 bg-white border border-charcoal/20 rounded focus:border-[#f8c630] focus:ring-1 focus:ring-[#f8c630] outline-none transition-all font-body resize-y"
-                                    placeholder="How can we help you?"
-                                ></textarea>
-                            </div>
-
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="w-full justify-center rounded-full py-4 mt-2 font-bold tracking-widest uppercase text-sm border-0 bg-[#f8c630] hover:bg-opacity-90 text-charcoal transition-all shadow-sm hover:-translate-y-1 hover:shadow-md"
-                            >
-                                {isSubmitting ? 'Sending...' : 'Send Message'}
-                            </Button>
-                        </form>
-                    )}
+                    {/* Drop shadow / lift effect */}
+                    <div
+                        className="absolute inset-0 -z-10 opacity-20 blur-md translate-y-3 translate-x-1"
+                        style={{ backgroundColor: '#2C2C2C', borderRadius: '4px' }}
+                    />
                 </div>
+
             </div>
         </StandardSection>
     );

@@ -41,23 +41,23 @@ export function DigitalTicket({ ticketId, customerName, eventTitle, passName, da
                 <div className="relative z-10 flex flex-col items-center">
                     <div className="w-full border-b border-dashed border-charcoal/20 pb-4 mb-6 flex justify-between items-end">
                         <div className="text-left">
-                            <span className="text-[8px] uppercase tracking-[0.4em] text-charcoal/40 font-bold block mb-1">Hellosunshinesauna</span>
+                            <span className="text-[11px] uppercase tracking-[0.4em] text-charcoal/70 font-bold block mb-1">Hellosunshinesauna</span>
                             <h3 className="text-lg font-black text-charcoal uppercase leading-tight" style={{ fontFamily: fonts.mono }}>
                                 {eventTitle}
                             </h3>
                         </div>
                         <div className="text-right">
-                            <span className="text-[10px] font-mono text-primary font-bold">{date}</span>
+                            <span className="text-xs font-mono text-primary font-bold">{date}</span>
                         </div>
                     </div>
 
                     <div className="w-full mb-8">
-                        <span className="text-[8px] uppercase tracking-[0.4em] text-charcoal/40 font-bold block mb-2">Guest</span>
+                        <span className="text-[11px] uppercase tracking-[0.4em] text-charcoal/70 font-bold block mb-2">Guest</span>
                         <p className="text-2xl font-handwriting text-charcoal">{customerName}</p>
                     </div>
 
                     <div className="w-full mb-8 py-4 border-y border-charcoal/5">
-                        <span className="text-[8px] uppercase tracking-[0.4em] text-charcoal/40 font-bold block mb-2">Pass Type</span>
+                        <span className="text-[11px] uppercase tracking-[0.4em] text-charcoal/70 font-bold block mb-2">Pass Type</span>
                         <p className="text-sm font-bold text-charcoal uppercase tracking-widest">{passName}</p>
                     </div>
 
@@ -74,8 +74,8 @@ export function DigitalTicket({ ticketId, customerName, eventTitle, passName, da
                     </div>
 
                     <div className="text-center">
-                        <span className="text-[8px] uppercase tracking-[0.4em] text-charcoal/40 font-bold block mb-1">Ticket ID</span>
-                        <span className="text-[10px] font-mono text-charcoal/60">{ticketId.substring(0, 18).toUpperCase()}...</span>
+                        <span className="text-[11px] uppercase tracking-[0.4em] text-charcoal/70 font-bold block mb-1">Ticket ID</span>
+                        <span className="text-xs font-mono text-charcoal/70">{ticketId.substring(0, 18).toUpperCase()}...</span>
                     </div>
                 </div>
 

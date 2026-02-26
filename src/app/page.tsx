@@ -31,55 +31,54 @@ export default function Home() {
 
         {/* GUESTBOOK SECTION */}
         <StandardSection id="guestbook" variant="naturalPaper">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+          {/* Content row: polaroids left, book right */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 
-            {/* Left Column: Polaroid Stack (Desktop Only) */}
-            <div className="hidden lg:flex lg:col-span-4 flex-col gap-12 items-center justify-center -mt-10">
+            {/* Left: Polaroid stack — 3 cols */}
+            <div className="hidden lg:flex lg:col-span-3 flex-col gap-8 items-center">
               <Polaroid
                 src="/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp"
                 label="Morning Mist"
-                rotation="rotate-[-6deg]"
-                size="w-64"
+                rotation="rotate-[-5deg]"
+                size="w-52"
                 className="hover:z-50 transition-all"
               />
               <Polaroid
                 src="/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp"
                 label="Nightfall"
                 rotation="rotate-[4deg]"
-                size="w-64"
-                className="hover:z-50 transition-all -mt-4 translate-x-4"
+                size="w-52"
+                className="hover:z-50 transition-all translate-x-3"
               />
               <Polaroid
                 src="/optimized/polaroids/webp/sauna-interior-wood-stove-glow.webp"
                 label="The Hearth"
-                rotation="rotate-[-2deg]"
-                size="w-64"
-                className="hover:z-50 transition-all -mt-4 -translate-x-2"
+                rotation="rotate-[-3deg]"
+                size="w-52"
+                className="hover:z-50 transition-all -translate-x-2"
               />
             </div>
 
-            {/* Right Column: Title + Guestbook */}
-            <div className="lg:col-span-8 flex flex-col items-center lg:items-start text-center lg:text-left">
-              <SectionHeader
-                line1="The"
-                line2="Guestbook"
-                subtitle="Our shared story."
-                description="Voices from the steam. Moments captured in the wild. Flip through the memories of those who came before."
-                className="mb-16"
-              />
-
-              <div className="relative w-full flex justify-center">
-                <div className="w-full" style={{ transform: 'rotate(-2deg)' }}>
-                  <Guestbook />
-                </div>
+            {/* Right: Header (centered) + rule + book — 9 cols */}
+            <div className="lg:col-span-9 flex flex-col items-center text-center">
+              <h2 style={{
+                fontFamily: `'ChicleForce', var(--font-chicle), cursive`,
+                fontSize: 'clamp(48px, 5vw, 78px)',
+                lineHeight: '0.95',
+                letterSpacing: '-0.01em',
+                color: 'var(--hss-charcoal, #2C2C2C)',
+              }}>
+                The Guestbook
+              </h2>
+              <p className="mt-3 text-charcoal/45 text-xl" style={{ fontFamily: 'var(--font-handwriting)' }}>
+                Voices from the steam. Moments captured in the wild.
+              </p>
+              <div className="h-px w-full bg-charcoal/10 mt-6 mb-6" />
+              <div className="w-full">
+                <Guestbook />
               </div>
             </div>
 
-          </div>
-
-          {/* Decorative elements */}
-          <div className="absolute top-20 -left-20 opacity-5 rotate-12 pointer-events-none">
-            <Image src="/icons/heart.png" alt="" width={300} height={300} />
           </div>
         </StandardSection>
 

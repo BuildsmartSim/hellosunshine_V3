@@ -19,10 +19,10 @@ export const colors = {
     secondary: "#D4A32A",     // Darker ochre
 
     /** Neutrals */
-    charcoal: "#2C2C2C",     // Primary text
-    charcoalDeep: "#1F1A17",     // Stroke / darkest ink
-    smokedWood: "#322B28",     // Shadow tone champion (ID 36003)
-    woodDark: "#3E2723",     // Deep cedar brown
+    charcoal: "#1A1A1A",     // Darker charcoal for legibility
+    charcoalDeep: "#0D0D0D",     // Almost black for strokes
+    smokedWood: "#26201D",     // Darker shadow tone
+    woodDark: "#2B1B18",     // Deeper cedar
     woodLight: "#E0D5C1",     // Paper / canvas tone
 
     /** Backgrounds */
@@ -60,10 +60,10 @@ export const fontRoles = {
     h2: { font: fonts.accent, weight: "normal" },
     h3: { font: fonts.accent, weight: "normal" },
     subtitle: { font: fonts.handwriting, weight: "normal" },
-    annotation: { font: fonts.handwriting, weight: "normal" },
-    body: { font: fonts.body, weight: "400", lineHeight: "1.7", letterSpacing: "0.01em" },
-    bodyBold: { font: fonts.body, weight: "700", lineHeight: "1.7", letterSpacing: "0.01em" },
-    label: { font: fonts.body, weight: "700" },
+    annotation: { font: fonts.handwriting, weight: "normal", size: "13px" },
+    body: { font: fonts.body, weight: "400", lineHeight: "1.8", letterSpacing: "0.01em" },
+    bodyBold: { font: fonts.body, weight: "700", lineHeight: "1.8", letterSpacing: "0.01em" },
+    label: { font: fonts.body, weight: "700", size: "12px", tracking: "0.1em" },
 } as const;
 
 

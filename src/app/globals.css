@@ -239,6 +239,47 @@ img,
     display: inline-block;
   }
 
+  /* Fire-through-glass glow — layered spectrum, barely-there flicker */
+  .hearth-glow {
+    color: #EBE5CE !important;
+    text-shadow:
+      0 0 3px rgba(255, 255, 255, 0.7),
+      /* white-hot core */
+      0 0 8px rgba(235, 229, 206, 0.5),
+      /* cream mid */
+      0 0 18px rgba(210, 200, 170, 0.25),
+      /* warm stone outer */
+      0 0 35px rgba(180, 165, 130, 0.1);
+    /* far warm stone */
+    filter:
+      drop-shadow(0 0 12px rgba(235, 229, 206, 0.2)) drop-shadow(0 0 28px rgba(200, 190, 160, 0.1));
+    animation: hearth-flicker 3.2s ease-in-out infinite;
+  }
+
+  @keyframes hearth-flicker {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    30% {
+      opacity: 0.96;
+    }
+
+    55% {
+      opacity: 0.98;
+    }
+
+    75% {
+      opacity: 0.95;
+    }
+  }
+
+  .font-chicle {
+    font-family: 'ChicleForce', var(--font-accent);
+  }
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;

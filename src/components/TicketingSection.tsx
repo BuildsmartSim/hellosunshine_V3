@@ -25,14 +25,19 @@ export default function TicketingSection() {
 
     return (
         <StandardSection id="ticketing" variant="naturalPaper" showOverlap={true}>
-            <div className="grid grid-cols-1 md:grid-cols-12 mb-8 md:mb-12">
-                <div className="col-span-12">
-                    <SectionHeader
-                        line1="Festival"
-                        line2="Season"
-                        subtitle="Choose your journey into warmth."
-                    />
-                </div>
+            <div className="md:mb-10">
+                <h2 style={{
+                    fontFamily: `'ChicleForce', var(--font-chicle), cursive`,
+                    fontSize: 'clamp(48px, 5vw, 78px)',
+                    lineHeight: '0.95',
+                    letterSpacing: '-0.01em',
+                    color: 'var(--hss-charcoal, #2C2C2C)',
+                }}>
+                    Festival Season
+                </h2>
+                <p className="mt-4 text-charcoal/45" style={{ fontFamily: `var(--font-handwriting)` }}>
+                    Choose your journey into warmth.
+                </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 items-center justify-items-center">
@@ -44,10 +49,7 @@ export default function TicketingSection() {
                 ))}
             </div>
 
-            <div className="mt-24 flex flex-col items-center gap-8">
-                <div className="h-[2px] w-16 bg-charcoal/5"></div>
-                <p className="font-handwriting text-charcoal/30 text-2xl">Limited availability for all tiers</p>
-            </div>
+
         </StandardSection>
     );
 }

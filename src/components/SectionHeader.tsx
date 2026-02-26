@@ -25,52 +25,35 @@ interface SectionHeaderProps {
  */
 
 export function SectionHeader({ line1, line2 = "", subtitle, description, className = "", centered = false }: SectionHeaderProps) {
-    return (
-        <div
-            className={`${className} ${centered ? 'items-center text-center' : ''}`}
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 'var(--hss-header-subtitle-gap, 16px)'
-            }}
-        >
-            <div className="relative">
-                {/* Line 1: 50px Standard */}
-                <LayeredPencil
-                    text={line1}
-                    size="50px"
-                    hatchClass={pencil.hatch.charcoalShaded}
-                    strokeColor="var(--hss-charcoal, #2C2C2C)"
-                    fillOpacity="1"
-                />
+    const fullHeading = line2 ? `${line1} ${line2}` : line1;
 
-                {/* Line 2: 85px with dynamic interlock */}
-                <LayeredPencil
-                    text={line2}
-                    size="85px"
-                    hatchClass={pencil.hatch.charcoalShaded}
-                    strokeColor="var(--hss-charcoal, #2C2C2C)"
-                    className="block"
-                    style={{ marginTop: 'var(--hss-header-interlock, 0px)' }}
-                    fillOpacity="1"
-                />
-            </div>
+    return (
+        <div className={`${className} ${centered ? 'flex flex-col items-center text-center' : ''}`}>
+            <h2
+                style={{
+                    fontFamily: `'ChicleForce', var(--font-chicle), cursive`,
+                    fontSize: 'clamp(48px, 5vw, 78px)',
+                    lineHeight: '0.95',
+                    letterSpacing: '-0.01em',
+                    color: 'var(--hss-charcoal, #2C2C2C)',
+                }}
+                className="mb-1"
+            >
+                {fullHeading}
+            </h2>
 
             {(subtitle || description) && (
-                <div
-                    className="flex flex-col border-t border-charcoal/10"
-                    style={{ gap: 'calc(var(--hss-header-subtitle-gap, 16px) * 1.5)', paddingTop: 'calc(var(--hss-header-subtitle-gap, 16px) * 0.75)' }}
-                >
+                <div className="flex flex-col gap-2">
                     {subtitle && (
-                        <div className="space-y-3">
-                            <p style={{ fontFamily: fonts.handwriting }} className="text-2xl text-charcoal/50 leading-snug">
-                                {subtitle}
-                            </p>
-                            <div className="h-[2px] w-12" style={{ backgroundColor: 'var(--hss-primary, #F8C630)' }}></div>
-                        </div>
+                        <p
+                            style={{ fontFamily: fonts.handwriting }}
+                            className="text-2xl text-charcoal/45 leading-relaxed"
+                        >
+                            {subtitle}
+                        </p>
                     )}
                     {description && (
-                        <div className="text-xl font-display italic text-charcoal/40 max-w-xl">
+                        <div className="text-xl font-display italic text-charcoal/40 max-w-xl mt-4">
                             {description}
                         </div>
                     )}

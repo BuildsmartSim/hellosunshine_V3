@@ -9,6 +9,8 @@ interface HeaderProps {
     description?: string;
     className?: string;
     centered?: boolean;
+    line1Size?: string;
+    line2Size?: string;
 }
 
 // Helper for the animated dappled overlay (we reuse this across all 3 options)
@@ -16,18 +18,22 @@ function DappledOverlay() {
     return (
         <>
             <div
-                className="absolute inset-0 pointer-events-none mix-blend-screen opacity-80 z-20"
+                className="absolute inset-0 pointer-events-none mix-blend-screen opacity-70 z-20"
                 style={{
-                    backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, transparent 20%), radial-gradient(circle at 70% 60%, rgba(255,255,255,0.9) 0%, transparent 30%), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.7) 0%, transparent 25%)',
-                    backgroundSize: '200% 200%',
+                    backgroundImage: [
+                        'radial-gradient(ellipse 100px 80px at 25% 40%, rgba(255,255,255,0.75) 0%, transparent 100%)',
+                        'radial-gradient(ellipse 80px 60px at 65% 55%, rgba(255,255,255,0.85) 0%, transparent 100%)',
+                        'radial-gradient(ellipse 60px 50px at 45% 80%, rgba(255,255,255,0.65) 0%, transparent 100%)',
+                    ].join(', '),
+                    backgroundSize: '100% 100%',
                     animation: 'dapple 10s ease-in-out infinite alternate',
                 }}
             ></div>
             <style jsx>{`
                 @keyframes dapple {
-                    0% { background-position: 0% 0%; opacity: 0.5; }
-                    50% { opacity: 0.8; }
-                    100% { background-position: 100% 100%; opacity: 0.6; }
+                    0%   { background-position: 0% 0%;   opacity: 0.5; }
+                    50%  { opacity: 0.75; }
+                    100% { background-position: 30% 20%; opacity: 0.6; }
                 }
             `}</style>
         </>
@@ -76,7 +82,7 @@ export function DappledHeaderShadow({ line1, line2 = "", subtitle, description, 
 }
 
 // Option C2: Yellow Text + Delicate Charcoal Stroke
-export function DappledHeaderStroke({ line1, line2 = "", subtitle, description, className = "", centered = false }: HeaderProps) {
+export function DappledHeaderStroke({ line1, line2 = "", subtitle, description, className = "", centered = false, line1Size = '50px', line2Size = '95px' }: HeaderProps) {
     const textStyle = {
         fontFamily: fonts.accent,
         color: 'var(--hss-primary, #F8C630)',
@@ -89,11 +95,11 @@ export function DappledHeaderStroke({ line1, line2 = "", subtitle, description, 
             <DappledOverlay />
 
             <div className="relative z-10 flex flex-col">
-                <span className="block" style={{ ...textStyle, fontSize: '50px', lineHeight: 1 }}>
+                <span className="block" style={{ ...textStyle, fontSize: line1Size, lineHeight: 1 }}>
                     {line1}
                 </span>
                 {line2 && (
-                    <span className="block" style={{ ...textStyle, fontSize: '95px', lineHeight: 0.95, marginTop: '-5px' }}>
+                    <span className="block" style={{ ...textStyle, fontSize: line2Size, lineHeight: 0.95, marginTop: '-5px' }}>
                         {line2}
                     </span>
                 )}

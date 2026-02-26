@@ -215,8 +215,8 @@ export default function Guestbook() {
 
             <motion.div
                 className="relative w-full h-full [transform-style:preserve-3d]"
-                initial={{ x: '-40%' }}
-                animate={{ x: spreadIndex === 0 ? '-40%' : '0%' }}
+                initial={{ x: '-25%' }}
+                animate={{ x: spreadIndex === 0 ? '-25%' : '0%' }}
                 transition={{
                     duration: 0.8,
                     ease: [0.645, 0.045, 0.355, 1]

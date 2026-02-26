@@ -10,7 +10,7 @@ interface TicketInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export function TicketInput({ label, ...props }: TicketInputProps) {
     return (
         <div className="flex flex-col gap-2 w-full group">
-            <label className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 font-bold px-4">
+            <label className="text-xs uppercase tracking-[0.4em] text-charcoal/70 font-bold px-4">
                 {label}
             </label>
             <div className="relative">

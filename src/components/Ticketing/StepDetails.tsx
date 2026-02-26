@@ -100,7 +100,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                 />
 
                 <div className="mt-8">
-                    <label className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 font-bold px-4 mb-4 block">
+                    <label className="text-sm uppercase tracking-[0.4em] text-charcoal/90 font-bold px-4 mb-4 block">
                         Health & Safety Waiver
                     </label>
                     <WaiverSection />
@@ -116,7 +116,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                                 {formData.waiverAccepted && <span className="text-white text-xl">✓</span>}
                             </div>
                         </div>
-                        <span className="text-xs font-mono text-charcoal/60 uppercase tracking-widest group-hover:text-charcoal transition-colors">
+                        <span className="text-sm font-mono text-charcoal/70 uppercase tracking-widest group-hover:text-charcoal transition-colors">
                             I have read and agree to the Health & Safety instructions
                         </span>
                     </label>

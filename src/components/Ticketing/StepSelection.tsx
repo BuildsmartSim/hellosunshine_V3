@@ -28,7 +28,7 @@ export function StepSelection({ events, onSelect, selectedTier }: StepSelectionP
     }, [events]);
 
     return (
-        <div className="w-full max-w-6xl mx-auto px-4">
+        <div className="w-full mx-auto px-4">
             <div className="flex flex-col items-center mb-16">
                 <SectionHeader
                     line1="Choose"

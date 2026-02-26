@@ -38,6 +38,7 @@ export const SERVICE_ICONS: Record<string, string> = {
 
 export const getFestivalData = async (): Promise<EventData[]> => {
     try {
+        console.log('[DEBUG] getFestivalData: Querying app_events...');
         const { data, error } = await supabaseAdmin
             .from('app_events')
             .select('*')
@@ -45,11 +46,16 @@ export const getFestivalData = async (): Promise<EventData[]> => {
             .order('created_at', { ascending: true });
 
         if (error) {
-            console.error("Error fetching events:", error);
+            console.error("[DEBUG] getFestivalData: Supabase Error during fetch:", error.message || error);
             return [];
         }
 
-        if (!data) return [];
+        if (!data) {
+            console.warn("[DEBUG] getFestivalData: Supabase returned null data.");
+            return [];
+        }
+
+        console.log(`[DEBUG] getFestivalData: Successfully received ${data.length} raw events.`);
 
         return data.map((event: any): EventData => ({
             id: event.id,

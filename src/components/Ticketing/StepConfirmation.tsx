@@ -45,26 +45,26 @@ export function StepConfirmation({ formData, selectedTier }: StepConfirmationPro
                     <h2 className="text-4xl font-black text-charcoal uppercase mb-2" style={{ fontFamily: fonts.accent }}>
                         Booking Confirmed
                     </h2>
-                    <p className="font-handwriting text-2xl text-charcoal/60 mb-12">
+                    <p className="font-handwriting text-2xl text-charcoal/80 mb-12">
                         Get ready for the warmth, {formData.name.split(' ')[0]}.
                     </p>
 
                     <div className="w-full border-t border-dashed border-charcoal/20 pt-8 mb-8 text-left">
                         <div className="flex justify-between items-center mb-4">
-                            <span className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 font-bold">Pass Tier</span>
+                            <span className="text-xs uppercase tracking-[0.4em] text-charcoal/70 font-bold">Pass Tier</span>
                             <span className="text-sm font-bold text-charcoal uppercase">{selectedTier?.title}</span>
                         </div>
                         <div className="flex justify-between items-center mb-4">
-                            <span className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 font-bold">Price</span>
+                            <span className="text-xs uppercase tracking-[0.4em] text-charcoal/70 font-bold">Price</span>
                             <span className="text-sm font-bold text-charcoal">{selectedTier?.featuredPrice}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-[10px] uppercase tracking-[0.4em] text-charcoal/40 font-bold">Booking ID</span>
+                            <span className="text-xs uppercase tracking-[0.4em] text-charcoal/70 font-bold">Booking ID</span>
                             <span className="text-sm font-mono text-primary font-bold">HSS-2026-8821</span>
                         </div>
                     </div>
 
-                    <p className="text-xs text-charcoal/40 leading-relaxed italic mb-12">
+                    <p className="text-sm text-charcoal/70 leading-relaxed italic mb-12">
                         A digital copy of your receipt and entrance instructions has been sent to {formData.email}.
                     </p>
 

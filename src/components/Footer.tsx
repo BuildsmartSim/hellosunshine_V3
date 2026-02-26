@@ -11,14 +11,44 @@ export default function Footer() {
 
     if (!hasMounted) return null;
     return (
-        <footer className="relative bg-[#2C3333] text-[#EBE5CE] py-10 px-8 overflow-hidden">
-            {/* Cedar Wood Background Overlay - Tactile Feel */}
-            <div className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay"
+        <footer className="relative text-[#EBE5CE] py-10 px-8 overflow-hidden"
+            style={{ backgroundColor: '#1C1E1F' }}>
+            {/* Dark Iron Texture — layered CSS gradients + noise */}
+            {/* Layer 1: vertical brushed-metal grain */}
+            <div className="absolute inset-0 pointer-events-none"
                 style={{
-                    backgroundImage: `url('${textures.cedar}')`,
-                    backgroundSize: '600px',
-                    backgroundRepeat: 'repeat'
+                    backgroundImage: `repeating-linear-gradient(
+                        90deg,
+                        rgba(255,255,255,0.012) 0px,
+                        rgba(255,255,255,0.012) 1px,
+                        transparent 1px,
+                        transparent 4px
+                    )`,
                 }}></div>
+            {/* Layer 2: wide tonal sweep — gives the iron its depth & slight warp */}
+            <div className="absolute inset-0 pointer-events-none opacity-70"
+                style={{
+                    backgroundImage: `linear-gradient(
+                        180deg,
+                        rgba(255,255,255,0.04) 0%,
+                        rgba(0,0,0,0.15) 40%,
+                        rgba(255,255,255,0.03) 70%,
+                        rgba(0,0,0,0.1) 100%
+                    )`,
+                }}></div>
+            {/* Layer 3: very faint specular sheen — catches the hearth light */}
+            <div className="absolute inset-0 pointer-events-none opacity-30"
+                style={{
+                    backgroundImage: `radial-gradient(ellipse 80% 40% at 30% 50%, rgba(180,160,110,0.08) 0%, transparent 70%)`,
+                }}></div>
+            {/* Layer 4: SVG noise grain for gritty iron feel */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.18]" xmlns="http://www.w3.org/2000/svg">
+                <filter id="iron-noise">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" />
+                    <feColorMatrix type="saturate" values="0" />
+                </filter>
+                <rect width="100%" height="100%" filter="url(#iron-noise)" />
+            </svg>
 
             <div
                 className="mx-auto relative z-10"
@@ -26,18 +56,23 @@ export default function Footer() {
             >
                 {/* Top Row: Brand & Nav Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center border-b border-[#EBE5CE]/10 pb-8 mb-8">
-                    <div className="text-center md:text-left mb-6 md:mb-0">
-                        <LayeredPencil
-                            text="Hello Sunshine"
-                            as="h3"
-                            size="clamp(3rem, 8vw, 4.5rem)"
-                            hatchClass={pencil.hatch.creamBold}
-                            strokeColor="#FDFCF9"
-                            strokeWidth="1.2px"
-                            blendClass="pencil-blend-screen"
-                            className="mb-2"
-                        />
-                        <p className="text-2xl text-[#EBE5CE]/60 -rotate-1" style={{ fontFamily: 'var(--font-caveat)' }}>
+                    <div className="text-center md:text-left mb-6 md:mb-0 relative py-4">
+                        {/* Light Spill Background */}
+                        <div className="absolute inset-0 z-0 pointer-events-none opacity-20 blur-3xl scale-125 translate-y-[-10%]"
+                            style={{
+                                background: 'radial-gradient(circle, rgba(235, 229, 206, 0.3) 0%, transparent 80%)'
+                            }}
+                        ></div>
+
+                        <h3 className="hearth-glow mb-2 relative z-10" style={{
+                            fontFamily: 'var(--font-chicle)',
+                            fontSize: 'clamp(3.5rem, 10vw, 5.5rem)',
+                            lineHeight: '1.05',
+                            letterSpacing: '0.02em'
+                        }}>
+                            Hello Sunshine
+                        </h3>
+                        <p className="text-2xl text-[#EBE5CE]/60 -rotate-1 relative z-10" style={{ fontFamily: 'var(--font-caveat)' }}>
                             Hand-built stories in steam.
                         </p>
                     </div>
@@ -93,9 +128,18 @@ export default function Footer() {
                     </div>
 
                     {/* Right: Newsletter Sign-up */}
-                    <div className="md:col-span-5 lg:col-span-5 flex flex-col items-center md:items-end">
+                    <div className="md:col-span-5 lg:col-span-5 flex flex-col items-center md:items-end relative">
+                        {/* Light Spill Background */}
+                        <div className="absolute inset-0 z-0 pointer-events-none opacity-15 blur-3xl scale-150"
+                            style={{
+                                background: 'radial-gradient(circle, rgba(248, 198, 48, 0.2) 0%, transparent 80%)',
+                                transform: 'translate(20%, -20%)'
+                            }}
+                        ></div>
+
                         <span
-                            className="text-4xl tracking-wide text-[#EBE5CE]/90 mb-4" style={{ fontFamily: 'var(--font-chicle)' }}
+                            className="text-4xl tracking-wide hearth-glow mb-4 relative z-10"
+                            style={{ fontFamily: 'var(--font-chicle)' }}
                         >
                             Get the warmth.
                         </span>
@@ -123,8 +167,9 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Subtle Gradient Fade at the top */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#EBE5CE]/10 to-transparent"></div>
+            {/* Subtle Gradient Fade at the top - Enhanced with a soft glow line */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F8C630]/20 to-transparent"></div>
+            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/20 to-transparent pointer-events-none"></div>
         </footer>
     );
 }

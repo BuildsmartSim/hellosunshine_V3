@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState } from 'react';
 import { useHasMounted } from '@/design-system/MediaContext';
+import { Button } from '@/components/Button';
 
 const LOGO_SRC = "/HSSLOGO black YELLOW.png";
 
@@ -82,13 +83,12 @@ export default function Header() {
 
                 {/* Right: Strong Call to Action */}
                 <div className="flex items-center gap-4">
-                    <button
+                    <Button
+                        variant="deepDry"
                         onClick={() => document.querySelector('#ticketing')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="px-6 py-3 md:px-8 md:py-4 bg-[#f8c630] text-charcoal font-bold uppercase tracking-widest text-xs md:text-sm rounded-full hover:bg-opacity-90 hover:scale-[1.02] hover:-translate-y-0.5 transition-all shadow-sm flex items-center gap-2"
                     >
-                        <span>Book Now</span>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </button>
+                        Book Now
+                    </Button>
                 </div>
             </div>
         </header>

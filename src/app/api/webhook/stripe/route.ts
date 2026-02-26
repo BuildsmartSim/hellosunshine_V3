@@ -96,6 +96,83 @@ export async function POST(req: Request) {
             console.error('Error processing webhook success:', err);
             return NextResponse.json({ error: 'Database sync failed' }, { status: 500 });
         }
+    } else if (event.type === 'checkout.session.expired') {
+        const session = event.data.object as any;
+
+        // Delete the pending ticket reservation to release inventory back to the pool
+        const { error: deleteError } = await supabaseAdmin
+            .from('tickets')
+            .delete()
+            .match({
+                stripe_session_id: session.id,
+                status: 'pending'
+            });
+
+        if (deleteError) {
+            console.error('Error cleaning up expired session:', deleteError);
+            // Even if delete fails, we return 200 so Stripe doesn't retry a failed cleanup
+        } else {
+            console.log(`Successfully cleaned up expired session: ${session.id}`);
+        }
+    } else if (event.type === 'charge.refunded') {
+        const charge = event.data.object as any;
+        const paymentIntentId = charge.payment_intent;
+
+        // 1. Find the checkout session using the payment intent
+        let stripeSessionId = charge.metadata?.session_id;
+
+        if (!stripeSessionId && paymentIntentId) {
+            try {
+                const sessions = await stripe.checkout.sessions.list({
+                    payment_intent: paymentIntentId,
+                    limit: 1
+                });
+                if (sessions.data.length > 0) {
+                    stripeSessionId = sessions.data[0].id;
+                }
+            } catch (err) {
+                console.error('Error fetching session from Stripe during refund:', err);
+            }
+        }
+
+        // 2. Find and cancel the ticket
+        if (stripeSessionId) {
+            const { data: ticket } = await supabaseAdmin
+                .from('tickets')
+                .select('id, profile_id')
+                .eq('stripe_session_id', stripeSessionId)
+                .single();
+
+            if (ticket) {
+                await supabaseAdmin
+                    .from('tickets')
+                    .update({ status: 'cancelled' })
+                    .eq('id', ticket.id);
+
+                // Decrement sweats
+                const { error: updateError } = await supabaseAdmin.rpc('decrement_sweats', {
+                    profile_uuid: ticket.profile_id
+                });
+
+                if (updateError) {
+                    // Fallback: get current and decrement
+                    const { data: profile } = await supabaseAdmin
+                        .from('profiles')
+                        .select('total_sweats')
+                        .eq('id', ticket.profile_id)
+                        .single();
+
+                    if (profile) {
+                        await supabaseAdmin
+                            .from('profiles')
+                            .update({ total_sweats: Math.max(0, (profile.total_sweats || 0) - 1) })
+                            .eq('id', ticket.profile_id);
+                    }
+                }
+
+                console.log(`Successfully cancelled ticket ${ticket.id} due to refund.`);
+            }
+        }
     }
 
     return NextResponse.json({ received: true });

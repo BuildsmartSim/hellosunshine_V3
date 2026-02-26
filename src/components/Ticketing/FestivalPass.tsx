@@ -26,12 +26,22 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
         <motion.div
             style={{
                 ...style,
-                filter: 'drop-shadow(0 calc(15px * var(--shadow-intensity, 1)) 15px rgba(0, 0, 0, 0.15)) drop-shadow(0 calc(25px * var(--shadow-intensity, 1)) 45px rgba(0, 0, 0, 0.2))',
+                filter: isSelected
+                    ? 'drop-shadow(0 30px 30px rgba(0, 0, 0, 0.2)) drop-shadow(0 50px 80px rgba(0, 0, 0, 0.25))'
+                    : 'drop-shadow(0 calc(15px * var(--shadow-intensity, 1)) 15px rgba(0, 0, 0, 0.15)) drop-shadow(0 calc(25px * var(--shadow-intensity, 1)) 45px rgba(0, 0, 0, 0.2))',
                 transform: isTeaser ? `rotate(calc(${index % 2 === 0 ? '0.5' : '-0.5'} * var(--card-tilt, 1deg)))` : `rotate(calc(${index % 2 === 0 ? '1' : '-1'} * var(--card-tilt, 1deg)))`
             }}
-            whileHover={{ scale: 1.02, y: -5, rotate: 0, zIndex: 100 }}
-            transition={{ type: "spring", stiffness: 80, damping: 20 }}
-            className={`relative w-full ${isTeaser ? 'max-w-[300px] min-h-[400px]' : 'max-w-[340px] min-h-[550px]'} h-auto group cursor-pointer ${className} ${isSelected ? 'ring-4 ring-primary ring-offset-4 rounded-lg' : ''}`}
+            animate={{
+                y: isSelected ? -8 : 0,
+                scale: isSelected ? 1.02 : 1,
+            }}
+            whileHover={{ scale: 1.02, y: -8, rotate: 0, zIndex: 100 }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+            className={`relative w-full ${isTeaser ? 'max-w-[380px] min-h-[400px]' : 'max-w-[420px] min-h-[550px]'} h-auto group cursor-pointer ${className} 
+                ${isSelected
+                    ? 'z-50'
+                    : ''
+                }`}
             onClick={() => onSelect?.(data)}
         >
             <div
@@ -74,15 +84,15 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
                     {!isTeaser && (
                         <>
                             <div className="flex-1 border-y border-charcoal/10 py-4 flex flex-col gap-4">
-                                <p className="text-xs text-charcoal/80 leading-relaxed italic text-justify" style={{ fontFamily: fonts.body }}>
+                                <p className="text-sm text-charcoal/80 leading-relaxed" style={{ fontFamily: fonts.handwriting }}>
                                     &quot;{data.description}&quot;
                                 </p>
 
                                 <div className="space-y-1.5 mt-2">
-                                    <span className="text-[8px] uppercase tracking-widest text-charcoal/30 font-bold block">Included Facilities:</span>
+                                    <span className="text-[11px] uppercase tracking-widest text-charcoal/60 font-bold block">Included Facilities:</span>
                                     <div className="flex flex-wrap gap-x-3 gap-y-1">
                                         {data.facilities.map((f, i) => (
-                                            <span key={i} className="text-[10px] font-mono text-charcoal/60 flex items-center gap-1">
+                                            <span key={i} className="text-xs font-mono text-charcoal/70 flex items-center gap-1">
                                                 <span className="w-1 h-1 rounded-full bg-primary/40 block"></span>
                                                 {f}
                                             </span>
@@ -114,7 +124,7 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
 
                     <div className="mt-auto pt-4 flex justify-between items-end">
                         <div className="flex flex-col">
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-charcoal/50 font-bold mb-0.5">{isTeaser ? 'Starting At' : 'Entry Tier'}</span>
+                            <span className="text-xs uppercase tracking-[0.2em] text-charcoal/70 font-bold mb-0.5">{isTeaser ? 'Starting At' : 'Entry Tier'}</span>
                             <span className={`${isTeaser ? 'text-xl' : 'text-2xl'} font-bold text-charcoal`} style={{ fontFamily: fonts.display }}>{data.featuredPrice}</span>
                         </div>
                         <Button variant="deepDry" className={`scale-[0.65] origin-right ring-4 ring-white/5 shadow-xl transition-all hover:scale-[0.7] active:scale-60 ${isSelected ? 'opacity-50' : ''}`}>

@@ -39,8 +39,16 @@ export default function TicketingPage() {
 
     // Fetch Events on Mount
     React.useEffect(() => {
+        console.log('[DEBUG] TicketingPage: useEffect triggered');
         getEventsAction().then(data => {
-            setEvents(data);
+            console.log('[DEBUG] TicketingPage: Received events from action:', data);
+            if (data && Array.isArray(data)) {
+                setEvents(data);
+            } else {
+                console.warn('[DEBUG] TicketingPage: Events data is invalid or empty:', data);
+            }
+        }).catch(err => {
+            console.error('[DEBUG] TicketingPage: Failed to call getEventsAction:', err);
         });
     }, []);
 
@@ -125,7 +133,7 @@ export default function TicketingPage() {
             <Header />
 
             <main className="flex-1 pt-32 pb-20 relative z-10 px-4 md:px-8">
-                <div className="max-w-5xl mx-auto">
+                <div className="max-w-7xl mx-auto">
                     <StandardSection id="tickets" variant="naturalPaper" className="rounded-[32px] md:rounded-[48px] shadow-2xl border border-charcoal/10 relative z-10">
                         <div className="relative z-10 min-h-[600px] py-8 md:py-12">
                             <AnimatePresence mode="wait">

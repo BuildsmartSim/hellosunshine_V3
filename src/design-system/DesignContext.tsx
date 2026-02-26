@@ -45,8 +45,8 @@ interface DesignContextType {
 }
 
 const DEFAULT_VALUES: DesignValues = {
-    sectionPaddingDesktop: 128,
-    sectionPaddingMobile: 96,
+    sectionPaddingDesktop: 64,
+    sectionPaddingMobile: 48,
     headerGapDesktop: 48,
     headerGapMobile: 32,
     sectionOverlap: 48,
@@ -55,29 +55,19 @@ const DEFAULT_VALUES: DesignValues = {
     shadowIntensity: 1,
     cardTilt: 2,
     primaryColor: "#F8C630",
-    charcoalColor: "#2C2C2C",
+    charcoalColor: "#1A1A1A",
     siteWidth: 1440,
 };
 
 const DEFAULT_STATE: DesignState = {
     global: DEFAULT_VALUES,
     sectionOverrides: {
-        sanctuary: {
-            sectionPaddingDesktop: 148
-        },
         guestbook: {
-            sectionPaddingDesktop: 64,
-            sectionOverlap: 45,
             siteWidth: 1296
         },
         hero: {
             shadowIntensity: 1
         },
-        ticketing: {
-            sectionPaddingDesktop: 160,
-            sectionPaddingMobile: 120,
-            sectionOverlap: 60
-        }
     },
     selectedSectionId: 'global',
 };
@@ -90,7 +80,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
 
     // Initialize from localStorage
     useEffect(() => {
-        const saved = localStorage.getItem('hss-design-state-v9');
+        const saved = localStorage.getItem('hss-design-state-v10');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
@@ -152,7 +142,7 @@ export function DesignProvider({ children }: { children: React.ReactNode }) {
 
     const resetDesign = () => {
         setState(DEFAULT_STATE);
-        localStorage.removeItem('hss-design-state-v9');
+        localStorage.removeItem('hss-design-state-v10');
     };
 
     return (
