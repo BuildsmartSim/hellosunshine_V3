@@ -28,6 +28,8 @@ function SidebarItem({ href, label, icon, active }: SidebarItemProps) {
     );
 }
 
+import { getRoleAction } from '@/app/actions/tickets';
+
 export function Sidebar() {
     const pathname = usePathname();
     const [role, setRole] = React.useState<string | null>(null);
@@ -35,12 +37,9 @@ export function Sidebar() {
 
     React.useEffect(() => {
         const fetchRole = async () => {
-            const { createClient } = await import('@/utils/supabase/client');
-            const supabase = createClient();
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
-                setRole(data?.role || 'clerk');
+            const res = await getRoleAction();
+            if (res.success) {
+                setRole(res.role || 'clerk');
             }
         };
         fetchRole();
@@ -98,7 +97,7 @@ export function Sidebar() {
 
                 <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
                     <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em] px-4 mb-2 block font-mono">
-                        Core
+                        Operations
                     </label>
                     <SidebarItem
                         href="/admin"
@@ -106,39 +105,38 @@ export function Sidebar() {
                         active={pathname === '/admin'}
                         icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>}
                     />
+                    <SidebarItem
+                        href="/admin/scanner"
+                        label="Scanner"
+                        active={pathname.startsWith('/admin/scanner')}
+                        icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>}
+                    />
+                    <SidebarItem
+                        href="/admin/refunds"
+                        label="Refunds"
+                        active={pathname.startsWith('/admin/refunds')}
+                        icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"></path></svg>}
+                    />
+                    <SidebarItem
+                        href="/admin/broadcasts"
+                        label="Broadcasts"
+                        active={pathname.startsWith('/admin/broadcasts')}
+                        icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>}
+                    />
 
                     {isAdmin && (
-                        <SidebarItem
-                            href="/admin/events"
-                            label="Events"
-                            active={pathname.startsWith('/admin/events')}
-                            icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>}
-                        />
+                        <div className="pt-4">
+                            <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em] px-4 mb-2 block font-mono">
+                                Management
+                            </label>
+                            <SidebarItem
+                                href="/admin/events"
+                                label="Events"
+                                active={pathname.startsWith('/admin/events')}
+                                icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>}
+                            />
+                        </div>
                     )}
-
-                    <div className="pt-4">
-                        <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em] px-4 mb-2 block font-mono">
-                            Ticketing
-                        </label>
-                        <SidebarItem
-                            href="/admin/scanner"
-                            label="Scanner"
-                            active={pathname.startsWith('/admin/scanner')}
-                            icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>}
-                        />
-                        <SidebarItem
-                            href="/admin/refunds"
-                            label="Refunds"
-                            active={pathname.startsWith('/admin/refunds')}
-                            icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"></path></svg>}
-                        />
-                        <SidebarItem
-                            href="/admin/broadcasts"
-                            label="Broadcasts"
-                            active={pathname.startsWith('/admin/broadcasts')}
-                            icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>}
-                        />
-                    </div>
 
                     <div className="pt-4">
                         <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em] px-4 mb-2 block font-mono">

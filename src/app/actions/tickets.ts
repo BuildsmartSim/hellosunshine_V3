@@ -210,3 +210,29 @@ export async function checkInTicketAction(ticketId: string, notes?: string) {
         return { success: false, error: 'Server error during check-in.' };
     }
 }
+
+export async function getRoleAction() {
+    try {
+        const { createClient } = await import('@/utils/supabase/server');
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) return { success: false, error: 'Not authenticated' };
+
+        const { data, error } = await supabaseAdmin
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .single();
+
+        if (error) {
+            // Default to clerk if no role record exists
+            return { success: true, role: 'clerk' };
+        }
+
+        return { success: true, role: data.role };
+    } catch (error: any) {
+        console.error('Failed to get role:', error);
+        return { success: false, error: error.message };
+    }
+}
