@@ -173,6 +173,10 @@ export async function checkInTicketAction(ticketId: string, notes?: string) {
         }
 
         // 2. Validation Business Rules
+        if (ticket.status === 'pending') {
+            return { success: false, error: 'PAYMENT PENDING: This ticket is not yet active.' };
+        }
+
         if (ticket.status === 'refunded') {
             return { success: false, error: 'CANCELLED: This ticket has been refunded.' };
         }

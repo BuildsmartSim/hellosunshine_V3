@@ -67,8 +67,14 @@ export function ScannerClient() {
         setMessage('Validating ticket...');
 
         try {
-            // Decoded text should be the Ticket ID
-            const res = await checkInTicketAction(decodedText);
+            // Check if the decoded text is a URL and extract the ID
+            let ticketId = decodedText;
+            if (decodedText.includes('/tickets/')) {
+                const parts = decodedText.split('/');
+                ticketId = parts[parts.length - 1];
+            }
+
+            const res = await checkInTicketAction(ticketId);
 
             if (res.success) {
                 setStatus('success');
