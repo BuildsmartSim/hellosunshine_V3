@@ -134,11 +134,11 @@ export function ScannerClient() {
                             <svg className="w-24 h-24 mb-6" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
                         )}
 
-                        <h2 className="text-3xl font-black mb-2 uppercase font-mono tracking-tighter">
+                        <h2 className="text-2xl lg:text-3xl font-black mb-2 uppercase font-mono tracking-tighter">
                             {message || (isScanning ? "" : "Scanner Ready")}
                         </h2>
-                        {guestName && <p className="text-xl font-bold font-mono opacity-90 uppercase tracking-widest">{guestName}</p>}
-                        {productName && <p className="text-sm font-mono opacity-70 mt-4 border-t border-current pt-4 border-dashed">{productName}</p>}
+                        {guestName && <p className="text-lg lg:text-xl font-bold font-mono opacity-90 uppercase tracking-widest">{guestName}</p>}
+                        {productName && <p className="text-[10px] lg:text-sm font-mono opacity-70 mt-3 border-t border-current pt-3 border-dashed">{productName}</p>}
 
                         {!isScanning && (
                             <button
