@@ -67,12 +67,18 @@ export function ScannerClient() {
         setMessage('Validating ticket...');
 
         try {
+            console.log('SCANNER_DECODED_TEXT:', decodedText);
             // Check if the decoded text is a URL and extract the ID
             let ticketId = decodedText;
             if (decodedText.includes('/tickets/')) {
+                // Handle various URL formats (view, check-in, etc)
                 const parts = decodedText.split('/');
-                ticketId = parts[parts.length - 1];
+                ticketId = parts.filter(p => p.length === 36).pop() || parts.pop() || '';
+                // Strip any trailing characters or query params
+                ticketId = ticketId.split('?')[0].split('#')[0];
             }
+
+            console.log('EXTRACTED_TICKET_ID:', ticketId);
 
             const res = await checkInTicketAction(ticketId);
 

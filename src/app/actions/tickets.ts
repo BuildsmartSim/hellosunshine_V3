@@ -153,6 +153,7 @@ export async function refundTicketAction(ticketId: string, stripeSessionId: stri
 }
 
 export async function checkInTicketAction(ticketId: string, notes?: string) {
+    console.log('CHECK_IN_ACTION_RECEIVED_ID:', ticketId);
     try {
         // 1. Fetch ticket with latest status
         const { data: ticket, error: fetchError } = await supabaseAdmin
