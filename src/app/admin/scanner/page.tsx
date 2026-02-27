@@ -1,12 +1,14 @@
 import React from 'react';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { ScannerClient } from './ScannerClient';
+import { getReadinessTasksAction } from '@/app/actions/admin';
 
 export const revalidate = 0;
 
 export default async function ScannerPage() {
+    const initialTasks = await getReadinessTasksAction();
+
     // Fetch live attendance stats for today
-    // For simplicity, we'll just count total checked in vs total active tickets
     const { count: checkedInCount } = await supabaseAdmin
         .from('tickets')
         .select('*', { count: 'exact', head: true })
@@ -37,7 +39,7 @@ export default async function ScannerPage() {
                 </div>
             </div>
 
-            <ScannerClient />
+            <ScannerClient readinessTasks={initialTasks} />
         </div>
     );
 }

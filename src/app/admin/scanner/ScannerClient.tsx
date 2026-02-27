@@ -3,10 +3,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import { checkInTicketAction } from '@/app/actions/tickets';
+import { MissionBriefing } from '../MissionBriefing';
+import type { ReadinessTask } from '../ReadinessScorecard';
 
 type ScanStatus = 'idle' | 'success' | 'error' | 'warning';
 
-export function ScannerClient() {
+export function ScannerClient({ readinessTasks = [] }: { readinessTasks?: ReadinessTask[] }) {
     const [status, setStatus] = useState<ScanStatus>('idle');
     const [message, setMessage] = useState('');
     const [guestName, setGuestName] = useState('');
@@ -155,6 +157,8 @@ export function ScannerClient() {
 
     return (
         <div className="flex flex-col h-[calc(100vh-12rem)] max-w-lg mx-auto overflow-hidden">
+            <MissionBriefing tasks={readinessTasks} />
+
             {/* Camera Viewport Container */}
             <div className={`relative flex-1 rounded-3xl overflow-hidden border-4 transition-all duration-500 shadow-2xl ${getStatusStyles()}`}>
 

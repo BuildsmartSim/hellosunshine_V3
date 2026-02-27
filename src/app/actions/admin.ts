@@ -36,3 +36,40 @@ export async function toggleEventActiveAction(eventId: string, isActive: boolean
         return false;
     }
 }
+
+export async function getReadinessTasksAction() {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('profiles')
+            .select('email, full_name, phone')
+            .ilike('email', '%@readiness.test');
+
+        if (error) throw error;
+
+        return (data || []).map((task: any) => ({
+            id: task.email || '',
+            label: task.full_name || '',
+            isCompleted: task.phone === 'YES'
+        }));
+    } catch (error) {
+        console.error('Failed to fetch readiness tasks:', error);
+        return [];
+    }
+}
+
+export async function toggleReadinessTaskAction(email: string, isCompleted: boolean) {
+    try {
+        const { error } = await supabaseAdmin
+            .from('profiles')
+            .update({ phone: isCompleted ? 'YES' : 'NO' })
+            .eq('email', email);
+
+        if (error) throw error;
+        revalidatePath('/admin');
+        revalidatePath('/admin/scanner');
+        return true;
+    } catch (error) {
+        console.error('Failed to toggle readiness task:', error);
+        return false;
+    }
+}

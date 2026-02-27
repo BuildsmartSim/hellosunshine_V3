@@ -2,9 +2,11 @@ import React from 'react';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { EventToggle } from './EventToggle';
 import { DeleteEventButton } from './events/DeleteEventButton';
-import Link from 'next/link';
+import { ReadinessScorecard } from './ReadinessScorecard';
+import { getReadinessTasksAction } from '@/app/actions/admin';
 import { GuestManager } from './GuestManager';
 import { StripeReconciler } from './StripeReconciler';
+import Link from 'next/link';
 
 export const revalidate = 0; // Ensure fresh data on every load
 
@@ -18,6 +20,8 @@ interface EventRow {
 }
 
 export default async function AdminDashboard() {
+    const initialTasks = await getReadinessTasksAction();
+
     // Fetch all events using the full-access admin client
     const { data: events, error } = await supabaseAdmin
         .from('app_events')
@@ -64,6 +68,8 @@ export default async function AdminDashboard() {
                 <h2 className="text-2xl font-black text-neutral-800 tracking-tight uppercase font-mono">Dashboard Overview</h2>
                 <p className="text-xs text-neutral-500 font-mono mt-1 uppercase tracking-widest">Real-time health and ticketing metrics</p>
             </div>
+
+            <ReadinessScorecard initialTasks={initialTasks} />
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
