@@ -11,37 +11,67 @@ export function ScannerClient() {
     const [message, setMessage] = useState('');
     const [guestName, setGuestName] = useState('');
     const [productName, setProductName] = useState('');
+    const [syncQueue, setSyncQueue] = useState<{ id: string, time: string }[]>([]);
+    const [isSyncing, setIsSyncing] = useState(false);
     const [isScanning, setIsScanning] = useState(false);
     const scannerRef = useRef<Html5Qrcode | null>(null);
 
+    // 1. Load Queue on Mount
     useEffect(() => {
-        // Initialize the scanner
+        const saved = localStorage.getItem('hss_scanner_queue');
+        if (saved) setSyncQueue(JSON.parse(saved));
+
         const scanner = new Html5Qrcode("reader");
         scannerRef.current = scanner;
 
         return () => {
-            if (scanner.isScanning) {
-                scanner.stop();
-            }
+            if (scanner.isScanning) scanner.stop();
         };
     }, []);
 
+    // 2. Persist Queue on Change
+    useEffect(() => {
+        localStorage.setItem('hss_scanner_queue', JSON.stringify(syncQueue));
+    }, [syncQueue]);
+
+    const handleSync = async () => {
+        if (syncQueue.length === 0 || isSyncing) return;
+        setIsSyncing(true);
+        const newQueue = [...syncQueue];
+        const processedIds: string[] = [];
+
+        for (const item of newQueue) {
+            try {
+                const res = await checkInTicketAction(item.id);
+                if (res.success || res.error?.includes('ALREADY SCANNED')) {
+                    processedIds.push(item.id);
+                }
+            } catch (err) {
+                console.warn("Sync failed for ID, network still spotty:", item.id);
+                break; // Stop syncing if network is still down
+            }
+        }
+
+        setSyncQueue(prev => prev.filter(i => !processedIds.includes(i.id)));
+        setIsSyncing(false);
+    };
+
     const startScanner = async () => {
         if (!scannerRef.current) return;
-        setIsScanning(true);
-        setStatus('idle');
-        setMessage('');
 
         try {
             await scannerRef.current.start(
                 { facingMode: "environment" },
                 {
                     fps: 10,
-                    qrbox: { width: 250, height: 250 }
+                    qrbox: { width: 250, height: 250 },
                 },
                 onScanSuccess,
                 onScanFailure
             );
+            setIsScanning(true);
+            setStatus('idle');
+            setMessage('');
         } catch (err) {
             console.error("Failed to start scanner:", err);
             setMessage("Failed to access camera.");
@@ -52,34 +82,25 @@ export function ScannerClient() {
     const stopScanner = async () => {
         if (scannerRef.current && scannerRef.current.isScanning) {
             await scannerRef.current.stop();
-            setIsScanning(false);
         }
+        setIsScanning(false);
     };
 
     async function onScanSuccess(decodedText: string) {
-        // Play subtle success chime (optional, could be added)
         if (navigator.vibrate) navigator.vibrate(50);
-
-        // Pause scanning while processing
         await stopScanner();
 
         setStatus('idle');
-        setMessage('Validating ticket...');
+        setMessage('Processing...');
+
+        let ticketId = decodedText;
+        if (decodedText.includes('/tickets/')) {
+            const parts = decodedText.split('/');
+            ticketId = parts.filter(p => p.length === 36).pop() || parts.pop() || '';
+            ticketId = ticketId.split('?')[0].split('#')[0];
+        }
 
         try {
-            console.log('SCANNER_DECODED_TEXT:', decodedText);
-            // Check if the decoded text is a URL and extract the ID
-            let ticketId = decodedText;
-            if (decodedText.includes('/tickets/')) {
-                // Handle various URL formats (view, check-in, etc)
-                const parts = decodedText.split('/');
-                ticketId = parts.filter(p => p.length === 36).pop() || parts.pop() || '';
-                // Strip any trailing characters or query params
-                ticketId = ticketId.split('?')[0].split('#')[0];
-            }
-
-            console.log('EXTRACTED_TICKET_ID:', ticketId);
-
             const res = await checkInTicketAction(ticketId);
 
             if (res.success) {
@@ -98,18 +119,25 @@ export function ScannerClient() {
                 }
             }
         } catch (err) {
-            setStatus('error');
-            setMessage('Network error during check-in.');
+            // OFFLINE FALLBACK
+            const scanTime = new Date().toISOString();
+            if (!syncQueue.find(qi => qi.id === ticketId)) {
+                setSyncQueue(prev => [...prev, { id: ticketId, time: scanTime }]);
+            }
+
+            setStatus('success'); // Show success to operator to keep flow moving
+            setGuestName('OFFLINE SCAN');
+            setMessage('TICKET SAVED (SYNC LATER)');
+            setProductName(`QUEUED AT ${new Date(scanTime).toLocaleTimeString()}`);
         }
 
-        // Auto-reset after 3 seconds to allow next scan
         setTimeout(() => {
             setStatus('idle');
             setGuestName('');
             setProductName('');
             setMessage('');
-            startScanner();
-        }, 3500);
+            if (!isScanning) startScanner();
+        }, 3000);
     }
 
     function onScanFailure(error: any) {
@@ -180,23 +208,41 @@ export function ScannerClient() {
             </div>
 
             {/* Bottom Controls */}
-            <div className="mt-8 flex gap-4">
-                <div className="flex-1 bg-neutral-900 rounded-2xl p-6 text-white overflow-hidden relative">
-                    <div className="relative z-10">
-                        <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-widest font-mono mb-1">Status</h4>
-                        <p className="text-xs font-mono lowercase italic text-neutral-300">
-                            {isScanning ? "live: position qr in focus square" : "camera inactive: ready to engage"}
-                        </p>
+            <div className="mt-8 space-y-4">
+                {syncQueue.length > 0 && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] font-black text-yellow-800 uppercase tracking-widest font-mono">Offline Scans Ready</p>
+                            <p className="text-xl font-black text-yellow-900 font-mono">{syncQueue.length} PENDING</p>
+                        </div>
+                        <button
+                            onClick={handleSync}
+                            disabled={isSyncing}
+                            className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest font-mono shadow-sm transition-all ${isSyncing ? 'bg-yellow-200 text-yellow-600' : 'bg-yellow-900 text-white hover:bg-black'}`}
+                        >
+                            {isSyncing ? 'SYNCING...' : 'SYNC NOW'}
+                        </button>
                     </div>
-                </div>
-                {isScanning && (
-                    <button
-                        onClick={stopScanner}
-                        className="bg-red-50 text-red-600 px-6 rounded-2xl font-black text-[10px] uppercase font-mono tracking-widest border border-red-100"
-                    >
-                        Stop
-                    </button>
                 )}
+
+                <div className="flex gap-4">
+                    <div className="flex-1 bg-neutral-900 rounded-2xl p-6 text-white overflow-hidden relative">
+                        <div className="relative z-10">
+                            <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-widest font-mono mb-1">Status</h4>
+                            <p className="text-xs font-mono lowercase italic text-neutral-300">
+                                {isScanning ? "live: position qr in focus square" : "camera inactive: ready to engage"}
+                            </p>
+                        </div>
+                    </div>
+                    {isScanning && (
+                        <button
+                            onClick={stopScanner}
+                            className="bg-red-50 text-red-600 px-6 rounded-2xl font-black text-[10px] uppercase font-mono tracking-widest border border-red-100"
+                        >
+                            Stop
+                        </button>
+                    )}
+                </div>
             </div>
 
             <p className="text-center text-[10px] text-neutral-400 font-mono uppercase tracking-[0.25em] mt-8 opacity-50">
