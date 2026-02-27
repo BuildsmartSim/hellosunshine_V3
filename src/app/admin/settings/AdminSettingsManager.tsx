@@ -8,12 +8,30 @@ interface AdminSettings {
     telegram_chat_id: string;
 }
 
-import { updateSettingsAction } from '@/app/actions/tickets';
+import { updateSettingsAction, sendTestNotificationAction } from '@/app/actions/tickets';
 
 export function AdminSettingsManager({ initialSettings }: { initialSettings: AdminSettings }) {
     const [settings, setSettings] = useState(initialSettings);
     const [isSaving, setIsSaving] = useState(false);
+    const [isTesting, setIsTesting] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
+
+    const handleTestNotifications = async () => {
+        setIsTesting(true);
+        setMessage({ text: '', type: '' });
+        try {
+            const res = await sendTestNotificationAction();
+            if (res.success) {
+                setMessage({ text: res.message || 'Test sent!', type: 'success' });
+            } else {
+                setMessage({ text: res.error || 'Test failed', type: 'error' });
+            }
+        } catch (err: any) {
+            setMessage({ text: 'Test failed: ' + err.message, type: 'error' });
+        } finally {
+            setIsTesting(false);
+        }
+    };
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -109,13 +127,23 @@ export function AdminSettingsManager({ initialSettings }: { initialSettings: Adm
                     </div>
                 )}
 
-                <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="w-full py-5 bg-neutral-900 text-white font-black rounded-2xl shadow-2xl hover:bg-neutral-800 active:scale-95 transition-all text-sm uppercase tracking-[0.3em] font-mono disabled:opacity-50"
-                >
-                    {isSaving ? 'Saving Preferences...' : 'SAVE CONFIGURATION'}
-                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                        type="button"
+                        onClick={handleTestNotifications}
+                        disabled={isSaving || isTesting}
+                        className="py-5 border-2 border-neutral-900 text-neutral-900 font-black rounded-2xl hover:bg-neutral-50 active:scale-95 transition-all text-sm uppercase tracking-[0.2em] font-mono disabled:opacity-50"
+                    >
+                        {isTesting ? 'Testing Alerts...' : 'TEST NOTIFICATIONS'}
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSaving || isTesting}
+                        className="py-5 bg-neutral-900 text-white font-black rounded-2xl shadow-2xl hover:bg-neutral-800 active:scale-95 transition-all text-sm uppercase tracking-[0.3em] font-mono disabled:opacity-50"
+                    >
+                        {isSaving ? 'Saving Preferences...' : 'SAVE CONFIGURATION'}
+                    </button>
+                </div>
             </form>
         </div>
     );

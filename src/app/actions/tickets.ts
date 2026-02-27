@@ -284,3 +284,140 @@ export async function updateSettingsAction(settings: {
         return { success: false, error: error.message || 'Server error' };
     }
 }
+
+export async function sendTestNotificationAction() {
+    try {
+        const { createClient } = await import('@/utils/supabase/server');
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) return { success: false, error: 'Not authenticated' };
+
+        // 1. Fetch current settings
+        const { data: settings, error: settingsError } = await supabaseAdmin
+            .from('admin_settings')
+            .select('*')
+            .eq('id', 'default')
+            .single();
+
+        if (settingsError || !settings) return { success: false, error: 'Failed to fetch settings' };
+
+        const results = { email: false, telegram: false };
+
+        // 2. Test Email via Resend
+        if (settings.chief_email) {
+            try {
+                const { resend } = await import('@/lib/resend');
+                await resend.emails.send({
+                    from: 'Hello Sunshine Alerts <hello@hellosunshinesauna.com>',
+                    to: [settings.chief_email],
+                    subject: '🔔 TEST: Hello Sunshine Notification System',
+                    text: `This is a test notification from your Hello Sunshine management portal. If you can see this, your email alerts are working correctly! \n\nTime Sent: ${new Date().toLocaleString()}`
+                });
+                results.email = true;
+            } catch (err) {
+                console.error('Test email failed:', err);
+            }
+        }
+
+        // 3. Test Telegram
+        if (settings.telegram_bot_token && settings.telegram_chat_id) {
+            try {
+                const message = `🔔 *TEST: Hello Sunshine Notification System*\n\nIf you see this, your Telegram alerts are working correctly!\n\n_Time Sent: ${new Date().toLocaleString()}_`;
+                const url = `https://api.telegram.org/bot${settings.telegram_bot_token}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: settings.telegram_chat_id,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                if (response.ok) results.telegram = true;
+            } catch (err) {
+                console.error('Test telegram failed:', err);
+            }
+        }
+        if (!results.email && !results.telegram) {
+            return { success: false, error: 'Both notification methods failed. Check your credentials.' };
+        }
+
+        return {
+            success: true,
+            message: `Tests initiated. Email: ${results.email ? '✅' : '❌'}, Telegram: ${results.telegram ? '✅' : '❌'}`
+        };
+
+    } catch (error: any) {
+        console.error('Notification test failed:', error);
+        return { success: false, error: error.message || 'Server error' };
+    }
+}
+
+export async function reconcileStripeAction(sessionId: string) {
+    try {
+        const { createClient } = await import('@/utils/supabase/server');
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) return { success: false, error: 'Not authenticated' };
+
+        // 1. Fetch Session from Stripe
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        if (!session || session.status !== 'complete') {
+            return { success: false, error: 'Session not found or not completed in Stripe' };
+        }
+
+        // 2. Check if a ticket already exists for this session
+        const { data: existingTicket } = await supabaseAdmin
+            .from('tickets')
+            .select('id, status')
+            .eq('stripe_session_id', sessionId)
+            .single();
+
+        if (existingTicket && existingTicket.status === 'active') {
+            return { success: false, error: 'A ticket already exists and is active for this session' };
+        }
+
+        // 3. Trigger the Webhook Logic Manually (Simulated POST to internal logic)
+        // We'll use our existing webhook processing logic or similar
+        // For safety, let's look at what the webhook does and replicate the core parts.
+
+        const { customer_details, metadata } = session;
+        const { upsertProfile, sendTicketEmail } = await import('@/lib/ticketing');
+
+        // A. Profile
+        const profile = await upsertProfile({
+            email: customer_details?.email || '',
+            full_name: metadata?.customer_name || customer_details?.name || 'Guest',
+        });
+
+        // B. Ticket
+        const { data: ticket, error: ticketError } = await supabaseAdmin
+            .from('tickets')
+            .upsert({
+                profile_id: profile.id,
+                slot_id: metadata?.slot_id || null,
+                product_id: metadata?.product_id || null,
+                stripe_session_id: session.id,
+                status: 'active'
+            }, { onConflict: 'stripe_session_id' })
+            .select()
+            .single();
+
+        if (ticketError) throw ticketError;
+
+        // C. Email
+        try {
+            await sendTicketEmail(ticket.id);
+        } catch (emailErr) {
+            console.error('Email fails during reconciliation:', emailErr);
+        }
+
+        return { success: true, message: `Reconciliation successful! Ticket issued to ${profile.email}.` };
+
+    } catch (error: any) {
+        console.error('Reconciliation failed:', error);
+        return { success: false, error: error.message || 'Server error' };
+    }
+}

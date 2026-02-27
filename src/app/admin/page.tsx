@@ -4,6 +4,7 @@ import { EventToggle } from './EventToggle';
 import { DeleteEventButton } from './events/DeleteEventButton';
 import Link from 'next/link';
 import { GuestManager } from './GuestManager';
+import { StripeReconciler } from './StripeReconciler';
 
 export const revalidate = 0; // Ensure fresh data on every load
 
@@ -123,6 +124,11 @@ export default async function AdminDashboard() {
                     </Link>
                 </div>
                 <GuestManager initialTickets={latestTickets || []} />
+            </div>
+
+            {/* Emergency Tools Section */}
+            <div className="pt-8 border-t border-neutral-100">
+                <StripeReconciler />
             </div>
         </div>
     );
