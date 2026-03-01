@@ -1,90 +1,67 @@
 "use client";
 
 import Image from "next/image";
-import SanctuarySection from "@/components/SanctuarySection";
-import HeroSection from "@/components/HeroSection";
-import TicketingSection from "@/components/TicketingSection";
-import Guestbook from "@/components/Guestbook";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Polaroid } from "@/components/Polaroid";
+import Header from "@/components/Header"; // Header is default export
 import { SectionHeader } from "@/components/SectionHeader";
-import { StandardSection } from "@/components/StandardSection";
 import { useDesign } from "@/design-system/DesignContext";
-import { ContactSection } from "@/components/ContactSection";
 
+// Need to check the exports, wait I'll just use simple imports 
+import Link from 'next/link';
 
-export default function Home() {
-  const { state } = useDesign();
+export default function ComingSoon() {
+    const { state } = useDesign();
 
-  return (
-    <div className="min-h-screen bg-[#FDFCF9]">
-      <Header />
+    return (
+        <div className="min-h-screen bg-[#FDFCF9] flex flex-col items-center justify-between text-[#2D2D2D] font-sans">
 
-      <main>
-        {/* HERO SECTION */}
-        <HeroSection />
+            {/* Background Texture (optional, using existing classes) */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('/textures/paper.png')] mix-blend-multiply rounded-xl z-0" />
 
+            <main className="flex-1 flex flex-col items-center justify-center p-8 w-full max-w-4xl text-center relative z-10">
 
-        {/* SANCTUARY SECTION */}
-        <SanctuarySection />
+                {/* Simple Logo Placeholder */}
+                <div className="mb-12">
+                    <h1 className="font-chicle text-7xl md:text-9xl text-[#CDE7E2] drop-shadow-sm mb-4">Hello Sunshine</h1>
+                    <p className="font-serif text-2xl italic tracking-wide text-[#7C8F8C]">Sauna & Sanctuary</p>
+                </div>
 
-        {/* GUESTBOOK SECTION */}
-        <StandardSection id="guestbook" variant="naturalPaper">
-          {/* Content row: polaroids left, book right */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+                <div className="bg-white p-10 rounded-2xl shadow-xl shadow-[#CDE7E2]/20 border border-[#EBEBEB] w-full max-w-2xl relative overflow-hidden">
+                    {/* Decorative element */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#E1EEDE] rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
+                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#F3DFA2] rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2" />
 
-            {/* Left: Polaroid stack — 3 cols */}
-            <div className="hidden lg:flex lg:col-span-3 flex-col gap-8 items-center">
-              <Polaroid
-                src="/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp"
-                label="Morning Mist"
-                rotation="rotate-[-5deg]"
-                size="w-52"
-                className="hover:z-50 transition-all"
-              />
-              <Polaroid
-                src="/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp"
-                label="Nightfall"
-                rotation="rotate-[4deg]"
-                size="w-52"
-                className="hover:z-50 transition-all translate-x-3"
-              />
-              <Polaroid
-                src="/optimized/polaroids/webp/sauna-interior-wood-stove-glow.webp"
-                label="The Hearth"
-                rotation="rotate-[-3deg]"
-                size="w-52"
-                className="hover:z-50 transition-all -translate-x-2"
-              />
-            </div>
+                    <div className="relative z-10">
+                        <SectionHeader
+                            centered={true}
+                            line1="We Are"
+                            line2="Preparing The Fire"
+                            handwriting="Building the sanctuary..."
+                            withSeparator={true}
+                        />
 
-            {/* Right: Header (centered) + rule + book — 9 cols */}
-            <div className="lg:col-span-9 flex flex-col items-center">
-              <SectionHeader
-                centered={true}
-                line1="The"
-                line2="Guestbook"
-                handwriting="Voices from the steam. Moments captured in the wild."
-                withSeparator={true}
-              />
-              <div className="w-full">
-                <Guestbook />
-              </div>
-            </div>
+                        <p className="mt-8 text-lg font-medium text-[#5c5c5c] leading-relaxed">
+                            Our wild riverside sauna experience is currently being crafted. We are preparing the wood, heating the stones, and getting everything ready for you.
+                        </p>
 
-          </div>
-        </StandardSection>
+                        <p className="mt-6 text-xl font-serif italic text-[#3c5c50]">
+                            Stay tuned. The heat is coming.
+                        </p>
 
-        {/* TICKETING SECTION */}
-        <TicketingSection />
+                        <div className="mt-12 flex items-center justify-center space-x-4">
+                            {/* Links to social if any, leaving blank for simple contact */}
+                            <a href="mailto:hello@hellosunshinesauna.com" className="px-6 py-3 bg-[#2D2D2D] text-white font-semibold rounded-full hover:bg-[#1a1a1a] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                                Say Hello
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-        {/* CONTACT SECTION */}
-        <ContactSection />
-      </main>
+            </main>
 
-      <Footer />
-    </div>
-  );
+            <footer className="w-full p-6 text-center text-sm text-gray-500 relative z-10 font-serif">
+                &copy; {new Date().getFullYear()} Hello Sunshine Sauna. All rights reserved.
+            </footer>
+        </div>
+    );
 }
-
