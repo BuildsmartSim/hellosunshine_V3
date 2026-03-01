@@ -34,19 +34,9 @@ export default function ComingSoon() {
                     <div className="relative z-10">
                         <SectionHeader
                             centered={true}
-                            line1="We Are"
-                            line2="Preparing The Fire"
-                            handwriting="Building the sanctuary..."
+                            line1="Coming Soon"
                             withSeparator={true}
                         />
-
-                        <p className="mt-8 text-lg font-medium text-[#5c5c5c] leading-relaxed">
-                            Our wild riverside sauna experience is currently being crafted. We are preparing the wood, heating the stones, and getting everything ready for you.
-                        </p>
-
-                        <p className="mt-6 text-xl font-serif italic text-[#3c5c50]">
-                            Stay tuned. The heat is coming.
-                        </p>
 
                         <div className="mt-12 flex items-center justify-center space-x-4">
                             {/* Links to social if any, leaving blank for simple contact */}
