@@ -31,10 +31,10 @@ export function StepSelection({ events, onSelect, selectedTier }: StepSelectionP
         <div className="w-full mx-auto px-4">
             <div className="flex flex-col items-center mb-16">
                 <SectionHeader
+                    centered={true}
                     line1="Choose"
-                    line2="Tier"
+                    line2="Sanctuary"
                     subtitle="Select your path into the warmth."
-                    className="text-center"
                 />
             </div>
 

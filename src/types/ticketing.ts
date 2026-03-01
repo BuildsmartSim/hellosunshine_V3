@@ -39,6 +39,10 @@ export interface Profile {
     gender: string | null;
     waiver_accepted: boolean;
     waiver_accepted_at: string | null;
+    terms_accepted?: boolean;
+    mailing_list_optin?: boolean;
+    location_city?: string | null;
+    location_country?: string | null;
     total_sweats: number;
     medical_notes: string | null;
     created_at: string;

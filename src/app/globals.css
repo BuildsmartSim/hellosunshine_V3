@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
-
 @theme {
   /* Fonts - mapping layout.tsx variables to Tailwind utilities */
-  --font-display: var(--font-playfair), serif;
   --font-body: var(--font-dm-sans), sans-serif;
   --font-handwriting: var(--font-caveat), cursive;
   --font-accent: var(--font-chicle), cursive;
-  --font-cormorant: var(--font-cormorant), serif;
-  --font-fraunces: var(--font-fraunces), serif;
 
   /* Colors */
-  --color-primary: var(--hss-primary, #F8C630);
-  --color-charcoal: var(--hss-charcoal, #2C2C2C);
+  --color-primary: var(--hss-primary, #f8c630);
+  --color-charcoal: var(--hss-charcoal, #2c2c2c);
 
   /* Dynamic Design Engine Variables */
   --shadow-intensity: var(--hss-shadow-intensity, 1);
   --card-tilt: var(--hss-card-tilt, 1.5deg);
 
   /* Box Shadows (Baked into the Engine) */
-  --shadow-ticket: 2px 2px 0px 1px rgba(0, 0, 0, calc(0.2 * var(--shadow-intensity)));
-  --shadow-polaroid: 0 calc(4px * var(--shadow-intensity)) calc(6px * var(--shadow-intensity)) -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 8px #fff;
+  --shadow-ticket: 2px 2px 0px 1px
+    rgba(0, 0, 0, calc(0.2 * var(--shadow-intensity)));
+  --shadow-polaroid:
+    0 calc(4px * var(--shadow-intensity))
+      calc(6px * var(--shadow-intensity)) -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 8px #fff;
 }
 
 /* Root Vars */
@@ -41,24 +41,264 @@ body {
   background: var(--background);
 }
 
+/* ─────────────────────────────────────────────────────
+   GLOBAL TYPOGRAPHY RULES
+   ───────────────────────────────────────────────────── */
+
 h1,
-h2,
-h3 {
-  font-family: 'ChicleForce', var(--font-accent);
-  color: var(--color-wood-dark);
+.h1 {
+  font-family: var(--font-body);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+
+  /* Texture Fill - Option 9b (User Texture, Lighter 1, No Stroke) */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-image: url("/textures/pencilshading.jpg");
+  background-size: 800px;
+  filter: brightness(1.05) opacity(0.9);
+
+  /* Padding to prevent descenders from being clipped */
+  padding-right: 0.2em;
+  padding-left: 0.1em;
+  padding-bottom: 0.2em;
+  -webkit-text-stroke: 0px transparent;
 }
 
-h1 {
-  font-family: var(--font-accent);
-  color: var(--color-wood-dark);
-  /* REMOVED GLOBAL FILTER - OPTIMIZATION */
+/* .super-header: The massive 'Nordic Monolith' structural anchor */
+.super-header {
+  font-family: var(--font-body);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-size: 2.5rem;
+
+  /* Texture Fill - Option 9b (User Texture, Lighter 1, No Stroke) */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-image: url("/textures/pencilshading.jpg");
+  background-size: 800px;
+  filter: brightness(1.05) opacity(0.9);
+
+  /* Padding */
+  padding-right: 0.2em;
+  padding-left: 0.1em;
+  padding-bottom: 0.2em;
+  -webkit-text-stroke: 0px transparent;
+}
+
+/* ─────────────────────────────────────────────────────
+   LIGHT HATCH VARIANTS (pencil-hatch.png)
+   ───────────────────────────────────────────────────── */
+.sketch-lh-1,
+.sketch-lh-2,
+.sketch-lh-3,
+.sketch-lh-4,
+.sketch-lh-5 {
+  font-family: var(--font-body) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  background-image: url("/textures/pencil-hatch.png");
+}
+
+/* With Stroke & Filter */
+.sketch-lh-1,
+.sketch-lh-2,
+.sketch-lh-3 {
+  -webkit-text-stroke: 1.5px rgba(26, 26, 26, 0.95);
+  filter: url("#hand-drawn") drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.15));
+}
+
+/* No Stroke/No rough edge filter */
+.sketch-lh-4,
+.sketch-lh-5 {
+  -webkit-text-stroke: 0px transparent;
+  filter: none;
+}
+
+/* Densities (Scale changes how tight the cross-hatch is) */
+.sketch-lh-1 {
+  background-size: 300px;
+}
+
+/* Lightest */
+.sketch-lh-2,
+.sketch-lh-5 {
+  background-size: 150px;
+}
+
+/* Medium (Original V1) */
+.sketch-lh-3,
+.sketch-lh-4 {
+  background-size: 75px;
+}
+
+/* Densest */
+
+/* ─────────────────────────────────────────────────────
+   AI GENERATED DENSE HATCH TESTS
+   ───────────────────────────────────────────────────── */
+.sketch-ai-dense-1,
+.sketch-ai-dense-2 {
+  font-family: var(--font-body) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  background-image: url("/textures/soft_pencil_hatch.png");
+  padding-right: 0.2em;
+  /* Prevents italic/slanted font descenders from getting clipped out of the background rect */
+  padding-left: 0.1em;
+  padding-bottom: 0.2em;
+}
+
+.sketch-ai-dense-1 {
+  background-size: 300px;
+  /* Let's assume the texture is dense, maybe 300px scales it perfectly */
+  -webkit-text-stroke: 1.5px rgba(26, 26, 26, 0.95);
+  filter: url("#hand-drawn") drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.15));
+}
+
+.sketch-ai-dense-2 {
+  background-size: 300px;
+  -webkit-text-stroke: 0px transparent;
+  filter: none;
+}
+
+/* ─────────────────────────────────────────────────────
+   USER PROVIDED TEXTURE (pencilshading.jpg)
+   ───────────────────────────────────────────────────── */
+.sketch-custom-user-1,
+.sketch-custom-user-2 {
+  font-family: var(--font-body) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  background-image: url("/textures/pencilshading.jpg");
+  padding-right: 0.2em;
+  /* Prevents italic/slanted font descenders from getting clipped out of the background rect */
+  padding-left: 0.1em;
+  padding-bottom: 0.2em;
+}
+
+.sketch-custom-user-1 {
+  background-size: 800px;
+  /* Assuming the user's JPEG is higher res and requires a larger scale to be seamless */
+  -webkit-text-stroke: 1.5px rgba(26, 26, 26, 0.95);
+  filter: url("#hand-drawn") drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.15));
+}
+
+/* Base without stroke */
+.sketch-custom-user-2a,
+.sketch-custom-user-2b,
+.sketch-custom-user-2c {
+  font-family: var(--font-body) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  background-image: url("/textures/pencilshading.jpg");
+  padding-right: 0.2em;
+  padding-left: 0.1em;
+  padding-bottom: 0.2em;
+  -webkit-text-stroke: 0px transparent;
+  filter: none;
+}
+
+/* Base (Original 9a at 800px scale) */
+.sketch-custom-user-2a {
+  background-size: 800px;
+}
+
+/* Lighter 1 */
+.sketch-custom-user-2b {
+  background-size: 800px;
+  filter: brightness(1.2) opacity(0.85);
+  /* Lightening by increasing brightness and slightly dropping opacity so background paper shows through */
+}
+
+/* Lighter 2 */
+.sketch-custom-user-2c {
+  background-size: 800px;
+  filter: brightness(1.5) opacity(0.65);
+}
+
+@media (min-width: 768px) {
+  .super-header {
+    font-size: 3.5rem;
+    /* Tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .super-header {
+    font-size: 4.25rem;
+    /* Desktop */
+  }
+}
+
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4 {
+  font-family: var(--font-body);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+
+  /* Standard Texture Fill (Option 9b matching global H1) */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-image: url("/textures/pencilshading.jpg");
+  background-size: 800px;
+  filter: brightness(1.05) opacity(0.9);
+
+  /* Padding to prevent descenders from being clipped */
+  padding-right: 0.2em;
+  padding-left: 0.1em;
+  padding-bottom: 0.2em;
+  -webkit-text-stroke: 0px transparent;
+}
+
+.handwritten-text {
+  font-family: var(--font-caveat), cursive;
 }
 
 /* OPT-IN SKETCH EFFECT (Use wisely!) */
 .sketch-effect {
-  filter: url('#hand-drawn');
+  filter: url("#hand-drawn");
   -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.8);
-  filter: url('#hand-drawn') drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.2));
+  filter: url("#hand-drawn") drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.2));
+}
+
+/* .overline: Technical, highly-spaced micro labels */
+.overline,
+.subtitle-tag {
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  /* 12px */
+  color: rgba(44, 44, 44, 0.6);
+  /* Charcoal mapped opacity */
 }
 
 /* CRITICAL: PREVENT FILTERS FROM BLEEDING ONTO IMAGES */
@@ -82,14 +322,14 @@ img,
   }
 
   .style-filter-sketch {
-    filter: url('#hand-drawn');
+    filter: url("#hand-drawn");
     -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.8);
-    filter: url('#hand-drawn') drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.2));
+    filter: url("#hand-drawn") drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.2));
   }
 
   /* Pencil Shaded Fill Utilities - Optimized for combination with -webkit-text-stroke */
   .pencil-fill-standard {
-    background-image: url('/textures/pencil-hatch.png');
+    background-image: url("/textures/pencil-hatch.png");
     background-repeat: repeat;
     background-size: 150px;
     -webkit-background-clip: text;
@@ -100,7 +340,7 @@ img,
 
   /* Premium Pencil Hatch (Using Color-Specific PNGs) */
   .hatch-aesthetic-yellow {
-    background-image: url('/textures/aesthetic-hatch-yellow.png');
+    background-image: url("/textures/aesthetic-hatch-yellow.png");
     background-repeat: repeat;
     background-size: 150px;
     -webkit-background-clip: text;
@@ -111,7 +351,7 @@ img,
   }
 
   .hatch-aesthetic-yellow-bold {
-    background-image: url('/textures/aesthetic-hatch-bold-yellow.png');
+    background-image: url("/textures/aesthetic-hatch-bold-yellow.png");
     background-repeat: repeat;
     background-size: 150px;
     -webkit-background-clip: text;
@@ -122,7 +362,7 @@ img,
   }
 
   .hatch-aesthetic-cream {
-    background-image: url('/textures/aesthetic-hatch-cream.png');
+    background-image: url("/textures/aesthetic-hatch-cream.png");
     background-repeat: repeat;
     background-size: 150px;
     -webkit-background-clip: text;
@@ -133,7 +373,7 @@ img,
   }
 
   .hatch-aesthetic-cream-bold {
-    background-image: url('/textures/aesthetic-hatch-bold-cream.png');
+    background-image: url("/textures/aesthetic-hatch-bold-cream.png");
     background-repeat: repeat;
     background-size: 150px;
     -webkit-background-clip: text;
@@ -144,7 +384,7 @@ img,
   }
 
   .fill-shaded-charcoal {
-    background-image: url('/textures/aesthetic-hatch-bold.png');
+    background-image: url("/textures/aesthetic-hatch-bold.png");
     background-repeat: repeat;
     background-size: 150px;
     -webkit-background-clip: text;
@@ -157,7 +397,7 @@ img,
   }
 
   .hatch-pencil-grey {
-    background-image: url('/textures/pencil-hatch.png');
+    background-image: url("/textures/pencil-hatch.png");
     background-repeat: repeat;
     background-size: 150px;
     -webkit-background-clip: text;
@@ -199,8 +439,8 @@ img,
   /* Color-adaptable pencil fill (Uses currentColor for the fill color) */
   .pencil-fill-custom {
     background-color: currentColor;
-    -webkit-mask-image: url('/textures/pencil-hatch.png');
-    mask-image: url('/textures/pencil-hatch.png');
+    -webkit-mask-image: url("/textures/pencil-hatch.png");
+    mask-image: url("/textures/pencil-hatch.png");
     -webkit-mask-size: 150px;
     mask-size: 150px;
     -webkit-mask-repeat: repeat;
@@ -210,7 +450,7 @@ img,
   }
 
   .pencil-fill-organic {
-    background-image: url('/textures/organic-pencil.png');
+    background-image: url("/textures/organic-pencil.png");
     background-repeat: repeat;
     background-size: 200px;
     -webkit-background-clip: text;
@@ -220,7 +460,7 @@ img,
   }
 
   .pencil-fill-charcoal {
-    background-image: url('/textures/organic-pencil.png');
+    background-image: url("/textures/organic-pencil.png");
     background-repeat: repeat;
     background-size: 100px;
     -webkit-background-clip: text;
@@ -230,7 +470,7 @@ img,
   }
 
   .pencil-fill-scribble {
-    background-image: url('/textures/scribble-fill.png');
+    background-image: url("/textures/scribble-fill.png");
     background-repeat: repeat;
     background-size: 300px;
     -webkit-background-clip: text;
@@ -241,23 +481,19 @@ img,
 
   /* Fire-through-glass glow — layered spectrum, barely-there flicker */
   .hearth-glow {
-    color: #EBE5CE !important;
+    color: #ebe5ce !important;
     text-shadow:
       0 0 3px rgba(255, 255, 255, 0.7),
-      /* white-hot core */
-      0 0 8px rgba(235, 229, 206, 0.5),
-      /* cream mid */
-      0 0 18px rgba(210, 200, 170, 0.25),
-      /* warm stone outer */
-      0 0 35px rgba(180, 165, 130, 0.1);
+      /* white-hot core */ 0 0 8px rgba(235, 229, 206, 0.5),
+      /* cream mid */ 0 0 18px rgba(210, 200, 170, 0.25),
+      /* warm stone outer */ 0 0 35px rgba(180, 165, 130, 0.1);
     /* far warm stone */
-    filter:
-      drop-shadow(0 0 12px rgba(235, 229, 206, 0.2)) drop-shadow(0 0 28px rgba(200, 190, 160, 0.1));
+    filter: drop-shadow(0 0 12px rgba(235, 229, 206, 0.2))
+      drop-shadow(0 0 28px rgba(200, 190, 160, 0.1));
     animation: hearth-flicker 3.2s ease-in-out infinite;
   }
 
   @keyframes hearth-flicker {
-
     0%,
     100% {
       opacity: 1;
@@ -277,7 +513,7 @@ img,
   }
 
   .font-chicle {
-    font-family: 'ChicleForce', var(--font-accent);
+    font-family: var(--font-chicle), cursive;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */

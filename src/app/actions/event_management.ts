@@ -3,8 +3,13 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { revalidatePath } from 'next/cache';
 
-export async function saveEventAction(eventData: any) {
+import { requireAdminOrPin } from '@/lib/auth';
+
+export async function saveEventAction(eventData: any, pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         // 1. Upsert the event into app_events
         const eventToSave = { ...eventData };
         if (!eventToSave.id) {
@@ -92,8 +97,11 @@ export async function saveEventAction(eventData: any) {
     }
 }
 
-export async function deleteEventAction(eventId: string) {
+export async function deleteEventAction(eventId: string, pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         const { error } = await supabaseAdmin
             .from('app_events')
             .delete()

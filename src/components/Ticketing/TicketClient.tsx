@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { DigitalTicket } from '@/components/Ticketing/DigitalTicket';
 import { Button } from '@/components/Button';
+import { SectionHeader } from '@/components/SectionHeader';
 import html2canvas from 'html2canvas';
 
 interface TicketClientProps {
@@ -40,13 +41,14 @@ export function TicketClient({ ticket, checkInUrl }: TicketClientProps) {
 
     return (
         <div className="flex flex-col items-center py-12 md:py-20">
-            <div className="mb-12 text-center">
-                <h2 className="text-4xl font-black text-charcoal uppercase mb-2" style={{ fontFamily: 'var(--font-accent)' }}>
-                    Your Ticket
-                </h2>
-                <p className="font-handwriting text-2xl text-charcoal/60">
-                    Present this code at the sanctuary entrance.
-                </p>
+            <div className="mb-12">
+                <SectionHeader
+                    centered={true}
+                    line1="Your"
+                    line2="Ticket"
+                    subtitle="DIGITAL PASS"
+                    handwriting="Present this code at the sanctuary entrance."
+                />
             </div>
 
             <div className="mb-12 relative">

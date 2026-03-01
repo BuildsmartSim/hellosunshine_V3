@@ -1,0 +1,21 @@
+# Hello Sunshine - AI Agent Guidelines
+
+## 1. Typography Hierarchy (CRITICAL)
+There is strict visual isolation between the display font and the structural fonts. **DO NOT MIX THESE.**
+
+*   **Chicle (`var(--font-chicle)`)**: This is the accent display font. It is **STRICTLY RESERVED** for the main Hero Header ("Hello Sunshine") and specific Footer accents (the logo marking and the "Get the warmth." CTA). **Do not use Chicle for any standard section headers, page titles, or internal pages.**
+*   **DM Sans (`var(--font-dm-sans)`)**: This is the primary structural font. All standard section headers on the Home Page (e.g., "The Sanctuary", "Festival Season", "The Guestbook", "Say Hello") MUST use the `.super-header` class, which maps to `DM Sans` (`font-family: var(--font-body)`). It is also used for all body copy and structural UI elements.
+*   **Caveat (`var(--font-caveat)`)**: This is the handwritten annotation font. It is used exclusively for organic, secondary sub-headers (e.g., "Discover the heat.") and organic flourishes.
+
+### Implementation Notes for Fonts:
+*   Do not rely solely on Tailwind `v4` `@theme` CSS variable mappings (`.font-chicle`, `.handwritten-text`) if they fail to compile. If a font fails to render, use strict inline styles: `style={{ fontFamily: 'var(--font-chicle, cursive)' }}` or `style={{ fontFamily: 'var(--font-caveat, cursive)' }}`.
+
+## 2. Layout & Aesthetic ("The Nordic Monolith")
+*   **Section Headers**: When creating a new section, use the `<SectionHeader />` component. Do NOT add rigid tracking numbers (like `01 // EXPLORE`) to the `subtitle` prop. Instead, pass organic text into the `handwriting` prop. Section headers are massive, structural, and strictly use `DM Sans`.
+*   **Buttons**: The primary CTA button style is the `<Button variant="deepDry" />` component. Do not use random Tailwind utility classes for buttons; rely on the variants defined in `Button.tsx`.
+
+## 3. Design System References
+For further styling tokens, colors, and shadows, ALWAYS refer to:
+*   `src/design-system/tokens.ts` (Source of Truth for code)
+*   `DESIGN_SYSTEM.md` (Human-readable logic)
+*   `CHICLE_STYLE_GUIDE.md` (Texture and pencil blending logic)

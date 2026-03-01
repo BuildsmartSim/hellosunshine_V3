@@ -3,16 +3,21 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import Stripe from 'stripe';
 import { revalidatePath } from 'next/cache';
+import { requireAdminOrPin } from '@/lib/auth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'dummy_key', {
     apiVersion: '2025-01-27.acacia' as any,
 });
 
-export async function searchTicketsAction(query: string) {
-    if (!query) {
-        const { data } = await supabaseAdmin
-            .from('tickets')
-            .select(`
+export async function searchTicketsAction(query: string, pin?: string) {
+    try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
+        if (!query) {
+            const { data } = await supabaseAdmin
+                .from('tickets')
+                .select(`
                 id, created_at, status, stripe_session_id,
                 profile:profiles ( full_name, email ),
                 product:products ( name ),
@@ -20,30 +25,30 @@ export async function searchTicketsAction(query: string) {
                     product:products ( name )
                 )
             `)
-            .order('created_at', { ascending: false })
-            .limit(10);
-        return { success: true, data: data || [] };
-    }
+                .order('created_at', { ascending: false })
+                .limit(10);
+            return { success: true, data: data || [] };
+        }
 
-    const { data: profiles, error: profileError } = await supabaseAdmin
-        .from('profiles')
-        .select('id')
-        .or(`full_name.ilike.%${query}%,email.ilike.%${query}%`);
+        const { data: profiles, error: profileError } = await supabaseAdmin
+            .from('profiles')
+            .select('id')
+            .or(`full_name.ilike.%${query}%,email.ilike.%${query}%`);
 
-    if (profileError) {
-        console.error('Failed to search profiles:', profileError);
-        return { success: false, error: 'Database search error' };
-    }
+        if (profileError) {
+            console.error('Failed to search profiles:', profileError);
+            return { success: false, error: 'Database search error' };
+        }
 
-    const profileIds = profiles.map((p: any) => p.id);
+        const profileIds = profiles.map((p: any) => p.id);
 
-    if (profileIds.length === 0) {
-        return { success: true, data: [] };
-    }
+        if (profileIds.length === 0) {
+            return { success: true, data: [] };
+        }
 
-    const { data: tickets, error: ticketError } = await supabaseAdmin
-        .from('tickets')
-        .select(`
+        const { data: tickets, error: ticketError } = await supabaseAdmin
+            .from('tickets')
+            .select(`
             id, created_at, status, stripe_session_id,
             profile:profiles!inner ( full_name, email ),
             product:products ( name ),
@@ -51,19 +56,47 @@ export async function searchTicketsAction(query: string) {
                 product:products ( name )
             )
         `)
-        .in('profile_id', profileIds)
-        .order('created_at', { ascending: false });
+            .in('profile_id', profileIds)
+            .order('created_at', { ascending: false });
 
-    if (ticketError) {
-        console.error('Failed to fetch tickets for search:', ticketError);
-        return { success: false, error: 'Failed to fetch tickets' };
+        if (ticketError) {
+            console.error('Failed to fetch tickets for search:', ticketError);
+            return { success: false, error: 'Failed to fetch tickets' };
+        }
+
+        const { data: archived, error: archiveError } = await supabaseAdmin
+            .from('archived_bookings')
+            .select('*')
+            .or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%,email.ilike.%${query}%`);
+
+        const archivedTickets = (archived || []).map((arc: any) => ({
+            id: arc.id,
+            created_at: arc.created_at,
+            status: 'archived',
+            stripe_session_id: null,
+            profile: {
+                full_name: `${arc.first_name || ''} ${arc.last_name || ''}`.trim(),
+                email: arc.email
+            },
+            slot: null,
+            product: { name: `${arc.event_name || 'Historical Event'} (${arc.event_year})` }
+        }));
+
+        const combined = [...(tickets || []), ...archivedTickets].sort((a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+
+        return { success: true, data: combined };
+    } catch (err: any) {
+        return { success: false, error: err.message };
     }
-
-    return { success: true, data: tickets || [] };
 }
 
-export async function refundTicketAction(ticketId: string, stripeSessionId: string | null, reason: string) {
+export async function refundTicketAction(ticketId: string, stripeSessionId: string | null, reason: string, pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         if (!process.env.STRIPE_SECRET_KEY) {
             throw new Error("Missing STRIPE_SECRET_KEY. Cannot process live refunds locally.");
         }
@@ -152,9 +185,12 @@ export async function refundTicketAction(ticketId: string, stripeSessionId: stri
     }
 }
 
-export async function checkInTicketAction(ticketId: string, notes?: string) {
+export async function checkInTicketAction(ticketId: string, notes?: string, pin?: string) {
     console.log('CHECK_IN_ACTION_RECEIVED_ID:', ticketId);
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         // 1. Fetch ticket with latest status
         const { data: ticket, error: fetchError } = await supabaseAdmin
             .from('tickets')
@@ -246,24 +282,18 @@ export async function updateSettingsAction(settings: {
     chief_email: string;
     telegram_bot_token: string;
     telegram_chat_id: string;
-}) {
+    manager_pin: string;
+}, pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
+        // Removed native role check since requireAdminOrPin handles it
+
+
         const { createClient } = await import('@/utils/supabase/server');
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) return { success: false, error: 'Not authenticated' };
-
-        // Check if user is admin
-        const { data: roleData } = await supabaseAdmin
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', user.id)
-            .single();
-
-        if (roleData?.role !== 'admin') {
-            return { success: false, error: 'Unauthorized: Admin access required' };
-        }
 
         const { error } = await supabaseAdmin
             .from('admin_settings')
@@ -271,8 +301,9 @@ export async function updateSettingsAction(settings: {
                 chief_email: settings.chief_email,
                 telegram_bot_token: settings.telegram_bot_token,
                 telegram_chat_id: settings.telegram_chat_id,
+                manager_pin: settings.manager_pin,
                 updated_at: new Date().toISOString(),
-                updated_by: user.id
+                updated_by: user?.id || 'system'
             })
             .eq('id', 'default');
 
@@ -285,8 +316,11 @@ export async function updateSettingsAction(settings: {
     }
 }
 
-export async function sendTestNotificationAction() {
+export async function sendTestNotificationAction(pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         const { createClient } = await import('@/utils/supabase/server');
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -354,8 +388,11 @@ export async function sendTestNotificationAction() {
     }
 }
 
-export async function reconcileStripeAction(sessionId: string) {
+export async function reconcileStripeAction(sessionId: string, pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         const { createClient } = await import('@/utils/supabase/server');
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();

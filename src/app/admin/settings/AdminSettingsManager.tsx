@@ -6,6 +6,7 @@ interface AdminSettings {
     chief_email: string;
     telegram_bot_token: string;
     telegram_chat_id: string;
+    manager_pin: string;
 }
 
 import { updateSettingsAction, sendTestNotificationAction } from '@/app/actions/tickets';
@@ -117,6 +118,33 @@ export function AdminSettingsManager({ initialSettings }: { initialSettings: Adm
                                 <li>message @userinfobot to get your <b>chat id</b>.</li>
                                 <li>enter them above and save.</li>
                             </ol>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Manager PIN Section */}
+                <div className="bg-white rounded-2xl border border-neutral-200 shadow-xl overflow-hidden">
+                    <div className="p-6 border-b border-neutral-100 bg-neutral-900 flex justify-between items-center">
+                        <h3 className="text-sm font-black text-white tracking-[0.2em] uppercase font-mono">Manager Authentication</h3>
+                        <span className="text-[10px] font-black bg-emerald-500 text-white px-2 py-1 rounded font-mono uppercase tracking-widest">Security</span>
+                    </div>
+                    <div className="p-8">
+                        <p className="text-xs text-neutral-500 font-mono mb-6 uppercase tracking-widest leading-relaxed italic">
+                            set a 4-to-6 digit pin to allow managers to override clerk restrictions on refunds, check-ins, and event configuration.
+                        </p>
+                        <div>
+                            <label className="block text-[10px] font-black text-neutral-400 uppercase tracking-widest font-mono mb-2">Manager PIN</label>
+                            <input
+                                type="password"
+                                maxLength={6}
+                                value={settings.manager_pin || ''}
+                                onChange={(e) => setSettings({ ...settings, manager_pin: e.target.value.replace(/\D/g, '') })}
+                                className="w-full max-w-[200px] text-center tracking-[0.5em] px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none font-mono text-xl transition-all"
+                                placeholder="••••"
+                            />
+                            <p className="text-[10px] text-neutral-400 font-mono mt-2 lowercase tracking-wide">
+                                must be numbers only. minimum 4 digits.
+                            </p>
                         </div>
                     </div>
                 </div>

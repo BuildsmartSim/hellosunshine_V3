@@ -4,9 +4,9 @@ import React from 'react';
 import { SectionHeader } from '@/components/SectionHeader';
 import { TicketInput } from './TicketInput';
 import { Button } from '@/components/Button';
-import { WaiverSection } from './WaiverSection';
 import { TicketTier } from './FestivalPass';
 import { sendGAEvent } from '@next/third-parties/google';
+import { VitalityIcon, TowelIcon, AgreementIcon } from '@/components/Icons';
 
 interface StepDetailsProps {
     formData: {
@@ -15,7 +15,10 @@ interface StepDetailsProps {
         phone: string;
         age?: string;
         gender?: string;
-        waiverAccepted: boolean;
+        waiverHealthy: boolean;
+        waiverTowels: boolean;
+        termsAccepted: boolean;
+        mailingList: boolean;
     };
     onChange: (field: string, value: string | boolean) => void;
     onNext: () => void;
@@ -99,25 +102,89 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                     autoComplete="tel"
                 />
 
-                <div className="mt-8">
-                    <label className="text-sm uppercase tracking-[0.4em] text-charcoal/90 font-bold px-4 mb-4 block">
-                        Health & Safety Waiver
+                <div className="mt-8 border-t border-charcoal/10 pt-8">
+                    <label className="text-sm uppercase tracking-[0.4em] text-primary font-black px-4 mb-6 block text-center">
+                        The Sunshine Promises
                     </label>
-                    <WaiverSection />
-                    <label className="flex items-center gap-4 cursor-pointer group px-4">
+
+                    <div className="flex flex-col gap-4">
+                        {/* Checkpoint 1: Health */}
+                        <label className="flex items-start gap-4 cursor-pointer group bg-white/40 p-5 rounded-2xl border border-charcoal/5 hover:border-primary/30 transition-all hover:bg-white/60">
+                            <div className="relative mt-1">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.waiverHealthy}
+                                    onChange={(e) => onChange('waiverHealthy', e.target.checked)}
+                                    className="sr-only"
+                                />
+                                <div className={`w-6 h-6 rounded-md border-2 transition-all flex items-center justify-center ${formData.waiverHealthy ? 'bg-primary border-primary shadow-lg scale-110' : 'bg-white/50 border-charcoal/20 group-hover:border-primary/50'}`}>
+                                    {formData.waiverHealthy && <span className="text-white text-sm">✓</span>}
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <span className="text-lg mb-1 flex items-center gap-2"><VitalityIcon className="w-6 h-6 text-primary" /> <strong className="text-charcoal font-handwriting tracking-wide">I feel great today!</strong></span>
+                                <span className="text-xs text-charcoal/60 leading-relaxed font-mono">
+                                    I confirm I am physically fit to enjoy a sauna. I don't suffer from heart/circulatory problems, abnormal blood pressure, or conditions advised against sauna use (including pregnancy). I accept responsibility for my own wellbeing.
+                                </span>
+                            </div>
+                        </label>
+
+                        {/* Checkpoint 2: Etiquette */}
+                        <label className="flex items-start gap-4 cursor-pointer group bg-white/40 p-5 rounded-2xl border border-charcoal/5 hover:border-primary/30 transition-all hover:bg-white/60">
+                            <div className="relative mt-1">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.waiverTowels}
+                                    onChange={(e) => onChange('waiverTowels', e.target.checked)}
+                                    className="sr-only"
+                                />
+                                <div className={`w-6 h-6 rounded-md border-2 transition-all flex items-center justify-center ${formData.waiverTowels ? 'bg-primary border-primary shadow-lg scale-110' : 'bg-white/50 border-charcoal/20 group-hover:border-primary/50'}`}>
+                                    {formData.waiverTowels && <span className="text-white text-sm">✓</span>}
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <span className="text-lg mb-1 flex items-center gap-2"><TowelIcon className="w-6 h-6 text-primary" /> <strong className="text-charcoal font-handwriting tracking-wide">I promise to bring 2 towels!</strong></span>
+                                <span className="text-xs text-charcoal/60 leading-relaxed font-mono">
+                                    I will bring one towel to sit on and one to dry off. I also agree to shower beforehand, remove jewelry, and respect the peaceful sanctuary vibe by keeping noise down.
+                                </span>
+                            </div>
+                        </label>
+
+                        {/* Checkpoint 3: Terms */}
+                        <label className="flex items-start gap-4 cursor-pointer group bg-white/40 p-5 rounded-2xl border border-charcoal/5 hover:border-primary/30 transition-all hover:bg-white/60">
+                            <div className="relative mt-1">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.termsAccepted}
+                                    onChange={(e) => onChange('termsAccepted', e.target.checked)}
+                                    className="sr-only"
+                                />
+                                <div className={`w-6 h-6 rounded-md border-2 transition-all flex items-center justify-center ${formData.termsAccepted ? 'bg-primary border-primary shadow-lg scale-110' : 'bg-white/50 border-charcoal/20 group-hover:border-primary/50'}`}>
+                                    {formData.termsAccepted && <span className="text-white text-sm">✓</span>}
+                                </div>
+                            </div>
+                            <div className="flex-1 pt-1">
+                                <span className="text-sm font-mono text-charcoal/80 uppercase tracking-widest group-hover:text-charcoal transition-colors flex items-center gap-2">
+                                    <AgreementIcon className="w-6 h-6 text-primary shrink-0" /> I agree to the <a href="/terms" target="_blank" className="text-primary hover:underline font-bold">Terms & Conditions</a>
+                                </span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <label className="flex items-center gap-4 cursor-pointer group px-4 mt-8 justify-center">
                         <div className="relative">
                             <input
                                 type="checkbox"
-                                checked={formData.waiverAccepted}
-                                onChange={(e) => onChange('waiverAccepted', e.target.checked)}
+                                checked={formData.mailingList}
+                                onChange={(e) => onChange('mailingList', e.target.checked)}
                                 className="sr-only"
                             />
-                            <div className={`w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center ${formData.waiverAccepted ? 'bg-primary border-primary shadow-lg scale-110' : 'bg-white/50 border-charcoal/10 group-hover:border-charcoal/30'}`}>
-                                {formData.waiverAccepted && <span className="text-white text-xl">✓</span>}
+                            <div className={`w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center ${formData.mailingList ? 'bg-primary border-primary shadow-lg scale-110' : 'bg-white/50 border-charcoal/10 group-hover:border-charcoal/30'}`}>
+                                {formData.mailingList && <span className="text-white text-xl">✓</span>}
                             </div>
                         </div>
                         <span className="text-sm font-mono text-charcoal/70 uppercase tracking-widest group-hover:text-charcoal transition-colors">
-                            I have read and agree to the Health & Safety instructions
+                            Join the mailing list to be informed of future Early Bird releases
                         </span>
                     </label>
                 </div>
@@ -129,7 +196,7 @@ export function StepDetails({ formData, onChange, onNext, onBack, selectedTier }
                     >
                         ← Back to Tiers
                     </button>
-                    <Button onClick={handleNext} disabled={!formData.name || !formData.email || !formData.waiverAccepted}>
+                    <Button onClick={handleNext} disabled={!formData.name || !formData.email || !formData.waiverHealthy || !formData.waiverTowels || !formData.termsAccepted}>
                         Confirm Booking
                     </Button>
                 </div>

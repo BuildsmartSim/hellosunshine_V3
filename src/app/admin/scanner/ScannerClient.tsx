@@ -5,6 +5,7 @@ import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import { checkInTicketAction } from '@/app/actions/tickets';
 import { MissionBriefing } from '../MissionBriefing';
 import type { ReadinessTask } from '../ReadinessScorecard';
+import { PINOverrideModal } from '@/components/PINOverrideModal';
 
 type ScanStatus = 'idle' | 'success' | 'error' | 'warning';
 
@@ -16,6 +17,7 @@ export function ScannerClient({ readinessTasks = [] }: { readinessTasks?: Readin
     const [syncQueue, setSyncQueue] = useState<{ id: string, time: string }[]>([]);
     const [isSyncing, setIsSyncing] = useState(false);
     const [isScanning, setIsScanning] = useState(false);
+    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
     const scannerRef = useRef<Html5Qrcode | null>(null);
 
     // 1. Load Queue on Mount
@@ -36,15 +38,22 @@ export function ScannerClient({ readinessTasks = [] }: { readinessTasks?: Readin
         localStorage.setItem('hss_scanner_queue', JSON.stringify(syncQueue));
     }, [syncQueue]);
 
-    const handleSync = async () => {
+    const handleSyncRequest = () => {
         if (syncQueue.length === 0 || isSyncing) return;
+        setIsPinModalOpen(true);
+    };
+
+    const handleConfirmSync = async (pin: string) => {
+        setIsPinModalOpen(false);
         setIsSyncing(true);
         const newQueue = [...syncQueue];
         const processedIds: string[] = [];
 
         for (const item of newQueue) {
             try {
-                const res = await checkInTicketAction(item.id);
+                // If it's a manager doing a mass sync of offline scans, 
+                // we'll pass their PIN along to bypass the 'admin only' constraint.
+                const res = await checkInTicketAction(item.id, pin);
                 if (res.success || res.error?.includes('ALREADY SCANNED')) {
                     processedIds.push(item.id);
                 }
@@ -103,6 +112,10 @@ export function ScannerClient({ readinessTasks = [] }: { readinessTasks?: Readin
         }
 
         try {
+            // Note: During a live scan we might just pass an empty PIN and rely on them
+            // having an active admin session, OR we could prompt on scan. 
+            // For now, let's assume active session is enough for live scans, 
+            // and PIN is needed for pushing the offline queue.
             const res = await checkInTicketAction(ticketId);
 
             if (res.success) {
@@ -220,7 +233,7 @@ export function ScannerClient({ readinessTasks = [] }: { readinessTasks?: Readin
                             <p className="text-xl font-black text-yellow-900 font-mono">{syncQueue.length} PENDING</p>
                         </div>
                         <button
-                            onClick={handleSync}
+                            onClick={handleSyncRequest}
                             disabled={isSyncing}
                             className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest font-mono shadow-sm transition-all ${isSyncing ? 'bg-yellow-200 text-yellow-600' : 'bg-yellow-900 text-white hover:bg-black'}`}
                         >
@@ -271,6 +284,14 @@ export function ScannerClient({ readinessTasks = [] }: { readinessTasks?: Readin
                     object-fit: cover !important;
                 }
             `}</style>
+
+            <PINOverrideModal
+                isOpen={isPinModalOpen}
+                onClose={() => setIsPinModalOpen(false)}
+                onSuccess={handleConfirmSync}
+                title="Sync Offline Scans"
+                description={`Enter Manager PIN to push ${syncQueue.length} offline scans to the server.`}
+            />
         </div>
     );
 }

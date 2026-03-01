@@ -12,7 +12,7 @@ This document captures the approved display logic for the "Hello Sunshine" Chicl
 | **8022**       | Preferred Dark Accent | Cream (Standard) | Deep Cedar | `1px #F3EFE6` | The current favorite for editorial wood accents. |
 | **11021**      | Atmospheric Graphite | Pencil Grey (Ex. Soft) | Natural Paper | `1px #1F1A17` | Very delicate, authentic hand-drawn feel. |
 | **12001**      | Soft Sunshine Paper | Yellow (Standard) | Natural Paper | `1.2px #1F1A17` | Clean, editorial hand-drawn yellow. |
-| **26000**      | The Organic Champion | Yellow/Cream | Natural Paper | `1.2px #1F1A17` | **CHOSEN PAIRING**: Chicle Headers + Caveat Hand-written Body. |
+| **26000**      | The Organic Champion | Yellow/Cream | Natural Paper | `1.2px #1F1A17` | **PAIRING**: DM Sans Structural Headers + Caveat Hand-written Body. |
 | **32003**      | Hero Layout Champion | Yellow (Bold) | Natural Paper | `1.5px #1F1A17` | **CHOSEN HERO**: 1.5° tilted photo + Bottom-left polaroid overlap. |
 | **36003**      | Shadow Tone Champion | Smoked Wood   | Natural Paper | `n/a`           | **CHOSEN SHADOW**: `#322B28` (Smoked Wood) with tight contact. |
 | **37001**      | Photo Style Champion | White Border  | Natural Paper | `n/a`           | **CHOSEN PHOTO**: 12px White Border + 4px Rounded Corners. |

@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { Playfair_Display, DM_Sans, Caveat, IBM_Plex_Mono, Lora, Handlee, Patrick_Hand } from "next/font/google";
+import { DM_Sans, Caveat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { GlobalFilters } from "@/components/GlobalFilters";
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -20,45 +15,10 @@ const caveat = Caveat({
   subsets: ["latin"],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
-
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-});
-
-const handlee = Handlee({
-  variable: "--font-handlee",
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-const patrickHand = Patrick_Hand({
-  variable: "--font-patrick-hand",
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
 // Using a more standard path within the app directory
 const chicle = localFont({
   src: "./_fonts/Chicle-Regular.ttf",
   variable: "--font-chicle",
-  display: "swap",
-});
-
-const cormorantGaramond = localFont({
-  src: "./_fonts/CormorantGaramond-VariableFont_wght.ttf",
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const fraunces = localFont({
-  src: "./_fonts/Fraunces.ttf",
-  variable: "--font-fraunces",
   display: "swap",
 });
 

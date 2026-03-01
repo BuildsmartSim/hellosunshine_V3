@@ -41,7 +41,7 @@ export function DigitalTicket({ ticketId, customerName, eventTitle, passName, da
                 <div className="relative z-10 flex flex-col items-center">
                     <div className="w-full border-b border-dashed border-charcoal/20 pb-4 mb-6 flex justify-between items-start">
                         <div className="text-left">
-                            <h3 className="text-xl font-black text-charcoal uppercase leading-tight" style={{ fontFamily: fonts.mono }}>
+                            <h3 className="h3 text-xl uppercase">
                                 HELLO SUNSHINE SAUNA
                             </h3>
                         </div>

@@ -48,19 +48,15 @@ export const fonts = {
     handwriting: "var(--font-caveat), cursive",
     /** Body text — clean, geometric, high readability */
     body: "var(--font-dm-sans), sans-serif",
-    /** Display serif (rarely used, reserved for editorial italics) */
-    display: "var(--font-playfair), serif",
-    /** Monospace for code / specs */
-    mono: "var(--font-plex-mono), monospace",
 } as const;
 
 /** Approved font hierarchy — DO NOT MIX outside of these roles */
 export const fontRoles = {
-    h1: { font: fonts.accent, weight: "normal" },
-    h2: { font: fonts.accent, weight: "normal" },
-    h3: { font: fonts.accent, weight: "normal" },
-    subtitle: { font: fonts.handwriting, weight: "normal" },
-    annotation: { font: fonts.handwriting, weight: "normal", size: "13px" },
+    h1: { font: fonts.accent, weight: "400", tracking: "-0.02em", lineHeight: "1.05" },
+    h2: { font: fonts.body, weight: "900", tracking: "-0.04em", lineHeight: "1.05" },
+    h3: { font: fonts.body, weight: "800", tracking: "-0.02em", lineHeight: "1.2" },
+    subtitle: { font: fonts.handwriting, weight: "400" },
+    annotation: { font: fonts.handwriting, weight: "400", size: "13px" },
     body: { font: fonts.body, weight: "400", lineHeight: "1.8", letterSpacing: "0.01em" },
     bodyBold: { font: fonts.body, weight: "700", lineHeight: "1.8", letterSpacing: "0.01em" },
     label: { font: fonts.body, weight: "700", size: "12px", tracking: "0.1em" },

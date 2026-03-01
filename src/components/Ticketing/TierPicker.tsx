@@ -16,12 +16,8 @@ export function TierPicker({ event, selectedTierId, onSelect, inventory = {} }: 
         <div className="w-full max-w-3xl mx-auto px-4 mt-12 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
             <div className="relative">
                 <div className="relative">
-                    <div className="mb-12">
-                        <SectionHeader
-                            line1={event.title}
-                            subtitle="Choose Your Pass"
-                            centered={true}
-                        />
+                    <div className="mb-0 text-center">
+                        <span className="text-xs uppercase font-bold tracking-[0.3em] text-charcoal/60 mb-2 block">Choose Your Pass</span>
                     </div>
 
                     <div className="space-y-4">
@@ -61,7 +57,7 @@ export function TierPicker({ event, selectedTierId, onSelect, inventory = {} }: 
                                         </p>
                                     </div>
                                     <div className="text-right ml-4">
-                                        <span className={`text-2xl font-bold ${isSoldOut ? 'text-gray-400 line-through' : selectedTierId === tier.id ? 'text-primary' : 'text-charcoal'}`} style={{ fontFamily: fonts.display }}>
+                                        <span className={`text-2xl font-bold ${isSoldOut ? 'text-gray-400 line-through' : selectedTierId === tier.id ? 'text-primary' : 'text-charcoal'}`} style={{ fontFamily: fonts.body }}>
                                             {tier.price}
                                         </span>
                                     </div>

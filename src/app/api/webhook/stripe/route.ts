@@ -37,6 +37,10 @@ export async function POST(req: Request) {
                 gender: metadata.gender,
                 waiver_accepted: metadata.waiver_accepted === 'true',
                 waiver_accepted_at: metadata.waiver_accepted_at,
+                terms_accepted: metadata.terms_accepted === 'true',
+                mailing_list_optin: metadata.mailing_list_optin === 'true',
+                location_city: metadata.location_city || null,
+                location_country: metadata.location_country || null,
             });
 
             // 1.5 Handle Ambassador/Referral Code
@@ -80,16 +84,23 @@ export async function POST(req: Request) {
             }
 
             // 4. Update Loyalty (Increment total_sweats)
-            const { error: updateError } = await supabaseAdmin.rpc('increment_sweats', {
-                profile_uuid: profile.id
-            });
+            try {
+                const { error: updateError } = await supabaseAdmin.rpc('increment_sweats', {
+                    profile_uuid: profile.id
+                });
 
-            if (updateError) {
-                // Fallback if the RPC doesn't exist yet
-                await supabaseAdmin
-                    .from('profiles')
-                    .update({ total_sweats: (profile.total_sweats || 0) + 1 })
-                    .eq('id', profile.id);
+                if (updateError) {
+                    console.error('RPC increment_sweats failed, falling back to manual update:', updateError);
+                    // Fallback if the RPC doesn't exist yet
+                    // Note: profile.total_sweats might not exist on the type depending on upsertProfile return
+                    const currentSweats = (profile as any).total_sweats || 0;
+                    await supabaseAdmin
+                        .from('profiles')
+                        .update({ total_sweats: currentSweats + 1 })
+                        .eq('id', profile.id);
+                }
+            } catch (sweatsErr) {
+                console.error('Failed to increment loyalty sweats:', sweatsErr);
             }
 
         } catch (err) {

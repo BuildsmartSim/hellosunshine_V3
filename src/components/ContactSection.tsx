@@ -12,13 +12,6 @@ import { Polaroid } from './Polaroid';
    Editorial form, warm paper aesthetic, brand voice
    ───────────────────────────────────────────── */
 
-const CHICLE: React.CSSProperties = {
-    fontFamily: `'ChicleForce', var(--font-chicle), cursive`,
-    fontSize: 'clamp(48px, 5vw, 78px)',
-    lineHeight: '0.95',
-    letterSpacing: '-0.01em',
-    color: 'var(--hss-charcoal, #2C2C2C)',
-};
 
 const HANDWRITING: React.CSSProperties = {
     fontFamily: 'var(--font-handwriting, var(--font-caveat))',
@@ -67,47 +60,47 @@ export function ContactSection() {
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start relative z-10 w-full max-w-7xl mx-auto">
 
-                {/* ── Left column ── */}
-                <div className="flex flex-col gap-6 md:pt-4">
+                {/* ── Text column (Now on the right) ── */}
+                <div className="flex flex-col gap-6 md:pt-4 w-full flex-1 md:pl-6 lg:pl-20 md:order-2">
 
                     {/* Header */}
                     <div>
-                        <h2 style={CHICLE}>Say Hello</h2>
+                        <h2 className="super-header mb-0">Say Hello</h2>
                         <div className="mt-4 flex items-center gap-4">
                             <div className="h-px flex-1 bg-charcoal/10" />
-                            <p className="text-charcoal/40 text-xs font-mono uppercase tracking-widest shrink-0">
+                            <p className="text-charcoal/40 text-[10px] md:text-xs font-mono uppercase tracking-[0.3em] font-bold shrink-0">
                                 Let's talk
                             </p>
                         </div>
                     </div>
 
                     {/* Body copy */}
-                    <p className="font-body text-charcoal/80 leading-relaxed text-lg max-w-md">
+                    <p className="font-body text-charcoal/80 leading-relaxed text-lg lg:text-xl max-w-lg w-full">
                         Whether you're looking to book a private sanctuary, inquire about a festival, or just want to chat about the steam — we're here.
                     </p>
 
                     {/* Tim's voice */}
-                    <p className="text-2xl text-charcoal/60 -rotate-1 mt-2" style={HANDWRITING}>
+                    <p className="text-2xl mt-4 text-charcoal/70" style={{ ...HANDWRITING, transform: 'rotate(-1deg)' }}>
                         "The fire's always on — drop us a note."
                     </p>
 
                     {/* Polaroid */}
-                    <div className="mt-4 self-start">
+                    <div className="mt-8 self-center lg:self-start">
                         <Polaroid
                             src="/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp"
                             label="Warm greetings."
                             rotation="rotate-[3deg]"
-                            size="w-64"
+                            size="w-56 lg:w-72 shadow-xl"
                             className="hover:-rotate-1 hover:scale-105 transition-all duration-500"
                         />
                     </div>
                 </div>
 
-                {/* ── Right column — Form card ── */}
+                {/* ── Form card (Now on the left) ── */}
                 <div
-                    className="relative"
+                    className="relative w-full max-w-xl mr-auto md:ml-0 md:order-1"
                     style={{ transform: 'rotate(-0.8deg)' }}
                 >
                     {/* Paper-texture card */}

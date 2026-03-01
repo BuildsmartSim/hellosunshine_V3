@@ -1,63 +1,68 @@
 "use client";
 
-import { fonts, pencil } from '@/design-system/tokens';
-import { LayeredPencil } from '@/components/LayeredPencil';
+import { fonts } from '@/design-system/tokens';
 
 interface SectionHeaderProps {
     line1: string;
     line2?: string;
     subtitle?: string; // e.g. "EST. 2024"
+    handwriting?: string;
     description?: string;
     className?: string;
     centered?: boolean;
+    withSeparator?: boolean;
 }
 
-/**
- * THE DEFINITIVE SECTION HEADER
- * 
- * Standardizes the 50px/85px Chicle stack used across:
- * - Sanctuary
- * - Ticketing
- * - Guestbook
- * 
- * Includes the specific charcoal hatch fill (faded) and 
- * fixed line-interlock spacing to prevent overlap.
- */
-
-export function SectionHeader({ line1, line2 = "", subtitle, description, className = "", centered = false }: SectionHeaderProps) {
+export function SectionHeader({
+    line1,
+    line2 = "",
+    subtitle,
+    handwriting,
+    description,
+    className = "",
+    centered = false,
+    withSeparator = false
+}: SectionHeaderProps) {
     const fullHeading = line2 ? `${line1} ${line2}` : line1;
 
     return (
         <div className={`${className} ${centered ? 'flex flex-col items-center text-center' : ''}`}>
-            <h2
-                style={{
-                    fontFamily: `'ChicleForce', var(--font-chicle), cursive`,
-                    fontSize: 'clamp(48px, 5vw, 78px)',
-                    lineHeight: '0.95',
-                    letterSpacing: '-0.01em',
-                    color: 'var(--hss-charcoal, #2C2C2C)',
-                }}
-                className="mb-1"
-            >
+            {subtitle && (
+                <div className="mb-4 md:mb-6">
+                    <span className="overline">
+                        {subtitle}
+                    </span>
+                </div>
+            )}
+
+            <h2 className={`super-header ${handwriting || description ? 'mb-6 md:mb-8' : 'mb-0'}`}>
                 {fullHeading}
             </h2>
 
-            {(subtitle || description) && (
-                <div className="flex flex-col gap-2">
-                    {subtitle && (
-                        <p
-                            style={{ fontFamily: fonts.handwriting }}
-                            className="text-2xl text-charcoal/45 leading-relaxed"
-                        >
-                            {subtitle}
-                        </p>
-                    )}
-                    {description && (
-                        <div className="text-xl font-display italic text-charcoal/40 max-w-xl mt-4">
-                            {description}
-                        </div>
+            {handwriting && (
+                <div className={`flex gap-4 items-center opacity-70 ${centered ? 'justify-center' : ''} ${description ? 'mb-6' : 'mb-0'}`}>
+                    <svg width="40" height="12" viewBox="0 0 40 12" className="stroke-charcoal fill-none shrink-0" role="img" aria-hidden="true">
+                        <path d="M0 6 Q10 -2 20 6 T40 6" strokeWidth="1" />
+                    </svg>
+                    <span className="text-xl md:text-2xl text-charcoal handwritten-text">
+                        {handwriting}
+                    </span>
+                    {centered && (
+                        <svg width="40" height="12" viewBox="0 0 40 12" className="stroke-charcoal fill-none transform scale-x-[-1] shrink-0" role="img" aria-hidden="true">
+                            <path d="M0 6 Q10 -2 20 6 T40 6" strokeWidth="1" />
+                        </svg>
                     )}
                 </div>
+            )}
+
+            {description && (
+                <p className={`text-lg text-charcoal/80 leading-relaxed font-light max-w-xl ${centered ? 'mx-auto' : ''}`}>
+                    {description}
+                </p>
+            )}
+
+            {withSeparator && (
+                <div className="h-px w-full bg-charcoal/10 mt-8" />
             )}
         </div>
     );

@@ -75,7 +75,7 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
 
                 <div className="flex-1 p-5 flex flex-col relative z-30">
                     <div className="mb-4">
-                        <h3 className={`${isTeaser ? 'text-lg' : 'text-xl'} font-bold text-charcoal uppercase leading-tight tracking-tight`} style={{ fontFamily: fonts.mono }}>
+                        <h3 className={`h3 ${isTeaser ? 'text-lg' : 'text-xl'} uppercase`}>
                             {data.title.split(' ').map((w, i) => <div key={i} className="inline-block mr-1.5">{w === 'Odyssey' ? <span className="text-primary">{w}</span> : w}</div>)}
                         </h3>
                         <p className="text-[11px] font-mono text-charcoal/60 font-bold mt-1 tracking-[0.2em] uppercase">{data.location}</p>
@@ -84,7 +84,7 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
                     {!isTeaser && (
                         <>
                             <div className="flex-1 border-y border-charcoal/10 py-4 flex flex-col gap-4">
-                                <p className="text-sm text-charcoal/80 leading-relaxed" style={{ fontFamily: fonts.handwriting }}>
+                                <p className="text-sm text-charcoal/80 leading-relaxed handwritten-text">
                                     &quot;{data.description}&quot;
                                 </p>
 
@@ -125,7 +125,7 @@ export function FestivalPass({ data, index, className = "", style = {}, onSelect
                     <div className="mt-auto pt-4 flex justify-between items-end">
                         <div className="flex flex-col">
                             <span className="text-xs uppercase tracking-[0.2em] text-charcoal/70 font-bold mb-0.5">{isTeaser ? 'Starting At' : 'Entry Tier'}</span>
-                            <span className={`${isTeaser ? 'text-xl' : 'text-2xl'} font-bold text-charcoal`} style={{ fontFamily: fonts.display }}>{data.featuredPrice}</span>
+                            <span className={`${isTeaser ? 'text-xl' : 'text-2xl'} font-bold text-charcoal`} style={{ fontFamily: fonts.body }}>{data.featuredPrice}</span>
                         </div>
                         <Button variant="deepDry" className={`scale-[0.65] origin-right ring-4 ring-white/5 shadow-xl transition-all hover:scale-[0.7] active:scale-60 ${isSelected ? 'opacity-50' : ''}`}>
                             {isTeaser ? 'Explore' : (isSelected ? 'Ready' : 'Choose')}

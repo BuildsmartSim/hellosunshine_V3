@@ -25,13 +25,14 @@
 
 | Role | Font | Var |
 |---|---|---|
-| **H1 / H2 / H3** | ChicleForce | `--font-chicle` |
+| **H1 (Hero) / Accent** | ChicleForce | `--font-chicle` |
+| **Structural Headers (H2/H3)** | DM Sans | `--font-dm-sans` |
 | **Subtitle / Annotation** | Caveat | `--font-caveat` |
 | **Body** | DM Sans | `--font-dm-sans` |
 | **Display italic** | Playfair Display | `--font-playfair` |
 
 > [!CAUTION]
-> Do NOT mix fonts outside these roles. Chicle is ONLY for headers. Caveat is ONLY for handwritten annotations.
+> Do NOT mix fonts outside these roles. **Chicle is STRICTLY for the Hero header and Footer accents ONLY.** DM Sans is the primary structural font for ALL OTHER section headers on the site. Caveat is ONLY for handwritten annotations. If an AI agent tries to use Chicle for a normal section header, it is violating the design system.
 
 ---
 

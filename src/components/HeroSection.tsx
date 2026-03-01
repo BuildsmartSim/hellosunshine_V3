@@ -27,29 +27,27 @@ function HeroPhoto() {
     const isShowingGhost = isActive || (isTransitioning && !activeMedia);
 
     return (
-        <div className="relative">
-            {/* Polaroid — w-80, +6°, breaking out of top-right corner */}
-            <div className="absolute top-[-30%] right-[-2%] z-20" style={{ transform: 'rotate(6deg)' }}>
+        <div className="relative mt-8 md:mt-0">
+            {/* Polaroid — scaled down on mobile */}
+            <div className="absolute top-[-20%] md:top-[-30%] right-[-4%] md:right-[-2%] z-20" style={{ transform: 'rotate(6deg)' }}>
                 <Polaroid
                     src={POLAROID_SRC}
                     label="Inside the warmth."
                     rotation="rotate-0"
-                    size="w-80"
+                    size="w-48 md:w-80"
                     forcePlaceholder={false}
                 />
             </div>
 
-            {/* Panoramic 21:9 photo */}
+            {/* Panoramic photo - Adjusted aspect for mobile if needed, though 21/9 can work with cover */}
             <motion.div
                 layoutId={id}
                 onClick={() => openMedia({ src: PHOTO_SRC, label: 'Hello Sunshine sauna exterior', id, aspect: 'aspect-[21/9]', padding: '10px', borderRadius: '6px' })}
-                className={`relative w-full overflow-hidden rounded-md cursor-zoom-in ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                className={`relative w-full overflow-hidden rounded-md cursor-zoom-in p-2 md:p-2.5 bg-white ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
                 style={{
                     aspectRatio: '21/9',
-                    boxShadow: '0 calc(20px * var(--shadow-intensity, 1)) 50px -8px rgba(50,43,40,0.4)',
-                    padding: '10px',
-                    background: '#fff',
-                    transform: 'rotate(0.8deg)',
+                    boxShadow: '0 calc(15px * var(--shadow-intensity, 1)) 40px -8px rgba(50,43,40,0.3)',
+                    transform: 'rotate(0.5deg)',
                     transformOrigin: 'center',
                     visibility: isActive ? 'hidden' : 'visible'
                 }}>
@@ -70,31 +68,31 @@ export default function HeroSection() {
     if (!hasMounted) return null;
 
     return (
-        <StandardSection id="hero" variant="naturalPaper" className="pt-40 md:pt-60 relative z-20" containerPadding="px-8" overflowVisible={true}>
+        <StandardSection id="hero" variant="naturalPaper" className="pt-32 md:pt-60 relative z-20" containerPadding="px-6 md:px-8" overflowVisible={true}>
 
-            {/* Headline — extra breathing room above */}
-            <div className="pt-10 md:pt-14">
+            {/* Headline — adjusted size for mobile overlay prevention */}
+            <div className="pt-6 md:pt-14">
                 <DappledHeaderStroke
                     line1="Hello Sunshine"
-                    line1Size="clamp(58px, 10vw, 142px)"
+                    line1Size="clamp(42px, 12vw, 142px)"
                     centered={false}
                 />
             </div>
 
-            {/* Editorial strip — bridge between headline and photo */}
-            <div className="flex items-center gap-6 my-5 md:my-6">
-                <div className="h-px flex-1 bg-charcoal/15" />
-                <p className="text-xl md:text-2xl opacity-50 shrink-0" style={{ fontFamily: fonts.handwriting }}>
+            {/* Editorial strip — stacked on mobile if narrow enough, but flex-wrap/shrink usually works */}
+            <div className="flex items-center gap-3 md:gap-6 my-4 md:my-6 overflow-hidden">
+                <div className="h-px flex-1 bg-charcoal/15 hidden sm:block" />
+                <p className="text-lg md:text-2xl opacity-50 shrink-0 text-center w-full sm:w-auto handwritten-text">
                     Hand-built cedar.&nbsp;·&nbsp;Authentic steam.
                 </p>
-                <div className="h-px flex-1 bg-charcoal/15" />
+                <div className="h-px flex-1 bg-charcoal/15 hidden sm:block" />
             </div>
 
             {/* Panoramic photo + sauna interior polaroid */}
             <HeroPhoto />
 
             {/* Kicker */}
-            <p className="mt-5 text-right text-xs font-body uppercase tracking-[0.4em] opacity-30">
+            <p className="mt-4 text-right text-[10px] md:text-xs font-body uppercase tracking-[0.2em] md:tracking-[0.4em] opacity-30">
                 A quiet escape into nature.
             </p>
 

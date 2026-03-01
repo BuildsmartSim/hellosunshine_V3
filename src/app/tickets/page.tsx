@@ -1,131 +1,59 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { StandardSection } from '@/components/StandardSection';
-import { StepSelection } from '@/components/Ticketing/StepSelection';
-import { StepDetails } from '@/components/Ticketing/StepDetails';
-import { StepConfirmation } from '@/components/Ticketing/StepConfirmation';
-import { TierPicker } from '@/components/Ticketing/TierPicker';
-import { FestivalGuide } from '@/components/Ticketing/FestivalGuide';
-import { DeskBackground } from '@/components/Ticketing/DeskBackground';
-import { FestivalPass } from '@/components/Ticketing/FestivalPass'; // Ensure this is imported if needed for type reference or similar
-import { checkInventoryAction } from '@/app/actions/inventory';
-import { getEventsAction } from '@/app/actions/events';
-import { EventData as TicketTier, TicketSubTier } from '@/data/festivals';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { StandardSection } from "@/components/StandardSection";
+import { DeskBackground } from "@/components/Ticketing/DeskBackground";
+import { SectionHeader } from "@/components/SectionHeader";
+import { Button } from "@/components/Button";
+import { fonts } from "@/design-system/tokens";
+import { getEventsAction } from "@/app/actions/events";
+import { checkInventoryAction } from "@/app/actions/inventory";
+import { EventData } from "@/data/festivals";
+import { useHasMounted } from "@/design-system/MediaContext";
 
-type Step = 'selection' | 'guide' | 'tiers' | 'details' | 'confirmation';
-
-export default function TicketingPage() {
-    // Actually step 3 of this file uses TierPicker.
-
-    const [currentStep, setCurrentStep] = useState<Step>('selection');
-    const [events, setEvents] = useState<TicketTier[]>([]);
-    const [selectedEvent, setSelectedEvent] = useState<TicketTier | null>(null);
-    const [selectedSubTier, setSelectedSubTier] = useState<TicketSubTier | null>(null);
+export default function EventsListPage() {
+    const hasMounted = useHasMounted();
+    const [events, setEvents] = useState<EventData[]>([]);
     const [inventory, setInventory] = useState<Record<string, { remaining: number; soldOut: boolean }>>({});
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        age: '',
-        gender: '',
-        waiverAccepted: false,
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
-    // Fetch Events on Mount
-    React.useEffect(() => {
-        console.log('[DEBUG] TicketingPage: useEffect triggered');
-        getEventsAction().then(data => {
-            console.log('[DEBUG] TicketingPage: Received events from action:', data);
-            if (data && Array.isArray(data)) {
-                setEvents(data);
-            } else {
-                console.warn('[DEBUG] TicketingPage: Events data is invalid or empty:', data);
+    useEffect(() => {
+        getEventsAction().then(async (data) => {
+            setEvents(data);
+
+            const priceIds = data.flatMap((e) => e.tiers.map((t) => t.id));
+            if (priceIds.length > 0) {
+                const stock = await checkInventoryAction(priceIds);
+                setInventory(stock);
             }
-        }).catch(err => {
-            console.error('[DEBUG] TicketingPage: Failed to call getEventsAction:', err);
         });
     }, []);
 
-    // Effect to fetch inventory when event is selected
-    React.useEffect(() => {
-        if (selectedEvent) {
-            const updatedIds = selectedEvent.tiers.map(t => t.id);
-            checkInventoryAction(updatedIds).then((data: Record<string, { remaining: number; soldOut: boolean }>) => {
-                setInventory(prev => ({ ...prev, ...data }));
-            });
-        }
-    }, [selectedEvent]);
+    const getEventAvailability = (event: EventData) => {
+        let totalRemaining = 0;
+        let allSoldOut = true;
+        let hasData = false;
 
-    const handleEventSelect = (event: TicketTier) => {
-        setSelectedEvent(event);
-        setCurrentStep('guide');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleTierSelect = (tier: TicketSubTier) => {
-        setSelectedSubTier(tier);
-        setCurrentStep('details');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleFormChange = (field: string, value: string | boolean) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-    };
-
-    const handleConfirm = async () => {
-        setIsLoading(true);
-        setError(null);
-
-        try {
-            // 1. Trigger Stripe Checkout
-            const response = await fetch('/api/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    priceId: selectedSubTier?.id, // In a real app, this would be a Stripe Price ID
-                    email: formData.email,
-                    name: formData.name,
-                    metadata: {
-                        event_id: selectedEvent?.id,
-                        age: formData.age,
-                        gender: formData.gender,
-                        phone: formData.phone,
-                        waiver_accepted: formData.waiverAccepted.toString(),
-                        waiver_accepted_at: new Date().toISOString(),
-                        referral_code: document.cookie
-                            .split('; ')
-                            .find(row => row.startsWith('sunshine_referral='))
-                            ?.split('=')[1] || null
-                    }
-                }),
-            });
-
-            if (!response.ok) {
-                const text = await response.text();
-                try {
-                    const data = JSON.parse(text);
-                    throw new Error(data.error || 'Something went wrong');
-                } catch {
-                    throw new Error(`Server returned an error (${response.status})`);
+        for (const tier of event.tiers) {
+            const stock = inventory[tier.id];
+            if (stock) {
+                hasData = true;
+                totalRemaining += stock.remaining || 0;
+                if (!stock.soldOut) {
+                    allSoldOut = false;
                 }
             }
-
-            const data = await response.json();
-            // Redirect to Stripe
-            window.location.href = data.url;
-        } catch (err: any) {
-            console.error('Checkout failed:', err);
-            setError(err.message || 'Payment system unreachable');
-        } finally {
-            setIsLoading(false);
         }
+
+        if (!hasData) return "Checking...";
+        if (allSoldOut) return "Sold Out";
+        if (totalRemaining > 0 && totalRemaining <= 10) return "Selling Fast";
+        return "Available";
     };
+
+    if (!hasMounted) return null;
 
     return (
         <div className="min-h-screen flex flex-col relative">
@@ -134,140 +62,87 @@ export default function TicketingPage() {
 
             <main className="flex-1 pt-32 pb-20 relative z-10 px-4 md:px-8">
                 <div className="max-w-7xl mx-auto">
-                    <StandardSection id="tickets" variant="naturalPaper" className="rounded-[32px] md:rounded-[48px] shadow-2xl border border-charcoal/10 relative z-10">
-                        <div className="relative z-10 min-h-[600px] py-8 md:py-12">
-                            <AnimatePresence mode="wait">
-                                {currentStep === 'selection' && (
-                                    <motion.div
-                                        key="selection"
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        transition={{ duration: 0.5, ease: "anticipate" }}
-                                    >
-                                        <StepSelection
-                                            events={events}
-                                            selectedTier={selectedEvent}
-                                            onSelect={handleEventSelect}
-                                        />
-                                    </motion.div>
-                                )}
-
-                                {currentStep === 'guide' && selectedEvent && (
-                                    <motion.div
-                                        key="guide"
-                                        initial={{ opacity: 0, scale: 0.98 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.98 }}
-                                        transition={{ duration: 0.5, ease: "anticipate" }}
-                                    >
-                                        <FestivalGuide
-                                            event={selectedEvent}
-                                            onContinue={() => setCurrentStep('tiers')}
-                                            onBack={() => setCurrentStep('selection')}
-                                        />
-                                    </motion.div>
-                                )}
-
-                                {currentStep === 'tiers' && selectedEvent && (
-                                    <motion.div
-                                        key="tiers"
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        transition={{ duration: 0.5, ease: "anticipate" }}
-                                    >
-                                        <div className="text-center mb-0">
-                                            <button
-                                                onClick={() => setCurrentStep('guide')}
-                                                className="text-charcoal/40 hover:text-charcoal font-bold uppercase tracking-widest text-[10px] mb-8 transition-colors"
-                                            >
-                                                ← Back to Guide
-                                            </button>
-                                        </div>
-                                        <TierPicker
-                                            event={selectedEvent}
-                                            selectedTierId={selectedSubTier?.id}
-                                            onSelect={handleTierSelect}
-                                            inventory={inventory}
-                                        />
-                                    </motion.div>
-                                )}
-
-                                {currentStep === 'details' && selectedEvent && (
-                                    <motion.div
-                                        key="details"
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        transition={{ duration: 0.5, ease: "anticipate" }}
-                                    >
-                                        {error && (
-                                            <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 font-mono text-sm">
-                                                {error}
-                                            </div>
-                                        )}
-                                        <StepDetails
-                                            formData={formData}
-                                            onChange={handleFormChange}
-                                            onBack={() => setCurrentStep('tiers')}
-                                            onNext={handleConfirm}
-                                            selectedTier={selectedEvent}
-                                        />
-                                    </motion.div>
-                                )}
-
-                                {currentStep === 'confirmation' && selectedEvent && selectedSubTier && (
-                                    <motion.div
-                                        key="confirmation"
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.6, ease: "backOut" }}
-                                    >
-                                        <StepConfirmation
-                                            selectedTier={{
-                                                ...selectedEvent,
-                                                title: `${selectedEvent.title} - ${selectedSubTier.name}`,
-                                                featuredPrice: selectedSubTier.price
-                                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                            } as any}
-                                            formData={formData}
-                                        />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        {/* Progress Indicator */}
-                        <div className="mt-20 flex flex-col items-center gap-6 relative z-10">
-                            <div className="flex justify-center gap-4">
-                                {[1, 2, 3, 4, 5].map((s) => {
-                                    const stepNames: Step[] = ['selection', 'guide', 'tiers', 'details', 'confirmation'];
-                                    const stepKey = stepNames[s - 1];
-                                    const isActive = currentStep === stepKey;
-                                    const currentIndex = stepNames.indexOf(currentStep);
-                                    const isDone = stepNames.indexOf(stepKey) < currentIndex;
-
-                                    return (
-                                        <div
-                                            key={s}
-                                            className={`w-3 h-3 rounded-full transition-all duration-500 border-2 ${isActive
-                                                ? 'bg-primary border-primary scale-125 shadow-[0_0_15px_rgba(255,184,76,0.5)]'
-                                                : isDone
-                                                    ? 'bg-charcoal border-charcoal'
-                                                    : 'bg-transparent border-charcoal/20'
-                                                }`}
-                                        />
-                                    );
-                                })}
+                    <StandardSection
+                        id="events-list"
+                        variant="naturalPaper"
+                        className="rounded-[32px] md:rounded-[48px] shadow-2xl border border-charcoal/10 relative z-10"
+                    >
+                        <div className="relative z-10 min-h-[600px] py-8 md:py-12 px-4 md:px-8">
+                            <div className="md:mb-16 border-b border-charcoal/10 pb-12">
+                                <SectionHeader
+                                    line1="Choose"
+                                    line2="Sanctuary"
+                                    handwriting="Select your path into the warmth."
+                                    centered={true}
+                                />
                             </div>
-                            <p className="text-[10px] uppercase tracking-[0.4em] font-black text-charcoal/30">
-                                {currentStep === 'selection' && "Step 1: Choose Event"}
-                                {currentStep === 'guide' && "Step 2: Festival Guide"}
-                                {currentStep === 'tiers' && "Step 3: Choose Pass Type"}
-                                {currentStep === 'details' && "Step 4: Your Details"}
-                                {currentStep === 'confirmation' && "Step 5: Confirmed"}
-                            </p>
+
+                            <div className="flex flex-col relative mt-12 max-w-5xl mx-auto">
+                                {/* Header Row */}
+                                <div className="hidden md:flex items-center justify-between py-2 border-b-2 border-charcoal text-charcoal/40 font-mono text-[9px] uppercase tracking-[0.2em] font-bold px-6">
+                                    <div className="w-[120px] lg:w-1/4">Dates</div>
+                                    <div className="flex-1">Sanctuary</div>
+                                    <div className="w-[160px] text-right">Access</div>
+                                </div>
+
+                                {events.length === 0 && (
+                                    <p className="text-charcoal/50 font-mono tracking-widest text-sm py-12 text-center md:text-left">
+                                        LOADING SANCTUARIES...
+                                    </p>
+                                )}
+
+                                {events.map((pass) => (
+                                    <Link
+                                        key={pass.id}
+                                        href={`/tickets/${pass.id}`}
+                                        className="block group border-b border-charcoal/10 hover:bg-black/[0.02] transition-colors md:px-6 py-8"
+                                    >
+                                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+                                            {/* Dates & Mobile Location */}
+                                            <div className="flex flex-col gap-1 w-[120px] lg:w-1/4">
+                                                <h4 className="text-charcoal/60 text-[10px] sm:text-[11px] uppercase font-mono tracking-[0.2em] font-bold">
+                                                    {pass.dates}
+                                                </h4>
+                                                <p className="text-[10px] font-mono text-charcoal/40 font-bold tracking-[0.2em] uppercase md:hidden">
+                                                    {pass.location}
+                                                </p>
+                                            </div>
+
+                                            {/* Title & Desktop Location */}
+                                            <div className="flex flex-col gap-1 flex-1">
+                                                <h3 className="h3 group-hover:text-primary transition-colors text-xl sm:text-2xl lg:text-3xl uppercase">
+                                                    {pass.title}
+                                                </h3>
+                                                <p className="text-[10px] font-mono text-charcoal/50 font-bold tracking-[0.2em] uppercase hidden md:block group-hover:text-charcoal/70 transition-colors">
+                                                    {pass.location}
+                                                </p>
+                                            </div>
+
+                                            {/* Availability & Button */}
+                                            <div className="flex items-center gap-4 md:gap-8 w-full md:w-[160px] justify-between md:justify-end shrink-0">
+                                                <div className="flex flex-row md:flex-col items-baseline md:items-end gap-2 md:gap-0">
+                                                    <span
+                                                        className={`text-[11px] md:text-[13px] font-bold uppercase tracking-widest ${getEventAvailability(pass) === "Sold Out"
+                                                            ? "text-red-500/70"
+                                                            : getEventAvailability(pass) === "Selling Fast"
+                                                                ? "text-primary"
+                                                                : "text-charcoal/70"
+                                                            }`}
+                                                    >
+                                                        {getEventAvailability(pass)}
+                                                    </span>
+                                                </div>
+                                                <Button
+                                                    variant="deepDry"
+                                                    className="!px-4 !py-2 !text-[11px] md:!text-[14px] md:!px-8 md:!py-3"
+                                                >
+                                                    Explore
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
                     </StandardSection>
                 </div>

@@ -2,14 +2,22 @@
 
 import React, { useState } from 'react';
 import { deleteEventAction } from '@/app/actions/event_management';
+import { PINOverrideModal } from '@/components/PINOverrideModal';
 
 export function DeleteEventButton({ eventId, eventTitle }: { eventId: string, eventTitle: string }) {
     const [isConfirming, setIsConfirming] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
-    const handleDelete = async () => {
+    const requestDeleteAuth = () => {
+        setIsConfirming(false);
+        setIsPinModalOpen(true);
+    };
+
+    const handleDelete = async (pin: string) => {
+        setIsPinModalOpen(false);
         setIsDeleting(true);
-        const res = await deleteEventAction(eventId);
+        const res = await deleteEventAction(eventId, pin);
         if (!res.success) {
             alert(res.error || 'Failed to delete event');
             setIsDeleting(false);
@@ -52,7 +60,7 @@ export function DeleteEventButton({ eventId, eventTitle }: { eventId: string, ev
                             </button>
                             <button
                                 type="button"
-                                onClick={handleDelete}
+                                onClick={requestDeleteAuth}
                                 disabled={isDeleting}
                                 className="flex-1 px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex justify-center items-center"
                             >
@@ -62,6 +70,14 @@ export function DeleteEventButton({ eventId, eventTitle }: { eventId: string, ev
                     </div>
                 </div>
             )}
+
+            <PINOverrideModal
+                isOpen={isPinModalOpen}
+                onClose={() => setIsPinModalOpen(false)}
+                onSuccess={handleDelete}
+                title="Event Deletion Required"
+                description={`Enter Manager PIN to confirm deletion of "${eventTitle}"`}
+            />
         </div>
     );
 }

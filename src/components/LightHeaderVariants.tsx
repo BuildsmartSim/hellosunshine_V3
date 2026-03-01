@@ -68,7 +68,7 @@ export function DappledHeaderShadow({ line1, line2 = "", subtitle, description, 
                 <div className="relative z-10 flex flex-col border-t" style={{ borderColor: 'rgba(44, 44, 44, 0.1)', gap: '24px', paddingTop: '12px' }}>
                     {subtitle && (
                         <div className="space-y-3">
-                            <p style={{ fontFamily: fonts.handwriting }} className="text-3xl text-secondary leading-snug">{subtitle}</p>
+                            <p className="text-3xl text-secondary leading-snug handwritten-text">{subtitle}</p>
                             <div className="h-[2px] w-12 bg-secondary"></div>
                         </div>
                     )}
@@ -109,7 +109,7 @@ export function DappledHeaderStroke({ line1, line2 = "", subtitle, description, 
                 <div className="relative z-10 flex flex-col border-t" style={{ borderColor: 'rgba(44, 44, 44, 0.1)', gap: '24px', paddingTop: '12px' }}>
                     {subtitle && (
                         <div className="space-y-3">
-                            <p style={{ fontFamily: fonts.handwriting }} className="text-3xl text-secondary leading-snug">{subtitle}</p>
+                            <p className="text-3xl text-secondary leading-snug handwritten-text">{subtitle}</p>
                             <div className="h-[2px] w-12 bg-secondary"></div>
                         </div>
                     )}
@@ -151,7 +151,7 @@ export function DappledHeaderGradient({ line1, line2 = "", subtitle, description
                 <div className="relative z-10 flex flex-col border-t" style={{ borderColor: 'rgba(44, 44, 44, 0.1)', gap: '24px', paddingTop: '12px' }}>
                     {subtitle && (
                         <div className="space-y-3">
-                            <p style={{ fontFamily: fonts.handwriting }} className="text-3xl text-secondary leading-snug">{subtitle}</p>
+                            <p className="text-3xl text-secondary leading-snug handwritten-text">{subtitle}</p>
                             <div className="h-[2px] w-12 bg-secondary"></div>
                         </div>
                     )}

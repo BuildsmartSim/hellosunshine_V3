@@ -101,7 +101,7 @@ export function GlowingHeader({ line1, line2 = "", subtitle, description, classN
                 >
                     {subtitle && (
                         <div className="space-y-3">
-                            <p style={{ fontFamily: fonts.handwriting }} className={`text-3xl ${subtitleColorClass} ${subtitleShadow} leading-snug transition-colors duration-1000`}>
+                            <p className={`text-3xl ${subtitleColorClass} ${subtitleShadow} leading-snug transition-colors duration-1000 handwritten-text`}>
                                 {subtitle}
                             </p>
                             <div className="h-[2px] w-12 transition-all duration-1000" style={{ backgroundColor: subDividerColor, boxShadow: subDividerShadow }}></div>

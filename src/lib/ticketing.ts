@@ -18,6 +18,10 @@ export async function upsertProfile(profile: Partial<Profile>) {
             gender: profile.gender,
             waiver_accepted: profile.waiver_accepted,
             waiver_accepted_at: profile.waiver_accepted_at,
+            terms_accepted: profile.terms_accepted,
+            mailing_list_optin: profile.mailing_list_optin,
+            location_city: profile.location_city,
+            location_country: profile.location_country,
             medical_notes: profile.medical_notes,
         }, { onConflict: 'email' })
         .select()

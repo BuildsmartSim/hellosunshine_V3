@@ -3,8 +3,13 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { revalidatePath } from 'next/cache';
 
-export async function toggleEventFeatureAction(eventId: string, isFeatured: boolean) {
+import { requireAdminOrPin } from '@/lib/auth';
+
+export async function toggleEventFeatureAction(eventId: string, isFeatured: boolean, pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         const { error } = await supabaseAdmin
             .from('app_events')
             .update({ is_featured: isFeatured })
@@ -20,8 +25,11 @@ export async function toggleEventFeatureAction(eventId: string, isFeatured: bool
     }
 }
 
-export async function toggleEventActiveAction(eventId: string, isActive: boolean) {
+export async function toggleEventActiveAction(eventId: string, isActive: boolean, pin?: string) {
     try {
+        const auth = await requireAdminOrPin(pin);
+        if (!auth.authorized) throw new Error(auth.error);
+
         const { error } = await supabaseAdmin
             .from('app_events')
             .update({ is_active: isActive })
@@ -71,5 +79,21 @@ export async function toggleReadinessTaskAction(email: string, isCompleted: bool
     } catch (error) {
         console.error('Failed to toggle readiness task:', error);
         return false;
+    }
+}
+
+export async function getCommunityHeatmapAction() {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('archived_bookings')
+            .select('lat, long, city')
+            .not('lat', 'is', null)
+            .not('long', 'is', null);
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error('Failed to fetch community heatmap data:', error);
+        return [];
     }
 }

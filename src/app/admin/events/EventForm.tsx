@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { saveEventAction } from '@/app/actions/event_management';
 import { useRouter } from 'next/navigation';
+import { PINOverrideModal } from '@/components/PINOverrideModal';
 
 const AVAILABLE_SERVICES = ['sauna', 'plunge', 'shower', 'tub', 'fire', 'heart', 'towels'];
 
@@ -10,6 +11,7 @@ export default function EventForm({ initialData }: { initialData?: any }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         id: initialData?.id || '',
@@ -64,19 +66,23 @@ export default function EventForm({ initialData }: { initialData?: any }) {
         }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const requestSaveAuth = (e: React.FormEvent) => {
         e.preventDefault();
+        setIsPinModalOpen(true);
+    };
+
+    const handleConfirmSave = async (pin: string) => {
+        setIsPinModalOpen(false);
         setIsLoading(true);
         setErrorMsg('');
 
-        // Transform arrays back
         const payload = {
             ...formData,
             facilities: formData.facilities.split(',').map((s: string) => s.trim()).filter(Boolean),
             opening_times: formData.opening_times.split(',').map((s: string) => s.trim()).filter(Boolean),
         };
 
-        const res = await saveEventAction(payload);
+        const res = await saveEventAction(payload, pin);
         if (res.success) {
             router.push('/admin');
         } else {
@@ -86,7 +92,7 @@ export default function EventForm({ initialData }: { initialData?: any }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 rounded-xl border border-neutral-200">
+        <form onSubmit={requestSaveAuth} className="space-y-8 bg-white p-8 rounded-xl border border-neutral-200 relative">
             {errorMsg && <div className="p-4 bg-red-50 text-red-600 rounded-lg">{errorMsg}</div>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -195,6 +201,14 @@ export default function EventForm({ initialData }: { initialData?: any }) {
                     {isLoading ? 'Saving...' : 'Save Event'}
                 </button>
             </div>
+
+            <PINOverrideModal
+                isOpen={isPinModalOpen}
+                onClose={() => setIsPinModalOpen(false)}
+                onSuccess={handleConfirmSave}
+                title="Save Event Required"
+                description={`Enter Manager PIN to save or modify this event.`}
+            />
         </form>
     );
 }

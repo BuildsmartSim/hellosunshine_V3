@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { searchTicketsAction, refundTicketAction } from '@/app/actions/tickets';
+import { PINOverrideModal } from '@/components/PINOverrideModal';
 
 interface TicketRow {
     id: string;
@@ -26,6 +27,7 @@ export function RefundManager({ initialTickets }: { initialTickets: any[] }) {
     const [refundReason, setRefundReason] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
     const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
@@ -46,15 +48,20 @@ export function RefundManager({ initialTickets }: { initialTickets: any[] }) {
         }
     };
 
-    const processRefund = async () => {
+    const requestRefundAuth = () => {
         if (!selectedTicket || !refundReason.trim()) return;
+        setIsPinModalOpen(true);
+    };
 
+    const processRefund = async (pin: string) => {
+        setIsPinModalOpen(false);
         setIsProcessing(true);
         setErrorMsg('');
 
         try {
             // Need to update refundTicketAction to accept reason
-            const res = await refundTicketAction(selectedTicket.id, selectedTicket.stripe_session_id || null, refundReason);
+            if (!selectedTicket) return;
+            const res = await refundTicketAction(selectedTicket.id, selectedTicket.stripe_session_id || null, refundReason, pin);
             if (res.success) {
                 setTickets(prev => prev.filter(t => t.id !== selectedTicket.id));
                 setSelectedTicket(null);
@@ -153,7 +160,7 @@ export function RefundManager({ initialTickets }: { initialTickets: any[] }) {
                             {errorMsg && <p className="text-red-600 text-xs font-bold font-mono uppercase tracking-widest">{errorMsg}</p>}
 
                             <button
-                                onClick={processRefund}
+                                onClick={requestRefundAuth}
                                 disabled={isProcessing || !refundReason.trim()}
                                 className="w-full py-4 bg-red-600 text-white font-black rounded-xl shadow-lg shadow-red-100 hover:bg-red-700 active:scale-95 transition-all text-sm uppercase tracking-[0.2em] font-mono disabled:opacity-50"
                             >
@@ -183,6 +190,14 @@ export function RefundManager({ initialTickets }: { initialTickets: any[] }) {
                     </div>
                 </div>
             </div>
+
+            <PINOverrideModal
+                isOpen={isPinModalOpen}
+                onClose={() => setIsPinModalOpen(false)}
+                onSuccess={processRefund}
+                title="Refund Authorization Required"
+                description={`Enter Manager PIN to confirm refund for ${selectedTicket?.profile?.full_name || 'Guest'}`}
+            />
         </div>
     );
 }

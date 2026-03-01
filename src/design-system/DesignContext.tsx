@@ -45,8 +45,8 @@ interface DesignContextType {
 }
 
 const DEFAULT_VALUES: DesignValues = {
-    sectionPaddingDesktop: 64,
-    sectionPaddingMobile: 48,
+    sectionPaddingDesktop: 128,
+    sectionPaddingMobile: 80,
     headerGapDesktop: 48,
     headerGapMobile: 32,
     sectionOverlap: 48,

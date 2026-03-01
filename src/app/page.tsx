@@ -60,20 +60,14 @@ export default function Home() {
             </div>
 
             {/* Right: Header (centered) + rule + book — 9 cols */}
-            <div className="lg:col-span-9 flex flex-col items-center text-center">
-              <h2 style={{
-                fontFamily: `'ChicleForce', var(--font-chicle), cursive`,
-                fontSize: 'clamp(48px, 5vw, 78px)',
-                lineHeight: '0.95',
-                letterSpacing: '-0.01em',
-                color: 'var(--hss-charcoal, #2C2C2C)',
-              }}>
-                The Guestbook
-              </h2>
-              <p className="mt-3 text-charcoal/45 text-xl" style={{ fontFamily: 'var(--font-handwriting)' }}>
-                Voices from the steam. Moments captured in the wild.
-              </p>
-              <div className="h-px w-full bg-charcoal/10 mt-6 mb-6" />
+            <div className="lg:col-span-9 flex flex-col items-center">
+              <SectionHeader
+                centered={true}
+                line1="The"
+                line2="Guestbook"
+                handwriting="Voices from the steam. Moments captured in the wild."
+                withSeparator={true}
+              />
               <div className="w-full">
                 <Guestbook />
               </div>

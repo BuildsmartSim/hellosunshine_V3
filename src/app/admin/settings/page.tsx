@@ -32,7 +32,8 @@ export default async function SettingsPage() {
     const defaultSettings = {
         chief_email: '',
         telegram_bot_token: '',
-        telegram_chat_id: ''
+        telegram_chat_id: '',
+        manager_pin: ''
     };
 
     return (

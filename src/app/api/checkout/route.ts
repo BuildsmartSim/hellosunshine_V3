@@ -12,6 +12,30 @@ export async function POST(req: Request) {
 
         console.log('Checkout requested for:', email, priceId);
 
+        // Fetch Geolocation data
+        let location_city = null;
+        let location_country = null;
+        try {
+            // Get IP from headers (works on Vercel, DO, most proxies)
+            const forwardedFor = req.headers.get('x-forwarded-for');
+            const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : null;
+
+            if (ip) {
+                // Quick free API call to get location (doesn't require an API key)
+                const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=city,country`, {
+                    next: { revalidate: 3600 } // cache for IP if somehow called repeatedly
+                });
+                if (geoRes.ok) {
+                    const geoData = await geoRes.json();
+                    location_city = geoData.city;
+                    location_country = geoData.country;
+                }
+            }
+        } catch (geoErr) {
+            console.error('Failed to fetch geolocation in background:', geoErr);
+            // Non-blocking error, we still proceed with checkout
+        }
+
         // 1. Check Inventory
         const stock = await inventory.checkAvailability(priceId);
         if (!stock.available) {
@@ -75,6 +99,8 @@ export async function POST(req: Request) {
                 product_id: stock.productId, // Link to our internal UUID
                 internal_tier_id: priceId,
                 referral_code: metadata?.referral_code || null,
+                location_city,
+                location_country,
                 ...metadata
             },
         });

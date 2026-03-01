@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { searchTicketsAction, refundTicketAction } from '@/app/actions/tickets';
+import { PINOverrideModal } from '@/components/PINOverrideModal';
 
 interface TicketRow {
     id: string;
@@ -25,6 +26,8 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
     const [isSearching, setIsSearching] = useState(false);
     const [refundingId, setRefundingId] = useState<string | null>(null);
     const [errorMsg, setErrorMsg] = useState('');
+    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+    const [ticketToRefund, setTicketToRefund] = useState<{ id: string, sessionId?: string | null } | null>(null);
 
     const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
@@ -46,14 +49,22 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
         }
     };
 
-    const handleRefund = async (ticketId: string, stripeSessionId?: string | null) => {
+    const requestRefundAuth = (ticketId: string, stripeSessionId?: string | null) => {
         if (!confirm('Are you sure you want to refund this ticket? This will trigger a Stripe refund if applicable and mark the ticket as refunded.')) return;
+        setTicketToRefund({ id: ticketId, sessionId: stripeSessionId });
+        setIsPinModalOpen(true);
+    };
 
+    const handleRefund = async (pin: string) => {
+        if (!ticketToRefund) return;
+        setIsPinModalOpen(false);
+
+        const { id: ticketId, sessionId: stripeSessionId } = ticketToRefund;
         setRefundingId(ticketId);
         setErrorMsg('');
 
         try {
-            const res = await refundTicketAction(ticketId, stripeSessionId || null, 'Refunded via Dashboard Preview');
+            const res = await refundTicketAction(ticketId, stripeSessionId || null, 'Refunded via Dashboard Preview', pin);
             if (res.success) {
                 setTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status: 'refunded' } : t));
                 alert('Refund processed successfully.');
@@ -64,6 +75,7 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
             setErrorMsg(err.message || 'An error occurred during refund');
         } finally {
             setRefundingId(null);
+            setTicketToRefund(null);
         }
     };
 
@@ -129,14 +141,15 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
                                 <span className={`px-2 py-1 text-[10px] sm:text-xs font-bold rounded-full uppercase tracking-wider ${ticket.status === 'active' ? 'bg-green-100 text-green-700' :
                                     ticket.status === 'used' ? 'bg-neutral-100 text-neutral-600' :
                                         ticket.status === 'refunded' ? 'bg-gray-200 text-gray-700' :
-                                            'bg-red-100 text-red-700'
+                                            ticket.status === 'archived' ? 'bg-amber-100 text-amber-700' :
+                                                'bg-red-100 text-red-700'
                                     }`}>
                                     {ticket.status}
                                 </span>
 
                                 {ticket.status === 'active' && (
                                     <button
-                                        onClick={() => handleRefund(ticket.id, ticket.stripe_session_id)}
+                                        onClick={() => requestRefundAuth(ticket.id, ticket.stripe_session_id)}
                                         disabled={refundingId === ticket.id}
                                         className="text-xs font-bold px-3 py-1.5 border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded shadow-sm transition-colors disabled:opacity-50"
                                     >
@@ -153,6 +166,14 @@ export function GuestManager({ initialTickets }: { initialTickets: any[] }) {
                     ))
                 )}
             </div>
+
+            <PINOverrideModal
+                isOpen={isPinModalOpen}
+                onClose={() => setIsPinModalOpen(false)}
+                onSuccess={handleRefund}
+                title="Refund Authorization Required"
+                description={`Enter Manager PIN to confirm refund.`}
+            />
         </div>
     );
 }
