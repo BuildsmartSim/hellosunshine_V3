@@ -115,7 +115,7 @@ export default async function AdminDashboard() {
                     <iframe
                         width="100%"
                         height="100%"
-                        src="https://lookerstudio.google.com/embed/reporting/02c90df3-8bf2-4c3d-941f-c4ed9f103f9b/page/kIV1C"
+                        src="https://lookerstudio.google.com/embed/reporting/b9322c62-36d5-4804-8bdf-daee360f7911/page/1M"
                         frameBorder="0"
                         style={{ border: 0 }}
                         allowFullScreen
