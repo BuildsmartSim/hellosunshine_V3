@@ -111,16 +111,16 @@ export default async function AdminDashboard() {
                         <span className="text-sm">📊</span> View GA4 Dashboard
                     </a>
                 </div>
-                <div className="p-6 bg-neutral-50/10">
-                    <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-black mb-4 block font-mono italic">Basic Health (Looker Studio)</label>
-                    <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-neutral-100 border border-neutral-200 rounded-xl flex items-center justify-center overflow-hidden relative group">
-                        <div className="text-center p-8 absolute z-10 transition-transform group-hover:scale-105 duration-500">
-                            <h4 className="font-black text-neutral-800 mb-2 uppercase font-mono">Looker Studio Embed Ready</h4>
-                            <p className="text-xs text-neutral-500 mb-4 max-w-sm mx-auto font-mono lowercase tracking-wide italic">
-                                Once you create your Basic Health report in Looker Studio, paste the embed iframe code here.
-                            </p>
-                        </div>
-                    </div>
+                <div className="bg-neutral-50/10 h-[800px] w-full">
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src="https://lookerstudio.google.com/embed/reporting/02c90df3-8bf2-4c3d-941f-c4ed9f103f9b/page/kIV1C"
+                        frameBorder="0"
+                        style={{ border: 0 }}
+                        allowFullScreen
+                        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                    </iframe>
                 </div>
             </div>
 
