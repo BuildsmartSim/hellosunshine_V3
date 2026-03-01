@@ -48,5 +48,15 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url)
     }
 
+    if (
+        user &&
+        request.nextUrl.pathname === '/admin/login'
+    ) {
+        // User is already logged in, redirect them to the dashboard
+        const url = request.nextUrl.clone()
+        url.pathname = '/admin'
+        return NextResponse.redirect(url)
+    }
+
     return supabaseResponse
 }

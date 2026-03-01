@@ -13,12 +13,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    const headersList = await import('next/headers');
-    const headers = headersList.headers();
-    const pathname = (await headers).get('x-invoke-path') || '';
-
-    if (!user && pathname !== '/admin/login') {
-        redirect('/admin/login');
+    // If there is no user, they must be on the login page because middleware
+    // blocks unauthenticated access to all other /admin routes.
+    // In this case, we just render the children (the login page) without the sidebar.
+    if (!user) {
+        return <>{children}</>;
     }
 
     return (
