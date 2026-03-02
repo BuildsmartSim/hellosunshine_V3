@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { fetchBroadcastAudiencesAction, sendBroadcastEmailAction } from '@/app/actions/broadcasts';
+import { getCommunityHeatmapAction } from '@/app/actions/admin';
 import { Button } from '@/components/Button';
 import { PINOverrideModal } from '@/components/PINOverrideModal';
+import { CommunityMap } from '../CommunityMap';
 
 export default function BroadcastStudio() {
     const [isPinModalOpen, setIsPinModalOpen] = useState(false);
@@ -20,6 +22,13 @@ export default function BroadcastStudio() {
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [resultMsg, setResultMsg] = useState('');
     const [hasFetched, setHasFetched] = useState(false);
+    const [mapData, setMapData] = useState<any[]>([]);
+
+    useEffect(() => {
+        getCommunityHeatmapAction().then(data => {
+            if (data) setMapData(data);
+        });
+    }, []);
 
     const handleForceFetch = () => {
         if (audiences.length > 0 || historicalAudiences.length > 0) return; // Already fetched
@@ -133,6 +142,10 @@ export default function BroadcastStudio() {
                         </button>
                     )}
                 </div>
+            </div>
+
+            <div className="mb-6">
+                <CommunityMap data={mapData} />
             </div>
 
             <form onSubmit={handleSendRequest} className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden flex flex-col">

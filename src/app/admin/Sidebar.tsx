@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 interface SidebarItemProps {
     href: string;
@@ -59,9 +60,14 @@ export function Sidebar() {
         <>
             {/* Mobile Header */}
             <div className="lg:hidden flex items-center justify-between p-4 bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50">
-                <h1 className="text-xs font-black text-white tracking-[0.2em] uppercase font-mono">
-                    Hello Sunshine
-                </h1>
+                <Link href="/" className="flex items-center gap-2 group">
+                    <div className="relative w-8 h-8 rounded-full bg-[#FDFCF9] overflow-hidden">
+                        <Image src="/HSSLOGO black YELLOW.png" alt="Hello Sunshine" fill className="object-contain p-1" />
+                    </div>
+                    <h1 className="text-xs font-black text-white tracking-[0.2em] uppercase font-mono group-hover:text-yellow-400 transition-colors">
+                        Hello Sunshine
+                    </h1>
+                </Link>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="p-2 text-white hover:bg-neutral-800 rounded-lg transition-colors"
@@ -89,10 +95,17 @@ export function Sidebar() {
                 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             `}>
                 <div className="p-6 border-b border-neutral-100 bg-neutral-900 hidden lg:block">
-                    <h1 className="text-sm font-black text-white tracking-[0.2em] uppercase font-mono">
-                        Hello Sunshine
-                    </h1>
-                    <p className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest mt-1">Management Portal</p>
+                    <Link href="/" className="flex items-center gap-3 group block">
+                        <div className="relative w-10 h-10 rounded-full bg-[#FDFCF9] overflow-hidden flex-shrink-0 transition-transform group-hover:scale-105">
+                            <Image src="/HSSLOGO black YELLOW.png" alt="Hello Sunshine" fill className="object-contain p-1" priority />
+                        </div>
+                        <div>
+                            <h1 className="text-sm font-black text-white tracking-[0.2em] uppercase font-mono group-hover:text-yellow-400 transition-colors">
+                                Hello Sunshine
+                            </h1>
+                            <p className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest mt-1">Management Portal</p>
+                        </div>
+                    </Link>
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -123,6 +136,12 @@ export function Sidebar() {
                         active={pathname.startsWith('/admin/broadcasts')}
                         icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>}
                     />
+                    <SidebarItem
+                        href="/admin/analytics"
+                        label="Analytics"
+                        active={pathname.startsWith('/admin/analytics')}
+                        icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>}
+                    />
 
                     {isAdmin && (
                         <div className="pt-4">
@@ -142,6 +161,12 @@ export function Sidebar() {
                         <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em] px-4 mb-2 block font-mono">
                             Growth
                         </label>
+                        <SidebarItem
+                            href="/admin/discovery"
+                            label="Discovery"
+                            active={pathname.startsWith('/admin/discovery')}
+                            icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>}
+                        />
                         <SidebarItem
                             href="/admin/ambassadors"
                             label="Ambassadors"

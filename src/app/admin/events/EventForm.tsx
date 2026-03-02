@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { saveEventAction } from '@/app/actions/event_management';
 import { useRouter } from 'next/navigation';
 import { PINOverrideModal } from '@/components/PINOverrideModal';
+import { SEOAnalyzer } from '@/components/Admin/SEOAnalyzer';
 
 const AVAILABLE_SERVICES = ['sauna', 'plunge', 'shower', 'tub', 'fire', 'heart', 'towels'];
 
@@ -28,6 +29,8 @@ export default function EventForm({ initialData }: { initialData?: any }) {
         tiers: initialData?.tiers || [],
         is_active: initialData?.is_active ?? true,
         is_featured: initialData?.is_featured ?? false,
+        seo_title: initialData?.seo_title || '',
+        seo_description: initialData?.seo_description || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -131,6 +134,30 @@ export default function EventForm({ initialData }: { initialData?: any }) {
                 <div>
                     <label className="block text-sm font-bold text-neutral-700 mb-1">Opening Times (Comma Separated)</label>
                     <input name="opening_times" value={formData.opening_times} onChange={handleChange} placeholder="Fri: 4pm-10pm, Sat: 9am-10pm" className="w-full p-2 border border-neutral-300 rounded focus:ring-2 focus:ring-neutral-800" />
+                </div>
+            </div>
+
+            <div className="border-t border-neutral-200 pt-6">
+                <div className="mb-4">
+                    <h3 className="text-lg font-bold text-neutral-800">SEO Settings (Invisible to guests)</h3>
+                    <p className="text-sm text-neutral-500">These fields power the Rank Math-style analyzer and optimize how your event appears on Google and social media.</p>
+                </div>
+                <div className="grid grid-cols-1 gap-6">
+                    <div>
+                        <label className="block text-sm font-bold text-neutral-700 mb-1">SEO Title (Max 60 chars recommended)</label>
+                        <input name="seo_title" value={formData.seo_title} onChange={handleChange} placeholder={formData.title || "Enter an SEO optimized title..."} className="w-full p-2 border border-neutral-300 rounded focus:ring-2 focus:ring-neutral-800" />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-bold text-neutral-700 mb-1">SEO Description (Max 160 chars recommended)</label>
+                        <textarea name="seo_description" value={formData.seo_description} onChange={handleChange} placeholder="Write a compelling meta description to improve click-through rates..." className="w-full p-2 border border-neutral-300 rounded focus:ring-2 focus:ring-neutral-800" rows={2}></textarea>
+                    </div>
+
+                    <div className="md:col-span-1">
+                        <SEOAnalyzer
+                            title={formData.seo_title || formData.title}
+                            description={formData.seo_description}
+                        />
+                    </div>
                 </div>
             </div>
 

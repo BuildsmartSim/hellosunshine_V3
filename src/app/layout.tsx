@@ -23,8 +23,25 @@ const chicle = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Hello Sunshine Sauna - Elemental Minimalist",
-  description: "Hand-built saunas for the wandering soul.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://hellosunshinesauna.com'),
+  title: {
+    default: "Hello Sunshine Sauna - Elemental Minimalist",
+    template: "%s | Hello Sunshine Sauna",
+  },
+  description: "Hand-built saunas for the wandering soul. Experience community, warmth, and nature.",
+  openGraph: {
+    title: "Hello Sunshine Sauna",
+    description: "Hand-built saunas for the wandering soul. Experience community, warmth, and nature.",
+    url: "/",
+    siteName: "Hello Sunshine",
+    locale: "en_GB",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hello Sunshine Sauna",
+    description: "Hand-built saunas for the wandering soul.",
+  },
 };
 
 import { DesignProvider } from "@/design-system/DesignContext";

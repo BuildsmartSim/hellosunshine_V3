@@ -54,3 +54,12 @@ scripts/.optimize-cache.json
 
 .vercel
 .env*.local
+
+# Raw Media Assets avoiding Bloat
+HS Promotion Material.zip
+HS_Promotion_Material/
+CARAVAN*
+Caravan*
+sauna+garden.png
+
+scripts/

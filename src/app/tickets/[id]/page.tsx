@@ -13,6 +13,7 @@ import { DeskBackground } from "@/components/Ticketing/DeskBackground";
 import { checkInventoryAction } from "@/app/actions/inventory";
 import { getEventsAction } from "@/app/actions/events";
 import { EventData, TicketSubTier } from "@/data/festivals";
+import { Schema } from "@/components/Schema";
 
 type Step = "overview" | "details" | "confirmation";
 
@@ -145,8 +146,34 @@ export default function SingleTicketPage() {
 
     if (!event) return null; // Or some fallback UI
 
+    const eventSchema = {
+        "@context": "https://schema.org",
+        "@type": "Event",
+        "name": event.title,
+        "description": event.description,
+        "startDate": event.dates, // e.g. "April 2025"
+        "location": {
+            "@type": "Place",
+            "name": event.location,
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": event.location,
+                "addressCountry": "UK"
+            }
+        },
+        "image": event.logoSrc ? `https://hellosunshinesauna.com${event.logoSrc}` : "https://hellosunshinesauna.com/optimized/photographs/webp/hero-sunshine.webp",
+        "offers": event.tiers.map((tier) => ({
+            "@type": "Offer",
+            "name": tier.name,
+            "price": tier.price.replace(/[^0-9.]/g, ''), // Strip currency symbols
+            "priceCurrency": "GBP",
+            "url": `https://hellosunshinesauna.com/tickets/${event.id}`
+        }))
+    };
+
     return (
         <div className="min-h-screen flex flex-col relative">
+            <Schema data={eventSchema} />
             <DeskBackground />
             <Header />
 

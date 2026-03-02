@@ -10,6 +10,7 @@ import {
     Preview,
     Section,
     Text,
+    Font,
 } from '@react-email/components';
 import * as React from 'react';
 
@@ -34,15 +35,26 @@ export const TicketEmail = ({
 
     return (
         <Html>
-            <Head />
+            <Head>
+                <style>
+                    {`
+                        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=DM+Sans:wght@400;700&display=swap');
+                    `}
+                </style>
+            </Head>
             <Preview>Your ticket for {eventTitle} is ready!</Preview>
             <Body style={main}>
                 <Container style={container}>
                     <Section style={header}>
-                        <Text style={logoText}>♨️ HELLO SUNSHINE</Text>
+                        <Img
+                            src={`${baseUrl}/logo-black-yellow.png`}
+                            width="120"
+                            alt="Hello Sunshine"
+                            style={logoImage}
+                        />
                     </Section>
 
-                    <Heading style={h1}>SEE YOU SOON, {customerName.toUpperCase()}</Heading>
+                    <Heading style={h1}>See you soon, {customerName}</Heading>
 
                     <Text style={text}>
                         Your place in the heat is secured. We've prepared your digital ticket and entry instructions below.
@@ -74,7 +86,6 @@ export const TicketEmail = ({
                     <Section style={footer}>
                         <Text style={footerTitle}>ENTRY INSTRUCTIONS</Text>
                         <Text style={footerText}>
-                            • Please arrive 15 minutes before your session.<br />
                             • Bring 2 towels (one to sit on, one to dry).<br />
                             • Have your digital ticket ready or save it to your photos.<br />
                         </Text>
@@ -90,7 +101,7 @@ export default TicketEmail;
 
 const main = {
     backgroundColor: '#F9F7F2',
-    fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+    fontFamily: '"DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
 };
 
 const container = {
@@ -104,6 +115,10 @@ const header = {
     textAlign: 'center' as const,
 };
 
+const logoImage = {
+    margin: '0 auto',
+};
+
 const logoText = {
     fontSize: '14px',
     fontWeight: 'bold',
@@ -114,11 +129,11 @@ const logoText = {
 
 const h1 = {
     color: '#2D2D2D',
-    fontSize: '32px',
-    fontWeight: '900',
+    fontSize: '42px',
+    fontWeight: '700',
     textAlign: 'center' as const,
     margin: '40px 0',
-    textTransform: 'uppercase' as const,
+    fontFamily: '"Caveat", cursive',
 };
 
 const text = {
@@ -152,6 +167,7 @@ const ticketValue = {
     fontWeight: 'bold',
     color: '#2D2D2D',
     margin: '0',
+    textTransform: 'uppercase' as const,
 };
 
 const divider = {

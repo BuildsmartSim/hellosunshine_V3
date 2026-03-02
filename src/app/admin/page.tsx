@@ -3,11 +3,23 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { EventToggle } from './EventToggle';
 import { DeleteEventButton } from './events/DeleteEventButton';
 import { ReadinessScorecard } from './ReadinessScorecard';
-import { getReadinessTasksAction, getCommunityHeatmapAction } from '@/app/actions/admin';
+import { getReadinessTasksAction } from '@/app/actions/admin';
 import { GuestManager } from './GuestManager';
 import { StripeReconciler } from './StripeReconciler';
-import { CommunityMap } from './CommunityMap';
 import Link from 'next/link';
+
+// New Wow-Factor Components & Actions
+import {
+    getDashboardKPIsAction,
+    getSalesVelocityAction,
+    getInventoryStatsAction,
+    getRecentPurchasesAction,
+    getAmbassadorLeaderboardAction
+} from '@/app/actions/dashboard';
+import { DashboardKPIsClient } from '@/components/Admin/DashboardKPIs';
+import { SalesVelocityChart } from '@/components/Admin/SalesChart';
+import { InventoryDonut } from '@/components/Admin/InventoryDonut';
+import { RecentActivity } from '@/components/Admin/RecentActivity';
 
 export const revalidate = 0; // Ensure fresh data on every load
 
@@ -22,7 +34,21 @@ interface EventRow {
 
 export default async function AdminDashboard() {
     const initialTasks = await getReadinessTasksAction();
-    const mapData = await getCommunityHeatmapAction();
+
+    // Fetch Wow-Factor Data concurrently
+    const [
+        kpisRes,
+        velocityRes,
+        inventoryRes,
+        recentRes,
+        leaderboardRes
+    ] = await Promise.all([
+        getDashboardKPIsAction(),
+        getSalesVelocityAction(),
+        getInventoryStatsAction(),
+        getRecentPurchasesAction(),
+        getAmbassadorLeaderboardAction()
+    ]);
 
     // Fetch all events using the full-access admin client
     const { data: events, error } = await supabaseAdmin
@@ -65,79 +91,75 @@ export default async function AdminDashboard() {
         .limit(10);
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 pb-12">
             <div>
-                <h2 className="text-2xl font-black text-neutral-800 tracking-tight uppercase font-mono">Dashboard Overview</h2>
-                <p className="text-xs text-neutral-500 font-mono mt-1 uppercase tracking-widest">Real-time health and ticketing metrics</p>
+                <h2 className="text-2xl lg:text-3xl font-black text-charcoal tracking-tight uppercase font-mono">Mission Control</h2>
+                <p className="text-xs text-neutral-500 font-mono mt-1 uppercase tracking-widest">Real-time venue intelligence & ticketing</p>
             </div>
 
-            <ReadinessScorecard initialTasks={initialTasks} />
-            <CommunityMap data={mapData} />
+            {/* Tier 1: At-a-Glance KPIs */}
+            {kpisRes.success && kpisRes.data && (
+                <DashboardKPIsClient data={kpisRes.data} eventsUrl="/admin/events" />
+            )}
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm transition-all hover:shadow-md">
-                    <div className="flex justify-between items-start mb-4">
-                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] font-mono leading-none">Total Tickets Sold</p>
-                        <span className="text-[10px] font-black text-green-600 bg-green-50 px-2 py-1 rounded font-mono">{ticketPercentage}% SOLD</span>
+            {/* Tier 2: Visual Trends */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                {/* Sales Velocity Area Chart */}
+                <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-neutral-200/50 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h3 className="text-sm font-black text-charcoal tracking-[0.2em] uppercase font-mono">Sales Velocity</h3>
+                            <p className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest mt-1">14-Day Trajectory</p>
+                        </div>
                     </div>
-                    <div className="flex items-baseline gap-2">
-                        <p className="text-4xl font-black text-neutral-800 font-mono">{ticketCount || 0}</p>
-                        <p className="text-[10px] text-neutral-400 font-black font-mono uppercase tracking-widest">/ {totalCapacity} Capacity</p>
-                    </div>
+                    {velocityRes.success && velocityRes.data && (
+                        <SalesVelocityChart data={velocityRes.data} />
+                    )}
                 </div>
 
-                <div className="bg-white p-6 rounded-2xl border border-primary/20 bg-primary/5 shadow-sm transition-all hover:shadow-md">
-                    <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] font-mono mb-4 leading-none">Live Attendance</p>
-                    <div className="flex items-baseline gap-2">
-                        <p className="text-4xl font-black text-neutral-800 font-mono">{attendanceCount || 0}</p>
-                        <p className="text-[10px] text-neutral-400 font-black font-mono uppercase tracking-widest">In the Sanctuary</p>
-                    </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm transition-all hover:shadow-md">
-                    <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] font-mono mb-4 leading-none">Active Events</p>
-                    <p className="text-4xl font-black text-neutral-800 font-mono">{events?.filter((e: EventRow) => e.is_active).length || 0}</p>
-                </div>
-            </div>
-
-            {/* Analytics Dashboard (Looker + GA4 Link) */}
-            <div className="bg-white rounded-2xl border border-neutral-200 shadow-xl overflow-hidden">
-                <div className="px-6 py-5 border-b border-neutral-100 bg-neutral-900 flex justify-between items-center">
+                {/* Inventory Donut Chart */}
+                <div className="bg-white p-6 rounded-3xl border border-neutral-200/50 shadow-sm hover:shadow-md transition-shadow">
                     <div>
-                        <h3 className="text-sm font-black text-white tracking-[0.2em] uppercase font-mono">Analytics & Health</h3>
+                        <h3 className="text-sm font-black text-charcoal tracking-[0.2em] uppercase font-mono">Current Inventory</h3>
+                        <p className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest mt-1">Sales by Category</p>
                     </div>
-                    <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="px-4 py-2 flex items-center gap-2 bg-yellow-400 text-yellow-950 text-[10px] font-black rounded font-mono uppercase tracking-widest shadow hover:bg-yellow-500 transition-all active:scale-95">
-                        <span className="text-sm">📊</span> View GA4 Dashboard
-                    </a>
-                </div>
-                <div className="bg-neutral-50/10 h-[800px] w-full">
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        src="https://lookerstudio.google.com/embed/reporting/b9322c62-36d5-4804-8bdf-daee360f7911/page/1M"
-                        frameBorder="0"
-                        style={{ border: 0 }}
-                        allowFullScreen
-                        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                    </iframe>
+                    {inventoryRes.success && inventoryRes.data && (
+                        <InventoryDonut data={inventoryRes.data} />
+                    )}
                 </div>
             </div>
 
-            {/* Interactive Guest Manager Panel */}
-            <div className="pt-4">
-                <div className="mb-4 flex justify-between items-center">
-                    <h3 className="text-sm font-black text-neutral-400 uppercase tracking-[0.2em] font-mono">Recent Activity</h3>
-                    <Link href="/admin/refunds" className="text-[10px] font-black text-primary underline uppercase font-mono tracking-widest hover:text-primary/70">
-                        View Unified Refunds & Purchases
-                    </Link>
-                </div>
-                <GuestManager initialTickets={latestTickets || []} />
+            {/* Actionable Insights (Scorecard) */}
+            <div className="my-8">
+                <ReadinessScorecard initialTasks={initialTasks} />
             </div>
+
+            {/* Tier 3: Actionable Data Feed */}
+            {recentRes.success && leaderboardRes.success && (
+                <RecentActivity
+                    recentPurchases={recentRes.data || []}
+                    leaderboard={leaderboardRes.data || []}
+                />
+            )}
 
             {/* Emergency Tools Section */}
-            <div className="pt-8 border-t border-neutral-100">
-                <StripeReconciler />
+            <div className="pt-12 border-t border-charcoal/5 mt-12 flex flex-col gap-6">
+                <div>
+                    <h3 className="text-sm font-black text-neutral-400 tracking-[0.2em] uppercase font-mono">Operations Pipeline</h3>
+                    <p className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest mt-1">Manual overrides and reconciliations</p>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <StripeReconciler />
+
+                    <div className="bg-white rounded-3xl border border-neutral-200/50 p-6 flex flex-col justify-center items-center text-center">
+                        <h4 className="font-mono uppercase tracking-widest text-sm font-bold text-charcoal mb-2">Legacy Refund View</h4>
+                        <p className="text-xs text-neutral-500 mb-4 max-w-sm">Access the unified timeline of guest purchases and detailed refund management.</p>
+                        <Link href="/admin/refunds" className="px-6 py-2 bg-charcoal text-white rounded-full text-xs font-bold font-mono tracking-widest uppercase hover:bg-primary hover:text-charcoal transition-colors">
+                            Manage Refunds
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );

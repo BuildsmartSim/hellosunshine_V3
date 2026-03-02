@@ -24,6 +24,8 @@ export type EventData = {
     externalUrl: string;
     services: ('sauna' | 'plunge' | 'shower' | 'tub' | 'fire' | 'heart' | 'towels')[];
     isFeatured: boolean;
+    seoTitle?: string;
+    seoDescription?: string;
 };
 
 export const SERVICE_ICONS: Record<string, string> = {
@@ -71,6 +73,8 @@ export const getFestivalData = async (): Promise<EventData[]> => {
             externalUrl: event.external_url || '',
             services: event.services || [],
             isFeatured: event.is_featured || false,
+            seoTitle: event.seo_title || '',
+            seoDescription: event.seo_description || '',
         }));
     } catch (err) {
         console.error("Failed to fetch festival data:", err);

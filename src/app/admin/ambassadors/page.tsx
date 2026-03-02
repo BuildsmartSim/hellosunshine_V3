@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getCommunityHeatmapAction } from '@/app/actions/admin';
+import { CommunityMap } from '../CommunityMap';
 
 export const revalidate = 0;
 
@@ -13,6 +15,9 @@ export default async function AmbassadorsPage() {
             tickets ( count )
         `)
         .order('created_at', { ascending: false });
+
+    // Fetch heatmap data for the top section
+    const mapData = await getCommunityHeatmapAction();
 
     return (
         <div className="max-w-6xl mx-auto py-8">
@@ -29,6 +34,11 @@ export default async function AmbassadorsPage() {
                         + Generate New Code
                     </Link>
                 </div>
+            </div>
+
+            {/* Geographical Heatmap */}
+            <div className="mb-8">
+                <CommunityMap data={mapData} />
             </div>
 
             <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">

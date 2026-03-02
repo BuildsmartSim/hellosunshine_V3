@@ -39,17 +39,17 @@ export function CommunityMap({ data }: { data: GeoPoint[] }) {
                 </div>
             </div>
 
-            <div className="relative w-full aspect-[4/3] sm:aspect-[2/1] bg-neutral-900 overflow-hidden flex items-center justify-center">
+            <div className="relative w-full aspect-[4/3] sm:aspect-[2/1] bg-[#F3EFE6] overflow-hidden flex items-center justify-center">
                 {/* Subtle Grid Background */}
-                <div className="absolute inset-0 opacity-10" style={{
-                    backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
+                <div className="absolute inset-0 opacity-20" style={{
+                    backgroundImage: 'linear-gradient(#E0D5C1 1px, transparent 1px), linear-gradient(90deg, #E0D5C1 1px, transparent 1px)',
                     backgroundSize: '40px 40px'
                 }}></div>
 
                 <div className="relative w-full max-w-[400px] h-full">
-                    <svg viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`} className="w-full h-full drop-shadow-2xl">
-                        {/* UK Silhouette */}
-                        <path d={UK_PATH} fill="#262626" stroke="#404040" strokeWidth="1" strokeLinejoin="round" />
+                    <svg viewBox="-40 -40 480 680" className="w-full h-full drop-shadow-xl">
+                        {/* UK Silhouette - Rounded and softened */}
+                        <path d={UK_PATH} fill="#26201D" stroke="#26201D" strokeWidth="16" strokeLinejoin="round" strokeLinecap="round" />
 
                         {/* Glow effect for high density */}
                         <defs>
@@ -64,11 +64,11 @@ export function CommunityMap({ data }: { data: GeoPoint[] }) {
                                 key={i}
                                 cx={pt.x}
                                 cy={pt.y}
-                                r="3"
-                                fill="#fbbf24" // Primary amber
-                                opacity="0.4"
+                                r="4"
+                                fill="#F8C630" // Primary Yellow
+                                opacity="0.8"
                                 filter="url(#glow)"
-                                className="mix-blend-screen transition-all duration-300 hover:r-[6] hover:opacity-100 cursor-pointer"
+                                className="mix-blend-screen transition-all duration-300 hover:r-[8] hover:opacity-100 cursor-pointer"
                             >
                                 {pt.city && <title>{pt.city}</title>}
                             </circle>
@@ -77,9 +77,9 @@ export function CommunityMap({ data }: { data: GeoPoint[] }) {
                 </div>
 
                 {/* Overlays */}
-                <div className="absolute bottom-4 right-4 flex gap-2">
-                    <span className="w-3 h-3 rounded-full bg-amber-400 opacity-40 shadow-[0_0_10px_rgba(251,191,36,0.8)]"></span>
-                    <span className="text-[10px] text-white/60 font-mono uppercase tracking-widest">Guest Cluster</span>
+                <div className="absolute bottom-4 right-4 flex gap-2 items-center">
+                    <span className="w-3 h-3 rounded-full bg-[#F8C630] shadow-[0_0_10px_rgba(248,198,48,0.8)]"></span>
+                    <span className="text-[10px] text-[#26201D] font-black uppercase tracking-widest font-mono">Guest Cluster</span>
                 </div>
             </div>
         </div>

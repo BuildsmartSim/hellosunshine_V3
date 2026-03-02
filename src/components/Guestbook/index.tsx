@@ -191,9 +191,16 @@ const FlippingSheet = ({
     );
 };
 
-export default function Guestbook() {
+export default function Guestbook({ onSpreadChange }: { onSpreadChange?: (index: number) => void }) {
     const hasMounted = useHasMounted();
     const [spreadIndex, setSpreadIndex] = useState(0);
+
+    // Call callback whenever spreadIndex changes
+    React.useEffect(() => {
+        if (onSpreadChange) {
+            onSpreadChange(spreadIndex);
+        }
+    }, [spreadIndex, onSpreadChange]);
 
     if (!hasMounted) return (
         <div className="relative w-[90vw] h-[60vw] max-w-[900px] max-h-[630px] md:w-[80vw] md:h-[55vw] lg:w-[850px] lg:h-[595px] mx-auto bg-charcoal/5 animate-pulse rounded-lg" />

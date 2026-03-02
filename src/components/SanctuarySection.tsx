@@ -8,6 +8,16 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { StandardSection } from '@/components/StandardSection';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMedia, useHasMounted } from '@/design-system/MediaContext';
+import { IMAGE_COLLECTIONS } from '@/data/imageCollections';
+
+function shuffle<T>(array: T[]): T[] {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
 
 /* ─────────────────────────────────────────────────────
    SANCTUARY SECTION — Redesigned
@@ -67,52 +77,52 @@ const SERVICE_GALLERY: Record<ServiceType | 'Default', {
     polaroid: string; polaroidLabel: string;
 }> = {
     'Default': {
-        img1: "/optimized/polaroids/webp/caravan-open-door-night-steps.webp",
-        img2: "/optimized/polaroids/webp/silver-chimney-rainbow-sky.webp",
-        img3: "/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp",
-        polaroid: "/optimized/polaroids/webp/hello-sign-warm-lighting-detail.webp",
+        img1: "/optimized/photographs/webp/Sanctuary/img-0013.webp",
+        img2: "/optimized/photographs/webp/Sanctuary/d07f230b-848b-44c6-90bf-b31e1b505b7d-enhanced.webp",
+        img3: "/optimized/photographs/webp/Sanctuary/nude-people.webp",
+        polaroid: "/optimized/photographs/webp/Sanctuary/hippie-painting-man.webp",
         polaroidLabel: "Come on in...",
     },
     'Sauna': {
-        img1: "/optimized/polaroids/webp/wood-fired-sauna-interior-benches.webp",
-        img2: "/optimized/polaroids/webp/sauna-interior-wood-stove-glow.webp",
-        img3: "/optimized/polaroids/webp/chopped-firewood-logs-texture.webp",
-        polaroid: "/optimized/photographs/webp/sauna-signage-vintage-caravan-outdoor.webp",
+        img1: "/optimized/photographs/webp/Sauna/IMG-20230727-WA0006.webp",
+        img2: "/optimized/polaroids/webp/TIM+STOVE.webp",
+        img3: "/optimized/photographs/webp/Sauna/CARAVAN LEAVES OUTDOORS.webp",
+        polaroid: "/optimized/photographs/webp/Sauna/woman-doing-face-paint.webp",
         polaroidLabel: "The sign says it all.",
     },
     'Hot Tub': {
-        img1: "/optimized/photographs/webp/happy-group-hot-tub-thumbs-up.webp",
-        img2: "/optimized/polaroids/webp/medicine-festival-hot-tub-smiles.webp",
-        img3: "/optimized/polaroids/webp/sauna-garden-relaxing-crowd.webp",
-        polaroid: "/optimized/polaroids/webp/vintage-silver-caravan-daytime-field.webp",
+        img1: "/optimized/photographs/webp/Hot Tub/PLUNGEPOOL MAN WATER.webp",
+        img2: "/optimized/photographs/webp/Hot Tub/men-naked-sunbathing-field.webp",
+        img3: "/optimized/photographs/webp/Hot Tub/happy-group-hot-tub-thumbs-up.webp",
+        polaroid: "/optimized/photographs/webp/Hot Tub/young-woman-soaking-in.webp",
         polaroidLabel: "Sunset soak",
     },
     'Plunge Pool': {
-        img1: "/optimized/photographs/webp/sun-grass-nude.webp",
-        img2: "/optimized/polaroids/webp/5-1.webp",
-        img3: "/optimized/polaroids/webp/sun-grass-caravan.webp",
-        polaroid: "/optimized/polaroids/webp/0b1a91d1-9593-4683-a883-cb6518e4ac33.webp",
+        img1: "/optimized/photographs/webp/Plunge/three-men-soaking.webp",
+        img2: "/optimized/photographs/webp/Plunge/happy-couple-bathing-outdoor.webp",
+        img3: "/optimized/photographs/webp/Plunge/medicine-festival-hot-tub-smiles.webp",
+        polaroid: "/optimized/photographs/webp/Plunge/people-relaxing-sunbathing.webp",
         polaroidLabel: "Refresh",
     },
     'Fire Pit': {
-        img1: "/optimized/polaroids/webp/night-fire-pit-heart-decor-chairs.webp",
-        img2: "/optimized/photographs/webp/caravan-camp-fire-pit-gathering.webp",
-        img3: "/optimized/polaroids/webp/caravan-fire-chairs-heart.webp",
-        polaroid: "/optimized/photographs/webp/caravan-camp-fire-pit-gathering.webp",
+        img1: "/optimized/photographs/webp/Fire Pit/5612af0f-fe77-4ee9-97d9-f6b066c2aab7.webp",
+        img2: "/optimized/photographs/webp/Fire Pit/Screenshot 2024-05-16 054512.webp",
+        img3: "/optimized/photographs/webp/Fire Pit/caravan-camp-fire-pit-gathering.webp",
+        polaroid: "/optimized/photographs/webp/Fire Pit/caravan-camp-fire-pit-gathering.webp",
         polaroidLabel: "Singalongs & Starlight",
     },
     'Shower': {
-        img1: "/optimized/polaroids/webp/showers_outdoor_square.webp",
-        img2: "/optimized/polaroids/webp/collection-of-golden-abstract-sun-logo-free-vector.webp",
-        img3: "/optimized/polaroids/webp/caravan-metallic-detail-curve.webp",
-        polaroid: "/optimized/polaroids/webp/hello-sign-warm-lighting-detail.webp",
+        img1: "/optimized/photographs/webp/Showers/sunny_showers_outdoor_square.webp",
+        img2: "/optimized/photographs/webp/Showers/two-blonde-women-brush.webp",
+        img3: "/optimized/photographs/webp/Showers/SOWERS FENCING NIGHT.webp",
+        polaroid: "/optimized/photographs/webp/Showers/smiling-shirtless-man-vintage.webp",
         polaroidLabel: "Art of the Sauna",
     },
     'Towels': {
-        img1: "/optimized/polaroids/webp/caravan-interior-night-square.webp",
-        img2: "/optimized/polaroids/webp/showers_outdoor_square.webp",
-        img3: "/optimized/polaroids/webp/sun-grass-caravan.webp",
-        polaroid: "/optimized/polaroids/webp/caravan-garden-people.webp",
+        img1: "/optimized/photographs/webp/Towels/happy-man-arms-raised.webp",
+        img2: "/optimized/photographs/webp/Towels/20220519_235539.webp",
+        img3: "/optimized/photographs/webp/Towels/0b1a91d1-9593-4683-a883-cb6518e4ac33.webp",
+        polaroid: "/optimized/photographs/webp/Towels/happy-man-arms-raised.webp",
         polaroidLabel: "Garlands & Good vibes",
     },
 };
@@ -282,29 +292,55 @@ export default function SanctuarySection() {
                 {/* Right column — photo cascade — optimized for mobile */}
                 <div className="col-span-1 md:col-span-7 relative min-h-[500px] md:min-h-[820px] mt-12 md:mt-0" onMouseLeave={() => setHoveredId(null)}>
 
-                    <div className="absolute top-0 left-0 w-[65%] md:w-[60%] transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
-                        style={getTransform('1', '-2deg', 'top-left')} onMouseEnter={() => setHoveredId('1')}>
-                        <Photo id="sanctuary-1" src={currentImages.img1} className="aspect-[4/3] w-full" aspect="aspect-[4/3]"
-                            alt={activeService ? `${activeService} — image 1` : 'The Welcome Glow'} />
-                    </div>
+                    <AnimatePresence>
+                        <motion.div
+                            key={activeService ?? 'default'}
+                            initial={{ opacity: 0, scale: 1.02 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 1 }}
+                            transition={{ duration: 0.8, ease: "easeInOut" }}
+                            className="absolute inset-0 w-full h-full pointer-events-none"
+                        >
+                            <div className="absolute top-0 left-0 w-[65%] md:w-[60%] transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] pointer-events-auto"
+                                style={getTransform('1', '-2deg', 'top-left')} onMouseEnter={() => setHoveredId('1')}>
+                                <Photo id="sanctuary-1" src={currentImages.img1} className="aspect-[4/3] w-full" aspect="aspect-[4/3]"
+                                    alt={activeService ? `${activeService} — image 1` : 'The Welcome Glow'} />
+                            </div>
 
-                    <div className="absolute top-16 md:top-24 right-0 w-[65%] transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
-                        style={getTransform('2', '1deg', 'mid-right')} onMouseEnter={() => setHoveredId('2')}>
-                        <Photo id="sanctuary-2" src={currentImages.img2} className="aspect-video w-full" aspect="aspect-video"
-                            alt={activeService ? `${activeService} — image 2` : 'Come on in...'} />
-                    </div>
+                            <div className="absolute top-16 md:top-24 right-0 w-[65%] transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] pointer-events-auto"
+                                style={getTransform('2', '1deg', 'mid-right')} onMouseEnter={() => setHoveredId('2')}>
+                                <Photo id="sanctuary-2" src={currentImages.img2} className="aspect-video w-full" aspect="aspect-video"
+                                    alt={activeService ? `${activeService} — image 2` : 'Come on in...'} />
+                            </div>
 
-                    <div className="absolute top-[200px] md:top-[280px] left-8 md:left-12 w-[60%] md:w-[55%] transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
-                        style={getTransform('3', '-1deg', 'bottom-left')} onMouseEnter={() => setHoveredId('3')}>
-                        <Photo id="sanctuary-3" src={currentImages.img3} className="aspect-square w-full" aspect="aspect-square"
-                            alt={activeService ? `${activeService} — image 3` : 'Rainbow over the sauna'} />
-                    </div>
+                            <div className="absolute top-[200px] md:top-[280px] left-8 md:left-12 w-[60%] md:w-[55%] transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] pointer-events-auto"
+                                style={getTransform('3', '-1deg', 'bottom-left')} onMouseEnter={() => setHoveredId('3')}>
+                                <Photo id="sanctuary-3" src={currentImages.img3} className="aspect-square w-full" aspect="aspect-square"
+                                    alt={activeService ? `${activeService} — image 3` : 'Rainbow over the sauna'} />
+                            </div>
 
-                    <div className="absolute bottom-[-10px] md:bottom-[-20px] right-4 md:right-12 transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
-                        style={getTransform('4', '3deg', 'polaroid')} onMouseEnter={() => setHoveredId('4')}>
-                        <Polaroid src={currentImages.polaroid} label={currentImages.polaroidLabel}
-                            rotation="rotate-0" size="w-40 md:w-48" forcePlaceholder={false} />
-                    </div>
+                            <div className="absolute bottom-[-10px] md:bottom-[-20px] right-4 md:right-12 transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] pointer-events-auto"
+                                style={getTransform('4', '3deg', 'polaroid')} onMouseEnter={() => setHoveredId('4')}>
+                                <div className="relative inline-block overflow-visible">
+                                    <Polaroid src={currentImages.polaroid} label={currentImages.polaroidLabel}
+                                        rotation="rotate-0" size="w-40 md:w-48" forcePlaceholder={false} />
+
+                                    {/* The Sun Reflection Stream */}
+                                    <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden rounded-[2px]">
+                                        <motion.div
+                                            initial={{ x: "-150%" }}
+                                            animate={{ x: "200%" }}
+                                            transition={{ duration: 1.5, ease: "easeInOut", delay: 0.1 }}
+                                            className="absolute inset-0 w-full h-full mix-blend-overlay"
+                                            style={{
+                                                background: "linear-gradient(105deg, transparent 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 60%, transparent 80%)"
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
 
                 </div>
             </div>
