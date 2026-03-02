@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useDesign } from "@/design-system/DesignContext";
 import { textures } from "@/design-system/tokens";
+import { Button } from "@/components/Button";
 
 const LOGO_SRC = "/HSSLOGO black YELLOW.png";
 
@@ -48,25 +49,16 @@ export default function ComingSoon() {
                     <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary rounded-full blur-2xl opacity-40" />
 
                     <div className="relative z-10 flex flex-col items-center">
-                        <h2 className="font-body text-xs md:text-sm font-bold uppercase tracking-[0.4em] text-charcoal mb-4">
+                        <h2 className="font-body text-2xl md:text-4xl font-black uppercase tracking-[0.2em] text-charcoal mb-10">
                             Coming Soon
                         </h2>
 
                         <div className="w-12 h-px bg-primary mb-6" />
 
-                        <p className="font-serif text-xl md:text-2xl italic tracking-wide text-charcoal/70 mb-10 max-w-md">
-                            Finding the wild in the warmth.
-                        </p>
-
-                        <a
-                            href="mailto:hello@hellosunshinesauna.com"
-                            className="group relative inline-flex items-center justify-center px-10 py-5 font-body text-[13px] font-bold uppercase tracking-[0.2em] text-charcoal transition-all overflow-hidden drop-shadow-sm active:scale-95"
-                        >
-                            <div className="absolute inset-0 bg-primary translate-y-0 transition-transform duration-500 ease-out z-0" />
-                            <div className="absolute inset-0 bg-[#FFD700] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0" />
-                            <span className="relative z-10 flex items-center gap-3">
+                        <a href="mailto:hello@hellosunshinesauna.com">
+                            <Button variant="deepDry">
                                 Say Hello
-                            </span>
+                            </Button>
                         </a>
                     </div>
                 </div>
