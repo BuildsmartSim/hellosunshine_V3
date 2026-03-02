@@ -42,18 +42,13 @@ export default function ComingSoon() {
                     />
                 </div>
 
-                {/* Coming Soon Box */}
-                <div className="bg-white/80 backdrop-blur-md p-10 md:p-14 rounded-3xl shadow-xl shadow-charcoal/5 border border-charcoal/10 w-full max-w-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-
-                    {/* Internal Decorative element */}
-                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary rounded-full blur-2xl opacity-40" />
+                {/* Coming Soon Box (Panel removed) */}
+                <div className="w-full max-w-2xl relative animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
 
                     <div className="relative z-10 flex flex-col items-center">
                         <h2 className="font-body text-2xl md:text-4xl font-black uppercase tracking-[0.2em] text-charcoal mb-10">
                             Coming Soon
                         </h2>
-
-                        <div className="w-12 h-px bg-primary mb-6" />
 
                         <a href="mailto:hello@hellosunshinesauna.com">
                             <Button variant="deepDry">
